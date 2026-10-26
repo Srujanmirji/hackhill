@@ -2,7 +2,7 @@
 
 ```
             ┌───────────────────────── data/raw/ ─────────────────────────┐
- MCX site ──┤ manual CSV/XLSX  ·  JSON endpoint (DevTools)  ·  TinyFish/Playwright │
+ MCX site ──┤            browser console fetcher  ·  manual CSV           │
             └──────────────────────────────┬───────────────────────────────┘
                                            │ scripts/build_dataset.py
                                            ▼
@@ -43,7 +43,7 @@ aulens/
   verdict.py          EDGE / NO EDGE / UNTESTABLE
   data/
     loader.py         raw Bhavcopy → tidy table, date validation
-    mcx_client.py     fetch via JSON endpoint, with caching
+    mcx_client.py     Python fetch (blocked by Akamai; see docs/MCX_DATA_API.md)
     sample.py         SYNTHETIC generator (development only)
 app/streamlit_app.py  dashboard
 scripts/              build_dataset.py, run_backtest.py

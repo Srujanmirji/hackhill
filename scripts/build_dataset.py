@@ -3,6 +3,7 @@
   python scripts/build_dataset.py --sample                 # synthetic data (dev only)
   python scripts/build_dataset.py --raw data/raw           # real CSV/XLSX/JSON downloads
   python scripts/build_dataset.py --endpoint "<url with {date}>" --start 2025-04-01 --end 2026-10-23
+      (MCX answers 403 to scripts; use scripts/mcx_fetch_in_browser.js, see docs/MCX_DATA_API.md)
 """
 import argparse
 import json

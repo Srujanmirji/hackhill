@@ -1,14 +1,14 @@
 """Fetch MCX daily Bhavcopy.
 
-Three routes, in order of reliability for a hackathon:
+The working route is `scripts/mcx_fetch_in_browser.js`, run in a real browser on an MCX page;
+it writes the CSVs `scripts/build_dataset.py --raw data/raw` reads. Endpoint map:
+docs/MCX_DATA_API.md.
 
-1. MANUAL CSV (most reliable): download from https://www.mcxindia.com/market-data/historical-data
-   (max 365 days per query) or the Bhavcopy page, save into data/raw/, then run
-   `python scripts/build_dataset.py --raw data/raw`.
-2. JSON ENDPOINT: open the Bhavcopy page in Chrome -> DevTools -> Network -> pick a date ->
-   copy the request URL the page fires. Pass it as a template with {date} (DD/MM/YYYY)
-   to `fetch_range`. MCX sits behind Akamai, so browser-like headers are required.
-3. PLAYWRIGHT / TinyFish: drive a real browser when (2) is blocked.
+`fetch_range` below calls the same JSON endpoint from Python. As of Oct 2026 MCX's Akamai
+protection answers 403 to scripts, so expect it to fail; it is kept for networks where the
+endpoint is reachable. URL template:
+https://www.mcxindia.com/market-data/bhavcopy/GetDateWiseBhavCopy?InstrumentName=FUTCOM&fromDate={date}
+(the endpoint also needs the `X-Requested-With: XMLHttpRequest` header).
 
 The old `backpage.aspx` routes were retired in MCX's 2026 redesign; libraries built on
 them (mcxlib, mcxpy) were reported broken in Sep 2026. Do not rely on them.
@@ -28,6 +28,7 @@ HEADERS = {
     "User-Agent": ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
                    "(KHTML, like Gecko) Chrome/128.0 Safari/537.36"),
     "Accept": "application/json, text/plain, */*",
+    "X-Requested-With": "XMLHttpRequest",
     "Accept-Language": "en-US,en;q=0.9",
     "Referer": "https://www.mcxindia.com/market-data/bhavcopy",
     "Origin": "https://www.mcxindia.com",

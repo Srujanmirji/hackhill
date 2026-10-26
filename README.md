@@ -26,7 +26,7 @@ pip install -r requirements.txt
 
 # 1. Build a dataset
 python scripts/build_dataset.py --sample                # synthetic, to develop the UI
-python scripts/build_dataset.py --raw data/raw          # real MCX downloads (see docs/DATA.md)
+python scripts/build_dataset.py --raw data/raw          # real MCX data; refresh it with scripts/mcx_fetch_in_browser.js
 
 # 2. Verdicts in the terminal
 python scripts/run_backtest.py
@@ -58,6 +58,7 @@ pytest -q
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | System design and data flow |
 | [docs/METHODOLOGY.md](docs/METHODOLOGY.md) | The maths: normalization, convergence, walk-forward, verdicts |
 | [docs/DATA.md](docs/DATA.md) | Getting real MCX data, and its quirks |
+| [docs/MCX_DATA_API.md](docs/MCX_DATA_API.md) | MCX endpoints, reconstructed from the site's own scripts |
 | [docs/CONTRACT_SPECS.md](docs/CONTRACT_SPECS.md) | The rulebook, with what still needs verifying |
 | [docs/COSTS.md](docs/COSTS.md) | Transaction-cost model and worked examples |
 | [docs/LIMITATIONS.md](docs/LIMITATIONS.md) | What AuLens cannot tell you |

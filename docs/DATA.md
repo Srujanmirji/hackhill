@@ -9,9 +9,11 @@ Fields used: Date, Symbol, ExpiryDate, Open, High, Low, Close, Volume, OpenInter
 
 | Route | Reliability | How |
 |---|---|---|
-| Manual download | Highest | Historical Data page, max **365 days per query**; save files in `data/raw/` |
-| JSON endpoint | Good once found | DevTools → Network on the Bhavcopy page; copy URL; replace date with `{date}` |
-| Browser automation | Fallback | TinyFish or Playwright, when bot protection blocks plain requests |
+| **Browser console fetcher** | Used for the current dataset | Open the MCX Bhavcopy page, paste [`scripts/mcx_fetch_in_browser.js`](../scripts/mcx_fetch_in_browser.js) into the console, run `await aulensFetch({start, end})`; move the CSVs into `data/raw/` and `data/raw/ddr/` |
+| Manual download | Works, slower | Historical Data / Bhavcopy pages, max **365 days per query**; save files in `data/raw/` |
+| Python / headless browser | Blocked | Akamai answers 403 to `requests`, `curl` and headless Chromium (observed Oct 2026) |
+
+Endpoint map, parameters and how they were reconstructed: [docs/MCX_DATA_API.md](MCX_DATA_API.md).
 
 Old Python libraries (`mcxlib`, `mcxpy`) used `backpage.aspx` routes that MCX retired in its
 2026 redesign; they were reported broken in Sep 2026. Don't depend on them.
@@ -23,7 +25,7 @@ Old Python libraries (`mcxlib`, `mcxpy`) used `backpage.aspx` routes that MCX re
 | Requests use DD/MM/YYYY; response Date is MM/DD/YYYY | Parsed with an explicit format |
 | ExpiryDate is compact (`04SEP2026`) | `%d%b%Y` |
 | Symbols are space-padded | `.str.strip()` |
-| Holidays / bad dates return the nearest trading day | `assert_requested_date()` drops mismatches |
+| Full holidays return an empty response (7 of 7 observed); other days are checked against the requested date | Day skipped; `assert_requested_date()` and the browser fetcher drop mismatches |
 | Options rows mixed in | Keep `InstrumentName` starting with `FUT` |
 | GOLDTEN starts 1 Apr 2025 | All TEN pairs have a shorter history — stated on screen |
 

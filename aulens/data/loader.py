@@ -4,7 +4,8 @@ Handles the known MCX quirks:
   * response Date is MM/DD/YYYY (requests use DD/MM/YYYY)
   * ExpiryDate is compact, e.g. 04SEP2026
   * Symbol values may be space-padded
-  * MCX may silently return a different (nearest) trading day -> caller must check
+  * a request for a holiday returns no rows (observed); assert_requested_date() still guards
+    against a response for a different day
 """
 from __future__ import annotations
 
@@ -56,6 +57,7 @@ def apply_ddr(df: pd.DataFrame, ddr: pd.DataFrame) -> pd.DataFrame:
     """
     d = ddr.rename(columns={"Date": "date", "Symbol": "symbol", "DDR": "ddr"})[["date", "symbol", "ddr"]]
     d = d.assign(date=pd.to_datetime(d["date"]), symbol=d["symbol"].str.strip().str.upper())
+    d = d.drop_duplicates(["date", "symbol"], keep="last")  # overlapping DDR downloads
     # The expiring contract is the nearest expiry still listed on the DDR date.
     front = (df.groupby(["symbol", "date"], as_index=False)["expiry"].min()
                .merge(d, on=["symbol", "date"]))
