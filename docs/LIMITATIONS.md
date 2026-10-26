@@ -22,8 +22,9 @@ AuLens is honest about what it cannot see. Show this list when asked "is this re
    snap-back.
 10. **Crash days break cross-expiry pairs.** On 30 Jan 2026 GOLDM (Apr 2026) closed 17.5% lower
     while GOLDTEN (Mar 2026) closed 12% lower, moving the GOLDM–GOLDTEN spread by ~₹10,000 per
-    10 g in a day. Four trades closed that day for a net −₹1.56 lakh, 75% of the pair's loss;
-    its NO EDGE verdict and 0.32 gold beta are mostly that day.
+    10 g in a day. Three trades closed that day for a net −₹1.26 lakh, 74% of the pair's loss;
+    its NO EDGE verdict and 0.25 gold beta are mostly that day. The same day supplies 57% of
+    GOLDTEN vs GOLDPETAL's profit.
 
 ## Not financial advice
 

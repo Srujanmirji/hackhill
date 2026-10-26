@@ -27,15 +27,19 @@ def gram_matched_lots(a: str, b: str, scale: int = 1) -> tuple[int, int, float]:
     return scale * lcm // ga, scale * lcm // gb, float(scale * lcm)
 
 
-def implied_carry(df: pd.DataFrame, symbol: str = "GOLDTEN", window: int = 60) -> pd.Series:
-    """Annualized carry implied by the futures curve: ln(next / front) per year between the two
-    nearest listed expiries of `symbol`, as a trailing median over `window` days, shifted one day
-    so the value on day t uses only days before t."""
+def curve_carry(df: pd.DataFrame, symbol: str = "GOLDTEN") -> pd.Series:
+    """Annualized carry implied by the futures curve on each day: ln(next / front) per year
+    between the two nearest listed expiries of `symbol`."""
     c = df[df.symbol == symbol].sort_values(["date", "expiry"]).groupby("date").head(2)
     g = c.groupby("date")
     years = (g["expiry"].last() - g["expiry"].first()).dt.days / 365
-    raw = np.log(g["close"].last() / g["close"].first()) / years
-    return raw.shift(1).rolling(window, min_periods=window // 3).median().rename("carry")
+    return (np.log(g["close"].last() / g["close"].first()) / years).rename("carry")
+
+
+def implied_carry(df: pd.DataFrame, symbol: str = "GOLDTEN", window: int = 60) -> pd.Series:
+    """`curve_carry` as a trailing median over `window` days, shifted one day so the value on
+    day t uses only days before t."""
+    return curve_carry(df, symbol).shift(1).rolling(window, min_periods=window // 3).median().rename("carry")
 
 
 def pair_panel(df: pd.DataFrame, a: str, b: str) -> pd.DataFrame:

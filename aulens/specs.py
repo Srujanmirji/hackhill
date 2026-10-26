@@ -36,6 +36,10 @@ PAIRS = [
     ("GOLDM", "GOLDTEN"),        # stretch: GOLDM (5th of M+1) vs GOLDTEN (end of M), carry-adjusted
 ]
 
+# RBI policy repo rate, the benchmark for the carry panel. Figure from the team's research
+# (docs/BUILD_GUIDE.md). TODO: confirm against rbi.org.in before the finale.
+RBI_REPO_RATE = 0.0525
+
 # Full-day MCX closures (morning AND evening closed), from mcxindia.com "Trading Holidays",
 # read 26 Oct 2026. Morning-only closures still trade in the evening and are not listed.
 # TODO: add 2027 once MCX publishes it.

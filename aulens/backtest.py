@@ -5,7 +5,7 @@ Rules
   * Trades execute at day t+1's settlement price plus a slippage penalty per leg.
   * Every position is closed before the broker cut-off ahead of the tender window.
   * Entry needs: |z| > z_entry, |residual| > cost hurdle + slippage, both legs above
-    a minimum volume.
+    a minimum volume, and each leg's lots within `capacity_pct` of that leg's daily volume.
   * z_entry is chosen walk-forward: for each test month, pick the value that did best
     on all PRIOR months only.
 """
@@ -28,6 +28,7 @@ class Params:
     z_grid: tuple = (1.5, 2.0, 2.5)
     slippage_per_leg: float = 20.0   # ₹ per 10 g per leg per crossing (ASSUMPTION — see docs)
     min_volume: int = 50             # lots, both legs
+    capacity_pct: float = 0.02       # each leg's lots <= this share of that leg's daily volume (1-5%)
     exit_buffer_days: int = 2        # extra trading days before the tender window
     lot_scale: int = 1
     min_train_months: int = 3
@@ -58,7 +59,10 @@ def add_signals(p: pd.DataFrame, a: str, b: str, prm: Params) -> pd.DataFrame:
     tender = max(SPECS[a].tender_days, SPECS[b].tender_days) + prm.exit_buffer_days
     p["days_left"] = p.groupby("expiry")["date"].transform(lambda d: len(d) - 1 - np.arange(len(d)))
     p["can_hold"] = p["days_left"] > tender
-    p["liquid"] = (p["volume_a"] >= prm.min_volume) & (p["volume_b"] >= prm.min_volume)
+    lots_a, lots_b, _ = gram_matched_lots(a, b, prm.lot_scale)
+    p["liquid"] = ((p["volume_a"] >= prm.min_volume) & (p["volume_b"] >= prm.min_volume)
+                   & (lots_a <= prm.capacity_pct * p["volume_a"])     # capacity: our size stays a small
+                   & (lots_b <= prm.capacity_pct * p["volume_b"]))    # share of what traded on day t
     return p
 
 
@@ -131,3 +135,15 @@ def regime_of(d: pd.Timestamp) -> str:
         if d >= pd.Timestamp(k):
             label = f"From {pd.Timestamp(k):%d %b %Y}"
     return label
+
+
+def latest_signals(res: dict) -> pd.DataFrame:
+    """Each contract's state on the last data day: does its residual clear the cost + slippage
+    hurdle under the same entry rules the backtest uses (z_entry = the latest walk-forward choice)?"""
+    p, prm = res["panel"], res["params"]
+    z_entry = res["z_choices"]["z_entry"].iloc[-1] if len(res["z_choices"]) else prm.z_grid[0]
+    last = p[p["date"] == p["date"].max()].copy()
+    last["hurdle"] = [prm.costs.breakeven_per_10g(px, res["grams"]) + 4 * prm.slippage_per_leg for px in last["px10_a"]]
+    last["clears"] = (last["can_hold"] & last["liquid"] & (last["z"].abs() > z_entry)
+                      & (last["residual"].abs() > last["hurdle"]))
+    return last[["date", "expiry", "residual", "hurdle", "z", "clears"]].reset_index(drop=True)

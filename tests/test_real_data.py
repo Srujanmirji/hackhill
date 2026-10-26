@@ -57,3 +57,9 @@ def test_carry_uses_past_data_only(df):
     shocked = df.copy()
     shocked.loc[(shocked["date"] == last) & (shocked["symbol"] == "GOLDTEN"), "close"] *= 2
     assert implied_carry(df)[last] == implied_carry(shocked)[last]
+
+
+def test_curve_carry_is_annualized_front_to_next(df):
+    from aulens.normalize import curve_carry
+    c = curve_carry(df)
+    assert c.notna().all() and c.between(-1, 1).all()   # annual rate; Jan 2026 rally peaks near 51%

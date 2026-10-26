@@ -18,4 +18,6 @@ for a, b in PAIRS:
         print(f"   trades {v['trades']}  gross ₹{v['gross_pnl']:,.0f}  costs ₹{v['costs']:,.0f}  "
               f"slippage ₹{v['slippage']:,.0f}  net ₹{v['net_pnl']:,.0f}  hit {v['hit_rate']:.0%}")
         print(f"   break-even slippage ₹{v['breakeven_slippage_per_leg']:.1f}/10 g/leg   gold beta {v['gold_beta']:.3f}")
+        lo, hi = v["mean_trade_ci90"]
+        print(f"   net Sharpe {v['net_sharpe']:.2f}   90% CI of mean trade ₹{lo:,.0f} to ₹{hi:,.0f}")
         print(v["by_regime"].to_string(), "\n")

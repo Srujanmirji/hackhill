@@ -63,7 +63,8 @@ shifted by one day so today's value is never used to score itself. A trade is op
 
 1. `|z| > z_entry`,
 2. `|R|` is larger than the round-trip cost per 10 g **plus** 4 × assumed slippage per leg,
-3. both legs traded at least `min_volume` lots that day, and
+3. both legs traded at least `min_volume` lots that day, and our lots on each leg are at most
+   `capacity_pct` (default 2%, 1–5% on the dashboard) of that leg's volume that day, and
 4. the contract is not inside (tender days + buffer) of expiry.
 
 Direction: `z > 0` → spread rich → sell A, buy B; `z < 0` → the reverse.
@@ -95,6 +96,12 @@ Also reported:
   This is the honest headline, because slippage is the cost we cannot measure from Bhavcopy.
 - **Gold beta** — slope of trade P&L on the gold move over the holding period. Near zero
   means the result is not just gold going up.
+- **Net Sharpe** — mean net trade / its standard deviation × √(trades per year). Trades are
+  irregular, so this is a per-trade Sharpe scaled by how often the pair traded, not a daily one.
+- **Carry panel** — annual carry implied by the two nearest GOLDTEN contracts, against the RBI
+  repo rate in `specs.py`. Descriptive only; it does not feed the verdict.
+- **Quiet alerts** — on the last data day, a pair alerts only if its verdict is EDGE *and* a
+  contract passes every entry rule above. With no EDGE verdicts, the dashboard stays silent.
 - **By regime** — results split at 23 Jul 2024, 1 Apr 2025, 22 Sep 2025, 1 Apr 2026 and
   13 May 2026 (see `aulens/specs.py`).
 

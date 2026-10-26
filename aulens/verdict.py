@@ -23,6 +23,16 @@ def bootstrap_mean_ci(x: np.ndarray, n: int = 2000, seed: int = 0) -> tuple[floa
     return float(np.percentile(means, 5)), float(np.percentile(means, 95))
 
 
+def net_sharpe(trades: pd.DataFrame) -> float:
+    """Per-trade Sharpe of net P&L, annualized by how often the pair actually traded:
+    mean / std * sqrt(trades per year). Trades are irregular, so this is not a daily-returns
+    Sharpe; it answers "is the average trade large relative to its noise, at this pace?"."""
+    if len(trades) < 2 or trades["net"].std() == 0:
+        return float("nan")
+    years = max((trades["exit_date"].max() - trades["entry_date"].min()).days / 365.25, 1 / 365.25)
+    return float(trades["net"].mean() / trades["net"].std() * np.sqrt(len(trades) / years))
+
+
 def verdict(res: dict, min_trades: int = 10) -> dict:
     t = res["trades"]
     out = {"pair": f"{res['pair'][0]} vs {res['pair'][1]}",
@@ -45,7 +55,7 @@ def verdict(res: dict, min_trades: int = 10) -> dict:
         "hit_rate": float((t["net"] > 0).mean()),
         "mean_trade_ci90": (lo, hi),
         "breakeven_slippage_per_leg": pre_slip / crossings_10g if crossings_10g else float("nan"),
-        "gold_beta": beta, "alpha_per_trade": alpha,
+        "gold_beta": beta, "alpha_per_trade": alpha, "net_sharpe": net_sharpe(t),
         "by_regime": by_regime,
     })
     if len(t) < min_trades:

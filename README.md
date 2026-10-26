@@ -69,19 +69,21 @@ pytest -q
 ## Results (real MCX data, 1 Apr 2025 – 23 Oct 2026)
 
 **No pair shows an edge after costs.** Default assumptions: ₹20 slippage per 10 g per leg,
-50-lot minimum volume, walk-forward `z_entry`.
+50-lot minimum volume, each leg capped at 2% of its daily volume, walk-forward `z_entry`.
 
-| Pair | Verdict | Trades | Net P&L | Break-even slippage (₹/10 g/leg) | Gold beta |
-|---|---|---|---|---|---|
-| GOLDTEN vs GOLDGUINEA (control) | **NO EDGE** | 61 | ₹-25,726 | ₹-6.4 | 0.063 |
-| GOLDTEN vs GOLDPETAL | **NO EDGE** | 48 | ₹34,450 | ₹64.9 | 0.136 |
-| GOLDM vs GOLDTEN (stretch) | **NO EDGE** | 35 | ₹-206,642 | ₹-127.6 | 0.316 |
+| Pair | Verdict | Trades | Net P&L | Net Sharpe | 90% CI, mean trade | Break-even slippage (₹/10 g/leg) | Gold beta |
+|---|---|---|---|---|---|---|---|
+| GOLDTEN vs GOLDGUINEA (control) | **NO EDGE** | 62 | −₹17,140 | −0.38 | −₹1,309 to ₹838 | ₹2.7 | 0.07 |
+| GOLDTEN vs GOLDPETAL | **NO EDGE** | 49 | ₹35,653 | 0.83 | −₹527 to ₹2,044 | ₹65.5 | 0.14 |
+| GOLDM vs GOLDTEN (stretch) | **NO EDGE** | 32 | −₹1,69,597 | −1.24 | −₹12,236 to ₹404 | −₹112.5 | 0.25 |
 
-- **Control pair:** loses money even at zero slippage (negative break-even). Its spread is ±₹1
+- **Control pair:** breaks even at only ₹2.7 of slippage per 10 g per leg, about two GOLDGUINEA
+  ticks, so any real fill cost turns it negative. Its spread is ±₹1
   at the final settlement price on all 18 expiries, which validates the normalization, but it
   converges only after the tender-window exit.
 - **GOLDTEN vs GOLDPETAL:** net positive, but the profit comes from one regime (22 Sep 2025 –
-  1 Apr 2026) and it loses after 13 May 2026, so it fails the every-regime test.
+  1 Apr 2026), 57% of it from a single trade closed on 30 Jan 2026, and it loses after 13 May
+  2026, so it fails the every-regime test.
 - **GOLDM vs GOLDTEN:** most of the loss is one crash day (30 Jan 2026), when the two expiries
   fell 17.5% and 12%. See [docs/LIMITATIONS.md](docs/LIMITATIONS.md).
 
@@ -92,35 +94,38 @@ Data source: MCX
 
 == GOLDTEN vs GOLDGUINEA  [NO EDGE]  4 x GOLDTEN  vs  5 x GOLDGUINEA  (40 g)
    Does not survive costs, slippage and regime splits with confidence.
-   trades 61  gross ₹11,621  costs ₹17,827  slippage ₹19,520  net ₹-25,726  hit 41%
-   break-even slippage ₹-6.4/10 g/leg   gold beta 0.063
+   trades 62  gross ₹20,618  costs ₹17,918  slippage ₹19,840  net ₹-17,140  hit 42%
+   break-even slippage ₹2.7/10 g/leg   gold beta 0.070
+   net Sharpe -0.38   90% CI of mean trade ₹-1,309 to ₹838
                   count           sum
 regime                               
 From 01 Apr 2025      4   -343.373494
-From 22 Sep 2025     26 -14300.040986
-From 01 Apr 2026      4  -4092.986550
-From 13 May 2026     27  -6989.979303 
+From 22 Sep 2025     30 -10825.918032
+From 01 Apr 2026      2  -1932.232955
+From 13 May 2026     26  -4038.245302 
 
 == GOLDTEN vs GOLDPETAL  [NO EDGE]  4 x GOLDTEN  vs  40 x GOLDPETAL  (40 g)
    Does not survive costs, slippage and regime splits with confidence.
-   trades 48  gross ₹63,720  costs ₹13,910  slippage ₹15,360  net ₹34,450  hit 40%
-   break-even slippage ₹64.9/10 g/leg   gold beta 0.136
+   trades 49  gross ₹65,556  costs ₹14,223  slippage ₹15,680  net ₹35,653  hit 41%
+   break-even slippage ₹65.5/10 g/leg   gold beta 0.135
+   net Sharpe 0.83   90% CI of mean trade ₹-527 to ₹2,044
                   count           sum
 regime                               
 From 01 Apr 2025      4   2671.647840
 From 22 Sep 2025     27  33195.824266
 From 01 Apr 2026      3    247.194325
-From 13 May 2026     14  -1664.656702 
+From 13 May 2026     15   -462.137796 
 
 == GOLDM vs GOLDTEN  [NO EDGE]  1 x GOLDM  vs  10 x GOLDTEN  (100 g)
    Does not survive costs, slippage and regime splits with confidence.
-   trades 35  gross ₹-158,526  costs ₹20,116  slippage ₹28,000  net ₹-206,642  hit 34%
-   break-even slippage ₹-127.6/10 g/leg   gold beta 0.316
+   trades 32  gross ₹-125,825  costs ₹18,172  slippage ₹25,600  net ₹-169,597  hit 34%
+   break-even slippage ₹-112.5/10 g/leg   gold beta 0.249
+   net Sharpe -1.24   90% CI of mean trade ₹-12,236 to ₹404
                   count            sum
 regime                                
 From 01 Apr 2025      5   -2119.383105
-From 22 Sep 2025     19 -181074.240186
-From 01 Apr 2026      4  -13465.301656
+From 22 Sep 2025     18 -151123.302862
+From 01 Apr 2026      2   -6371.217480
 From 13 May 2026      7   -9983.303016
 ```
 
@@ -136,9 +141,11 @@ From 13 May 2026      7   -9983.303016
 - [x] Control-pair convergence verified on real data (`tests/test_real_data.py`)
 - [x] Contract calendar, chart captions, cached sensitivity (page loads in < 5 s)
 - [x] GOLDM vs GOLDTEN pair, carry-adjusted for the 5th vs month-end expiry gap
+- [x] Liquidity capacity caps (1–5% of each leg's daily volume), net Sharpe, confidence interval on the verdict
+- [x] Carry panel (GOLDTEN curve vs RBI repo) and quiet alerts (only for EDGE pairs that clear the hurdle)
 - [x] Contract specs verified against the current MCX PDFs (GOLD/GOLDM tender window corrected to 3 days)
 - [ ] GOLDM 3-day-average DDR modelled in the GOLDM vs GOLDTEN expected spread
-- [ ] Carry decomposition panel, measured slippage from live bid/ask
+- [ ] COMEX carry comparison, measured slippage from live bid/ask
 
 ## License
 
