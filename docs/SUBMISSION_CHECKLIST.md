@@ -12,10 +12,12 @@
 - [ ] Demo video (see DEMO_SCRIPT.md), uploaded unlisted on YouTube or Drive with view access
 - [ ] TinyFish first run completed (required by organisers)
 
-## Social pitch round
-- [ ] LinkedIn post tagging Eren, BuilderBase, Nexido, Web3 India — with demo video + repo link
-- [ ] Instagram Reel tagging Eren.dev, BuilderBase, Nexido, Web3 India
-- [ ] Links submitted via the official form
+## Social pitch round (deadline 28 Oct 2026, kit in SOCIAL_SUBMISSION.md)
+- [ ] 1-minute pitch video; intro says "Hack in Hills, powered by TinyFish." exactly
+- [ ] LinkedIn post (mandatory) with the video, tagging @TinyFish @Nexido @BuilderBase @Web3India
+- [ ] X post (mandatory) with the same video and tags
+- [ ] Instagram reel (optional) with the same tags
+- [ ] Links submitted via the official Google Form (one submission per team)
 
 ## Finale (Manali)
 - [x] Contract specs verified against MCX PDFs (`CONTRACT_SPECS.md` log filled in)
