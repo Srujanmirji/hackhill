@@ -11,10 +11,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from aulens.backtest import Params, walk_forward  # noqa: E402
 from aulens.costs import CostModel  # noqa: E402
 from aulens.data.loader import load_processed  # noqa: E402
-from aulens.specs import PAIRS, REGIME_BREAKS, SPECS  # noqa: E402
+from aulens.specs import MCX_FULL_HOLIDAYS, PAIRS, REGIME_BREAKS, SPECS  # noqa: E402
 from aulens.verdict import verdict  # noqa: E402
 
 GOLD, DARK, GREEN, GREY, RED = "#B07A1E", "#1D1D1F", "#2E7D55", "#5F6368", "#C0392B"
+PLOTLY_CONFIG = {"displayModeBar": False}  # hover-only toolbar; drag zooms, double-click resets
 st.set_page_config(page_title="AuLens", page_icon="🔎", layout="wide")
 
 
@@ -43,9 +44,9 @@ with st.sidebar:
     min_vol = st.slider("Minimum daily volume (lots, both legs)", 0, 500, 50, 10)
     scale = st.select_slider("Size multiplier", [1, 2, 4, 8], 4 if b == "GOLDPETAL" else 1)
     st.header("Contract rules")
-    st.dataframe(pd.DataFrame([{"Contract": s.symbol, "Unit g": s.lot_grams, "Quote g": s.quote_grams,
-                                "Purity": s.purity, "DDR city": s.settle_city}
-                               for s in SPECS.values() if s.symbol in (a, b)]), hide_index=True)
+    for s in (SPECS[a], SPECS[b]):
+        st.markdown(f"**{s.symbol}** · {s.lot_grams:g} g lot · ₹ per {s.quote_grams:g} g · {s.purity} purity · "
+                    f"settles {s.settle_city} · expires {'on the 5th' if s.expiry_rule == '5th' else 'month-end'}")
 
 
 @st.cache_data
@@ -62,12 +63,13 @@ def sensitivity(a, b, min_vol, scale):
 
 
 def calendar(panel, tender, buffer):
-    """Per expiry: first pair day, last tradable day, tender start, expiry. Days after the
-    last data date are weekdays only (future holidays unknown), so live contracts are estimates."""
+    """Per expiry: first pair day, last tradable day, tender start, expiry. Days after the last
+    data date are weekdays minus MCX's published full-day holidays, so live contracts are estimates."""
     last_data = panel["date"].max()
     rows = []
     for exp, g in panel.groupby("expiry"):
-        days = list(g["date"]) + list(pd.bdate_range(last_data + pd.Timedelta(days=1), exp))
+        future = pd.bdate_range(last_data + pd.Timedelta(days=1), exp, freq="C", holidays=MCX_FULL_HOLIDAYS)
+        days = list(g["date"]) + list(future)
         n = len(days)  # same rule as backtest.add_signals: hold only while days_left > tender + buffer
         rows.append({"expiry": exp, "first": days[0], "last_tradable": days[max(n - 2 - tender - buffer, 0)],
                      "tender_start": days[max(n - tender, 0)], "live": exp > last_data})
@@ -97,7 +99,8 @@ c[4].metric("Break-even slippage", f"₹{v.get('breakeven_slippage_per_leg', flo
 # ---- Spread chart for one expiry
 st.subheader("Normalized spread vs expected convergence")
 exps = sorted(panel["expiry"].unique())
-default_exp = (trades["expiry"].value_counts().idxmax() if len(trades) else exps[len(exps) // 2])
+expired = [x for x in exps if x <= panel["date"].max()]   # show a full life, through settlement
+default_exp = expired[-1] if expired else exps[0]
 exp = st.select_slider("Contract expiry", exps, value=default_exp,
                        format_func=lambda d: pd.Timestamp(d).strftime("%b %Y"))
 e = panel[panel["expiry"] == exp]
@@ -120,7 +123,7 @@ for d, label in REGIME_BREAKS.items():
         fig.add_vline(x=pd.Timestamp(d), line=dict(color=RED, dash="dot"))
 fig.update_layout(height=420, yaxis_title="₹ per 10 g @ 999", margin=dict(l=10, r=10, t=10, b=10),
                   legend=dict(orientation="h", y=-0.15))
-st.plotly_chart(fig, width="stretch")
+st.plotly_chart(fig, width="stretch", config=PLOTLY_CONFIG)
 st.caption("The black line is the price gap between the two contracts (₹ per 10 g); the dashed line is "
            "where the exchange rules say it must end up; a trade is only worth taking outside the green band.")
 
@@ -132,12 +135,12 @@ with l:
     f2 = go.Figure(go.Bar(x=sens["slippage"], y=sens["net"],
                           marker_color=[GREEN if n > 0 else GREY for n in sens["net"]]))
     f2.update_layout(height=300, xaxis_title="₹ per 10 g per leg", yaxis_title="Net P&L ₹", margin=dict(l=10, r=10, t=10, b=10))
-    st.plotly_chart(f2, width="stretch")
+    st.plotly_chart(f2, width="stretch", config=PLOTLY_CONFIG)
     st.caption("Total net profit if every fill costs this much extra per 10 g per leg; grey bars lose money.")
 with r:
     st.subheader("Results by regime")
     if "by_regime" in v:
-        st.dataframe(v["by_regime"].rename(columns={"count": "Trades", "sum": "Net ₹"}).style.format({"Net ₹": "₹{:,.0f}"}))
+        st.table(v["by_regime"].rename(columns={"count": "Trades", "sum": "Net ₹"}).style.format({"Net ₹": "₹{:,.0f}"}))
         st.caption("The same trades split by the market regime they were opened in; a real edge makes money in every row. "
                    f"Gold beta of trade P&L: {v['gold_beta']:.3f} (near 0 = the result is not just gold going up).")
     else:
@@ -161,10 +164,10 @@ f3 = px.timeline(segments, x_start="start", x_end="end", y="contract", color="ph
 f3.update_yaxes(autorange="reversed", title=None)
 f3.update_layout(height=max(300, 22 * len(cal)), margin=dict(l=10, r=10, t=10, b=10),
                  legend=dict(orientation="h", y=-0.12, title=None))
-st.plotly_chart(f3, width="stretch")
+st.plotly_chart(f3, width="stretch", config=PLOTLY_CONFIG)
 st.caption("One bar per contract: gold is when AuLens may hold the pair, grey is the early-exit buffer, red is "
-           "the delivery (tender) window up to expiry. Dates after the last data day skip weekends only, so live "
-           "contracts are estimates.")
+           "the delivery (tender) window up to expiry. Dates after the last data day skip weekends and "
+           "MCX's published 2026 holidays (2027 is not out yet), so live contracts are estimates.")
 
 with st.expander("Trade log"):
     st.dataframe(trades, hide_index=True)

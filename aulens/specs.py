@@ -35,6 +35,11 @@ PAIRS = [
     ("GOLDM", "GOLDTEN"),        # stretch: GOLDM (5th of M+1) vs GOLDTEN (end of M), carry-adjusted
 ]
 
+# Full-day MCX closures (morning AND evening closed), from mcxindia.com "Trading Holidays",
+# read 26 Oct 2026. Morning-only closures still trade in the evening and are not listed.
+# TODO: add 2027 once MCX publishes it.
+MCX_FULL_HOLIDAYS = ["2026-01-26", "2026-04-03", "2026-10-02", "2026-12-25"]
+
 # Pre-set structural breaks used to split every backtest.
 REGIME_BREAKS = {
     "2024-07-23": "Import duty cut 15% -> 6%",
