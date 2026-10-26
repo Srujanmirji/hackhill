@@ -1,0 +1,61 @@
+<template>
+  <style>
+@font-face { font-family: 'Barlow Condensed'; font-weight: 600; src: url('assets/fonts/BarlowCondensed-SemiBold.woff2'); }
+@font-face { font-family: 'Barlow Condensed'; font-weight: 700; src: url('assets/fonts/BarlowCondensed-Bold.woff2'); }
+@font-face { font-family: 'Public Sans'; font-weight: 400; src: url('assets/fonts/PublicSans-Regular.woff2'); }
+@font-face { font-family: 'Public Sans'; font-weight: 600; src: url('assets/fonts/PublicSans-SemiBold.woff2'); }
+#root { position: absolute; inset: 0; background: #F6F7F5; font-family: 'Public Sans', sans-serif; color: #23262B; overflow: hidden; }
+.cam, .stage { position: absolute; inset: 0; }
+.plate { position: absolute; border-radius: 6px; overflow: hidden; background: #fff;
+          box-shadow: 0 18px 40px rgba(35,38,43,0.14), 0 1px 0 rgba(35,38,43,0.06); }
+.plate img { display: block; width: 100%; height: 100%; }
+.mark { position: absolute; border: 4px solid #B07A1E; border-radius: 4px; opacity: 0; }
+.ring { position: absolute; border: 5px solid #5B6470; border-radius: 14px; opacity: 0; }
+.lbl { position: absolute; font-family: 'Barlow Condensed'; font-weight: 600; color: #23262B; white-space: nowrap; }
+.lbl b { color: #8A5D12; font-weight: 700; }
+.lead { position: absolute; background: #B07A1E; }
+.wheel { display: inline-flex; font-variant-numeric: tabular-nums; }
+.wd { display: inline-block; height: 1em; overflow: hidden; line-height: 1em; }
+.ws { display: grid; }
+.ws span { height: 1em; line-height: 1em; }
+</style>
+  <div id="root" data-composition-id="carry" data-width="1920" data-height="1080">
+
+    <div id="carry-cam" class="cam">
+      <div id="carry-p1" class="plate" style="left:80px; top:190px; width:1760px; height:464px;"><img src="assets/screens/carry_control.png" alt=""></div>
+      <div id="carry-scan2" class="lead" style="left:80px; top:180px; width:3px; height:484px; opacity:0;"></div>
+      <div id="carry-ld4" class="lead" style="left:330px; top:172px; width:3px; height:120px;"></div>
+      <div id="carry-l3" class="lbl" style="left:210px; top:112px; font-size:52px;"><b>≈6%</b> a year through 2025</div>
+      <div id="carry-ld6" class="lead" style="left:1200px; top:172px; width:3px; height:70px;"></div>
+      <div id="carry-l5" class="lbl" style="left:1080px; top:112px; font-size:52px;"><b>≈14%</b> since the rally</div>
+    </div>
+
+  </div>
+  <script>
+
+    document.querySelectorAll('#root .wheel').forEach(el => {
+      if (el.dataset.ready) return;
+      const v = el.dataset.value; el.textContent = '';
+      for (const ch of v) {
+        if (!/\d/.test(ch)) { el.append(document.createTextNode(ch)); continue; }
+        const d = document.createElement('span'); d.className = 'wd';
+        const s = document.createElement('span'); s.className = 'ws'; s.dataset.target = (-(10 + Number(ch))) + 'em';
+        for (let i = 0; i <= 10 + Number(ch); i++) { const n = document.createElement('span'); n.textContent = String(i % 10); s.appendChild(n); }
+        d.appendChild(s); el.appendChild(d);
+      }
+      el.dataset.ready = '1';
+    });
+
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#carry-cam", { scale: 1.14, filter: "blur(14px)" }, { scale: 1, filter: "blur(0px)", duration: 0.45, ease: "expo.out" }, 0);
+    tl.fromTo("#carry-p1", { clipPath: "inset(0 100% 0 0 round 6px)" }, { clipPath: "inset(0 0% 0 0 round 6px)", duration: 1.6, ease: "power1.inOut" }, 0.25);
+    tl.fromTo("#carry-scan2", { x: 0, opacity: 1 }, { x: 1760, opacity: 1, duration: 1.6, ease: "power1.inOut" }, 0.25);
+    tl.to("#carry-scan2", { opacity: 0, duration: 0.15 }, 1.85);
+    tl.fromTo("#carry-ld4", { scaleY: 0, transformOrigin: "50% 0%" }, { scaleY: 1, duration: 0.25, ease: "power3.out" }, 3.872);
+    tl.fromTo("#carry-l3", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.4, ease: "expo.out" }, 3.992);
+    tl.fromTo("#carry-ld6", { scaleY: 0, transformOrigin: "50% 0%" }, { scaleY: 1, duration: 0.25, ease: "power3.out" }, 7.312);
+    tl.fromTo("#carry-l5", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.4, ease: "expo.out" }, 7.432);
+    tl.to("#carry-cam", { opacity: 0, filter: "blur(8px)", duration: 0.18, ease: "power2.in" }, 9.119);
+    window.__timelines["carry"] = tl;
+  </script>
+</template>

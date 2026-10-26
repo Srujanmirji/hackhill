@@ -1,0 +1,72 @@
+<template>
+  <style>
+@font-face { font-family: 'Barlow Condensed'; font-weight: 600; src: url('assets/fonts/BarlowCondensed-SemiBold.woff2'); }
+@font-face { font-family: 'Barlow Condensed'; font-weight: 700; src: url('assets/fonts/BarlowCondensed-Bold.woff2'); }
+@font-face { font-family: 'Public Sans'; font-weight: 400; src: url('assets/fonts/PublicSans-Regular.woff2'); }
+@font-face { font-family: 'Public Sans'; font-weight: 600; src: url('assets/fonts/PublicSans-SemiBold.woff2'); }
+#root { position: absolute; inset: 0; background: #F6F7F5; font-family: 'Public Sans', sans-serif; color: #23262B; overflow: hidden; }
+.cam, .stage { position: absolute; inset: 0; }
+.plate { position: absolute; border-radius: 6px; overflow: hidden; background: #fff;
+          box-shadow: 0 18px 40px rgba(35,38,43,0.14), 0 1px 0 rgba(35,38,43,0.06); }
+.plate img { display: block; width: 100%; height: 100%; }
+.mark { position: absolute; border: 4px solid #B07A1E; border-radius: 4px; opacity: 0; }
+.ring { position: absolute; border: 5px solid #5B6470; border-radius: 14px; opacity: 0; }
+.lbl { position: absolute; font-family: 'Barlow Condensed'; font-weight: 600; color: #23262B; white-space: nowrap; }
+.lbl b { color: #8A5D12; font-weight: 700; }
+.lead { position: absolute; background: #B07A1E; }
+.wheel { display: inline-flex; font-variant-numeric: tabular-nums; }
+.wd { display: inline-block; height: 1em; overflow: hidden; line-height: 1em; }
+.ws { display: grid; }
+.ws span { height: 1em; line-height: 1em; }
+</style>
+  <div id="root" data-composition-id="pairs" data-width="1920" data-height="1080">
+
+    <div id="pairs-cam" class="cam">
+      <div id="pairs-p1" class="plate" style="left:90px; top:260px; width:560px; height:303px;"><img src="assets/screens/stamp_control.png" alt=""></div>
+      <div id="pairs-ring2" class="ring" style="left:70px; top:240px; width:600px; height:343px;"></div>
+      <div id="pairs-p3" class="plate" style="left:680px; top:260px; width:560px; height:303px;"><img src="assets/screens/stamp_petal.png" alt=""></div>
+      <div id="pairs-ring4" class="ring" style="left:660px; top:240px; width:600px; height:343px;"></div>
+      <div id="pairs-p5" class="plate" style="left:1270px; top:260px; width:560px; height:303px;"><img src="assets/screens/stamp_goldm.png" alt=""></div>
+      <div id="pairs-ring6" class="ring" style="left:1250px; top:240px; width:600px; height:343px;"></div>
+    </div>
+
+  </div>
+  <script>
+
+    document.querySelectorAll('#root .wheel').forEach(el => {
+      if (el.dataset.ready) return;
+      const v = el.dataset.value; el.textContent = '';
+      for (const ch of v) {
+        if (!/\d/.test(ch)) { el.append(document.createTextNode(ch)); continue; }
+        const d = document.createElement('span'); d.className = 'wd';
+        const s = document.createElement('span'); s.className = 'ws'; s.dataset.target = (-(10 + Number(ch))) + 'em';
+        for (let i = 0; i <= 10 + Number(ch); i++) { const n = document.createElement('span'); n.textContent = String(i % 10); s.appendChild(n); }
+        d.appendChild(s); el.appendChild(d);
+      }
+      el.dataset.ready = '1';
+    });
+
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#pairs-cam", { y: 520, filter: "blur(18px)" }, { y: 0, filter: "blur(0px)", duration: 0.32, ease: "expo.out" }, 0);
+    tl.fromTo("#pairs-p1", { opacity: 0, scale: 1.35, rotation: -8 }, { opacity: 1, scale: 1, rotation: -3, duration: 0.16, ease: "power4.in" }, 0.205);
+    tl.fromTo("#pairs-ring2", { opacity: 0.5, scale: 0.95, rotation: -3 }, { opacity: 0, scale: 1.3, rotation: -3, duration: 0.55, ease: "expo.out", immediateRender: false }, 0.365);
+    tl.set("#pairs-cam", { x: 7, y: -4 }, 0.365);
+    tl.set("#pairs-cam", { x: -5, y: 3 }, 0.398);
+    tl.set("#pairs-cam", { x: 3, y: -2 }, 0.432);
+    tl.set("#pairs-cam", { x: 0, y: 0 }, 0.465);
+    tl.fromTo("#pairs-p3", { opacity: 0, scale: 1.35, rotation: -3 }, { opacity: 1, scale: 1, rotation: 2, duration: 0.16, ease: "power4.in" }, 2.88);
+    tl.fromTo("#pairs-ring4", { opacity: 0.5, scale: 0.95, rotation: 2 }, { opacity: 0, scale: 1.3, rotation: 2, duration: 0.55, ease: "expo.out", immediateRender: false }, 3.04);
+    tl.set("#pairs-cam", { x: 7, y: -4 }, 3.04);
+    tl.set("#pairs-cam", { x: -5, y: 3 }, 3.073);
+    tl.set("#pairs-cam", { x: 3, y: -2 }, 3.107);
+    tl.set("#pairs-cam", { x: 0, y: 0 }, 3.14);
+    tl.fromTo("#pairs-p5", { opacity: 0, scale: 1.35, rotation: -7 }, { opacity: 1, scale: 1, rotation: -2, duration: 0.16, ease: "power4.in" }, 5.555);
+    tl.fromTo("#pairs-ring6", { opacity: 0.5, scale: 0.95, rotation: -2 }, { opacity: 0, scale: 1.3, rotation: -2, duration: 0.55, ease: "expo.out", immediateRender: false }, 5.715);
+    tl.set("#pairs-cam", { x: 7, y: -4 }, 5.715);
+    tl.set("#pairs-cam", { x: -5, y: 3 }, 5.748);
+    tl.set("#pairs-cam", { x: 3, y: -2 }, 5.782);
+    tl.set("#pairs-cam", { x: 0, y: 0 }, 5.815);
+    tl.to("#pairs-cam", { scale: 2.4, transformOrigin: "1475px 400px", filter: "blur(14px)", duration: 0.4, ease: "power3.in" }, 6.723);
+    window.__timelines["pairs"] = tl;
+  </script>
+</template>

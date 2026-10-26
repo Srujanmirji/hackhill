@@ -1,0 +1,13 @@
+[
+ {"id": "s01", "shot": "title",    "text": "MCX lists gold in five sizes. Their prices never line up, and traders keep asking: is that gap free money?"},
+ {"id": "s02", "shot": "rules",    "text": "Most of the gap is the rulebook: purity, quote units, settlement city and expiry. AuLens converts every price to rupees per ten grams."},
+ {"id": "s03", "shot": "spread",   "text": "Our control pair, Gold Ten against Gold Guinea, must settle at zero. On all eighteen expiries, it lands within one rupee."},
+ {"id": "s04", "shot": "lastweek", "text": "But the gap often widens in the final week, and closes only after a trader must exit for delivery."},
+ {"id": "s05", "shot": "stamp",    "text": "We test it walk-forward: past data only, next-day fills, every cost included. The verdict: no edge."},
+ {"id": "s06", "shot": "metrics",  "text": "Sixty-two trades, minus seventeen thousand rupees. It breaks even at under three rupees of slippage, about two ticks."},
+ {"id": "s07", "shot": "regimes",  "text": "Every result is split by regime, including the April SEBI change and the May duty hike."},
+ {"id": "s08", "shot": "pairs",    "text": "All three pairs, including the stretch pair Gold Mini against Gold Ten, come back the same: no edge."},
+ {"id": "s09", "shot": "carry",    "text": "The curve also shows what holding gold costs: about six percent a year through 2025, nearly fourteen since the rally."},
+ {"id": "s10", "shot": "alerts",   "text": "So AuLens stays quiet. It alerts only when a pair earns an edge and clears its costs."},
+ {"id": "s11", "shot": "end",      "text": "AuLens. Five contracts, one metal, one honest verdict. Open source, and live today."}
+]

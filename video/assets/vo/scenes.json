@@ -1,0 +1,101 @@
+[
+ {
+  "id": "s01",
+  "shot": "title",
+  "text": "MCX lists gold in five sizes. Their prices never line up, and traders keep asking: is that gap free money?",
+  "start": 0.0,
+  "duration": 8.317,
+  "voice_start": 0.35,
+  "voice_len": 7.317
+ },
+ {
+  "id": "s02",
+  "shot": "rules",
+  "text": "Most of the gap is the rulebook: purity, quote units, settlement city and expiry. AuLens converts every price to rupees per ten grams.",
+  "start": 8.317,
+  "duration": 9.683,
+  "voice_start": 8.667,
+  "voice_len": 8.683
+ },
+ {
+  "id": "s03",
+  "shot": "spread",
+  "text": "Our control pair, Gold Ten against Gold Guinea, must settle at zero. On all eighteen expiries, it lands within one rupee.",
+  "start": 18.0,
+  "duration": 8.552,
+  "voice_start": 18.35,
+  "voice_len": 7.552
+ },
+ {
+  "id": "s04",
+  "shot": "lastweek",
+  "text": "But the gap often widens in the final week, and closes only after a trader must exit for delivery.",
+  "start": 26.552,
+  "duration": 6.931,
+  "voice_start": 26.902,
+  "voice_len": 5.931
+ },
+ {
+  "id": "s05",
+  "shot": "stamp",
+  "text": "We test it walk-forward: past data only, next-day fills, every cost included. The verdict: no edge.",
+  "start": 33.483,
+  "duration": 7.464,
+  "voice_start": 33.833,
+  "voice_len": 6.464
+ },
+ {
+  "id": "s06",
+  "shot": "metrics",
+  "text": "Sixty-two trades, minus seventeen thousand rupees. It breaks even at under three rupees of slippage, about two ticks.",
+  "start": 40.947,
+  "duration": 8.424,
+  "voice_start": 41.297,
+  "voice_len": 7.424
+ },
+ {
+  "id": "s07",
+  "shot": "regimes",
+  "text": "Every result is split by regime, including the April SEBI change and the May duty hike.",
+  "start": 49.371,
+  "duration": 6.675,
+  "voice_start": 49.721,
+  "voice_len": 5.675
+ },
+ {
+  "id": "s08",
+  "shot": "pairs",
+  "text": "All three pairs, including the stretch pair Gold Mini against Gold Ten, come back the same: no edge.",
+  "start": 56.045,
+  "duration": 7.123,
+  "voice_start": 56.395,
+  "voice_len": 6.123
+ },
+ {
+  "id": "s09",
+  "shot": "carry",
+  "text": "The curve also shows what holding gold costs: about six percent a year through 2025, nearly fourteen since the rally.",
+  "start": 63.168,
+  "duration": 9.299,
+  "voice_start": 63.518,
+  "voice_len": 8.299
+ },
+ {
+  "id": "s10",
+  "shot": "alerts",
+  "text": "So AuLens stays quiet. It alerts only when a pair earns an edge and clears its costs.",
+  "start": 72.467,
+  "duration": 6.163,
+  "voice_start": 72.817,
+  "voice_len": 5.163
+ },
+ {
+  "id": "s11",
+  "shot": "end",
+  "text": "AuLens. Five contracts, one metal, one honest verdict. Open source, and live today.",
+  "start": 78.629,
+  "duration": 9.832,
+  "voice_start": 78.979,
+  "voice_len": 5.632
+ }
+]

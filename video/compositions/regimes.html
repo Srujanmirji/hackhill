@@ -1,0 +1,52 @@
+<template>
+  <style>
+@font-face { font-family: 'Barlow Condensed'; font-weight: 600; src: url('assets/fonts/BarlowCondensed-SemiBold.woff2'); }
+@font-face { font-family: 'Barlow Condensed'; font-weight: 700; src: url('assets/fonts/BarlowCondensed-Bold.woff2'); }
+@font-face { font-family: 'Public Sans'; font-weight: 400; src: url('assets/fonts/PublicSans-Regular.woff2'); }
+@font-face { font-family: 'Public Sans'; font-weight: 600; src: url('assets/fonts/PublicSans-SemiBold.woff2'); }
+#root { position: absolute; inset: 0; background: #F6F7F5; font-family: 'Public Sans', sans-serif; color: #23262B; overflow: hidden; }
+.cam, .stage { position: absolute; inset: 0; }
+.plate { position: absolute; border-radius: 6px; overflow: hidden; background: #fff;
+          box-shadow: 0 18px 40px rgba(35,38,43,0.14), 0 1px 0 rgba(35,38,43,0.06); }
+.plate img { display: block; width: 100%; height: 100%; }
+.mark { position: absolute; border: 4px solid #B07A1E; border-radius: 4px; opacity: 0; }
+.ring { position: absolute; border: 5px solid #5B6470; border-radius: 14px; opacity: 0; }
+.lbl { position: absolute; font-family: 'Barlow Condensed'; font-weight: 600; color: #23262B; white-space: nowrap; }
+.lbl b { color: #8A5D12; font-weight: 700; }
+.lead { position: absolute; background: #B07A1E; }
+.wheel { display: inline-flex; font-variant-numeric: tabular-nums; }
+.wd { display: inline-block; height: 1em; overflow: hidden; line-height: 1em; }
+.ws { display: grid; }
+.ws span { height: 1em; line-height: 1em; }
+</style>
+  <div id="root" data-composition-id="regimes" data-width="1920" data-height="1080">
+
+    <div id="regimes-cam" class="cam">
+      <div id="regimes-p1" class="plate" style="left:360px; top:110px; width:1200px; height:527px;"><img src="assets/screens/regime_control.png" alt=""></div>
+      <div id="regimes-m2" class="mark" style="left:376px; top:500px; width:1168px; height:142px;"></div>
+    </div>
+
+  </div>
+  <script>
+
+    document.querySelectorAll('#root .wheel').forEach(el => {
+      if (el.dataset.ready) return;
+      const v = el.dataset.value; el.textContent = '';
+      for (const ch of v) {
+        if (!/\d/.test(ch)) { el.append(document.createTextNode(ch)); continue; }
+        const d = document.createElement('span'); d.className = 'wd';
+        const s = document.createElement('span'); s.className = 'ws'; s.dataset.target = (-(10 + Number(ch))) + 'em';
+        for (let i = 0; i <= 10 + Number(ch); i++) { const n = document.createElement('span'); n.textContent = String(i % 10); s.appendChild(n); }
+        d.appendChild(s); el.appendChild(d);
+      }
+      el.dataset.ready = '1';
+    });
+
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#regimes-cam", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.16, ease: "power2.out" }, 0);
+    tl.fromTo("#regimes-p1", { clipPath: "inset(0 0 100% 0 round 6px)" }, { clipPath: "inset(0 0 0% 0 round 6px)", duration: 0.8, ease: "power2.inOut" }, 0.1);
+    tl.fromTo("#regimes-m2", { opacity: 0, scale: 1.08 }, { opacity: 1, scale: 1, duration: 0.27, ease: "power3.out" }, 3.189);
+    tl.to("#regimes-cam", { y: -520, filter: "blur(18px)", duration: 0.22, ease: "power3.in" }, 6.455);
+    window.__timelines["regimes"] = tl;
+  </script>
+</template>

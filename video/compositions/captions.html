@@ -1,0 +1,429 @@
+<template>
+  <style>
+@font-face { font-family: 'Public Sans'; font-weight: 600; src: url('assets/fonts/PublicSans-SemiBold.woff2'); }
+#root { position: absolute; inset: 0; }
+.cap { position: absolute; left: 0; right: 0; bottom: 96px; text-align: center; font-family: 'Public Sans', sans-serif;
+        font-weight: 600; font-size: 46px; line-height: 1.2; color: #23262B; opacity: 0; visibility: hidden; overflow: visible; }
+.cap-t { display: inline-block; padding: 8px 22px 10px; border-radius: 6px; background: #F6F7F5; }
+.cw { display: inline-block; }
+  </style>
+  <div id="root" data-composition-id="captions" data-width="1920" data-height="1080">
+    <div id="cap-g0" class="cap"><span class="cap-t"><span class="cw">MCX</span> <span class="cw">lists</span> <span class="cw">gold</span> <span class="cw">in</span> <span class="cw">five</span></span></div>
+    <div id="cap-g1" class="cap"><span class="cap-t"><span class="cw">sizes.</span> <span class="cw">Their</span> <span class="cw">prices</span> <span class="cw">never</span> <span class="cw">line</span></span></div>
+    <div id="cap-g2" class="cap"><span class="cap-t"><span class="cw">up,</span> <span class="cw">and</span> <span class="cw">traders</span> <span class="cw">keep</span> <span class="cw">asking:</span></span></div>
+    <div id="cap-g3" class="cap"><span class="cap-t"><span class="cw">is</span> <span class="cw">that</span> <span class="cw">gap</span> <span class="cw">free</span> <span class="cw">money?</span></span></div>
+    <div id="cap-g4" class="cap"><span class="cap-t"><span class="cw">Most</span> <span class="cw">of</span> <span class="cw">the</span> <span class="cw">gap</span> <span class="cw">is</span></span></div>
+    <div id="cap-g5" class="cap"><span class="cap-t"><span class="cw">the</span> <span class="cw">rulebook:</span></span></div>
+    <div id="cap-g6" class="cap"><span class="cap-t"><span class="cw">purity,</span> <span class="cw">quote</span> <span class="cw">units,</span></span></div>
+    <div id="cap-g7" class="cap"><span class="cap-t"><span class="cw">settlement</span> <span class="cw">city</span> <span class="cw">and</span> <span class="cw">expiry.</span></span></div>
+    <div id="cap-g8" class="cap"><span class="cap-t"><span class="cw">AuLens</span> <span class="cw">converts</span> <span class="cw">every</span> <span class="cw">price</span> <span class="cw">to</span></span></div>
+    <div id="cap-g9" class="cap"><span class="cap-t"><span class="cw">rupees</span> <span class="cw">per</span> <span class="cw">ten</span> <span class="cw">grams.</span></span></div>
+    <div id="cap-g10" class="cap"><span class="cap-t"><span class="cw">Our</span> <span class="cw">control</span> <span class="cw">pair,</span></span></div>
+    <div id="cap-g11" class="cap"><span class="cap-t"><span class="cw">Gold</span> <span class="cw">Ten</span> <span class="cw">against</span> <span class="cw">Gold</span> <span class="cw">Guinea,</span></span></div>
+    <div id="cap-g12" class="cap"><span class="cap-t"><span class="cw">must</span> <span class="cw">settle</span> <span class="cw">at</span> <span class="cw">zero.</span></span></div>
+    <div id="cap-g13" class="cap"><span class="cap-t"><span class="cw">On</span> <span class="cw">all</span> <span class="cw">eighteen</span> <span class="cw">expiries,</span></span></div>
+    <div id="cap-g14" class="cap"><span class="cap-t"><span class="cw">it</span> <span class="cw">lands</span> <span class="cw">within</span> <span class="cw">one</span> <span class="cw">rupee.</span></span></div>
+    <div id="cap-g15" class="cap"><span class="cap-t"><span class="cw">But</span> <span class="cw">the</span> <span class="cw">gap</span> <span class="cw">often</span> <span class="cw">widens</span></span></div>
+    <div id="cap-g16" class="cap"><span class="cap-t"><span class="cw">in</span> <span class="cw">the</span> <span class="cw">final</span> <span class="cw">week,</span></span></div>
+    <div id="cap-g17" class="cap"><span class="cap-t"><span class="cw">and</span> <span class="cw">closes</span> <span class="cw">only</span> <span class="cw">after</span> <span class="cw">a</span></span></div>
+    <div id="cap-g18" class="cap"><span class="cap-t"><span class="cw">trader</span> <span class="cw">must</span> <span class="cw">exit</span> <span class="cw">for</span> <span class="cw">delivery.</span></span></div>
+    <div id="cap-g19" class="cap"><span class="cap-t"><span class="cw">We</span> <span class="cw">test</span> <span class="cw">it</span> <span class="cw">walk-forward:</span></span></div>
+    <div id="cap-g20" class="cap"><span class="cap-t"><span class="cw">past</span> <span class="cw">data</span> <span class="cw">only,</span></span></div>
+    <div id="cap-g21" class="cap"><span class="cap-t"><span class="cw">next-day</span> <span class="cw">fills,</span></span></div>
+    <div id="cap-g22" class="cap"><span class="cap-t"><span class="cw">every</span> <span class="cw">cost</span> <span class="cw">included.</span></span></div>
+    <div id="cap-g23" class="cap"><span class="cap-t"><span class="cw">The</span> <span class="cw">verdict:</span></span></div>
+    <div id="cap-g24" class="cap"><span class="cap-t"><span class="cw">no</span> <span class="cw">edge.</span></span></div>
+    <div id="cap-g25" class="cap"><span class="cap-t"><span class="cw">Sixty-two</span> <span class="cw">trades,</span></span></div>
+    <div id="cap-g26" class="cap"><span class="cap-t"><span class="cw">minus</span> <span class="cw">seventeen</span> <span class="cw">thousand</span> <span class="cw">rupees.</span></span></div>
+    <div id="cap-g27" class="cap"><span class="cap-t"><span class="cw">It</span> <span class="cw">breaks</span> <span class="cw">even</span> <span class="cw">at</span> <span class="cw">under</span></span></div>
+    <div id="cap-g28" class="cap"><span class="cap-t"><span class="cw">three</span> <span class="cw">rupees</span> <span class="cw">of</span> <span class="cw">slippage,</span></span></div>
+    <div id="cap-g29" class="cap"><span class="cap-t"><span class="cw">about</span> <span class="cw">two</span> <span class="cw">ticks.</span></span></div>
+    <div id="cap-g30" class="cap"><span class="cap-t"><span class="cw">Every</span> <span class="cw">result</span> <span class="cw">is</span> <span class="cw">split</span> <span class="cw">by</span></span></div>
+    <div id="cap-g31" class="cap"><span class="cap-t"><span class="cw">regime,</span> <span class="cw">including</span> <span class="cw">the</span> <span class="cw">April</span> <span class="cw">SEBI</span></span></div>
+    <div id="cap-g32" class="cap"><span class="cap-t"><span class="cw">change</span> <span class="cw">and</span> <span class="cw">the</span> <span class="cw">May</span> <span class="cw">duty</span></span></div>
+    <div id="cap-g33" class="cap"><span class="cap-t"><span class="cw">hike.</span></span></div>
+    <div id="cap-g34" class="cap"><span class="cap-t"><span class="cw">All</span> <span class="cw">three</span> <span class="cw">pairs,</span></span></div>
+    <div id="cap-g35" class="cap"><span class="cap-t"><span class="cw">including</span> <span class="cw">the</span> <span class="cw">stretch</span> <span class="cw">pair</span> <span class="cw">Gold</span></span></div>
+    <div id="cap-g36" class="cap"><span class="cap-t"><span class="cw">Mini</span> <span class="cw">against</span> <span class="cw">Gold</span> <span class="cw">Ten,</span></span></div>
+    <div id="cap-g37" class="cap"><span class="cap-t"><span class="cw">come</span> <span class="cw">back</span> <span class="cw">the</span> <span class="cw">same:</span></span></div>
+    <div id="cap-g38" class="cap"><span class="cap-t"><span class="cw">no</span> <span class="cw">edge.</span></span></div>
+    <div id="cap-g39" class="cap"><span class="cap-t"><span class="cw">The</span> <span class="cw">curve</span> <span class="cw">also</span> <span class="cw">shows</span> <span class="cw">what</span></span></div>
+    <div id="cap-g40" class="cap"><span class="cap-t"><span class="cw">holding</span> <span class="cw">gold</span> <span class="cw">costs:</span></span></div>
+    <div id="cap-g41" class="cap"><span class="cap-t"><span class="cw">about</span> <span class="cw">six</span> <span class="cw">percent</span></span></div>
+    <div id="cap-g42" class="cap"><span class="cap-t"><span class="cw">a</span> <span class="cw">year</span> <span class="cw">through</span> <span class="cw">2025,</span></span></div>
+    <div id="cap-g43" class="cap"><span class="cap-t"><span class="cw">nearly</span> <span class="cw">fourteen</span> <span class="cw">since</span> <span class="cw">the</span> <span class="cw">rally.</span></span></div>
+    <div id="cap-g44" class="cap"><span class="cap-t"><span class="cw">So</span> <span class="cw">AuLens</span> <span class="cw">stays</span> <span class="cw">quiet.</span></span></div>
+    <div id="cap-g45" class="cap"><span class="cap-t"><span class="cw">It</span> <span class="cw">alerts</span> <span class="cw">only</span> <span class="cw">when</span> <span class="cw">a</span></span></div>
+    <div id="cap-g46" class="cap"><span class="cap-t"><span class="cw">pair</span> <span class="cw">earns</span> <span class="cw">an</span> <span class="cw">edge</span> <span class="cw">and</span></span></div>
+    <div id="cap-g47" class="cap"><span class="cap-t"><span class="cw">clears</span> <span class="cw">its</span> <span class="cw">costs.</span></span></div>
+    <div id="cap-g48" class="cap"><span class="cap-t"><span class="cw">AuLens.</span> <span class="cw">Five</span> <span class="cw">contracts,</span></span></div>
+    <div id="cap-g49" class="cap"><span class="cap-t"><span class="cw">one</span> <span class="cw">metal,</span></span></div>
+    <div id="cap-g50" class="cap"><span class="cap-t"><span class="cw">one</span> <span class="cw">honest</span> <span class="cw">verdict.</span></span></div>
+    <div id="cap-g51" class="cap"><span class="cap-t"><span class="cw">Open</span> <span class="cw">source,</span></span></div>
+    <div id="cap-g52" class="cap"><span class="cap-t"><span class="cw">and</span> <span class="cw">live</span> <span class="cw">today.</span></span></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.set("#cap-g0", { opacity: 1, visibility: "visible" }, 0.19);
+    tl.fromTo("#cap-g0 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 0.24);
+    tl.fromTo("#cap-g0 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 1.12);
+    tl.fromTo("#cap-g0 .cw:nth-child(3)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 1.52);
+    tl.fromTo("#cap-g0 .cw:nth-child(4)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 1.84);
+    tl.fromTo("#cap-g0 .cw:nth-child(5)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 2);
+    tl.to("#cap-g0", { opacity: 0, duration: 0.12, ease: "power2.in" }, 2.22);
+    tl.set("#cap-g0", { opacity: 0, visibility: "hidden" }, 2.34);
+    tl.set("#cap-g1", { opacity: 1, visibility: "visible" }, 2.35);
+    tl.fromTo("#cap-g1 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 2.4);
+    tl.fromTo("#cap-g1 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 3.12);
+    tl.fromTo("#cap-g1 .cw:nth-child(3)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 3.36);
+    tl.fromTo("#cap-g1 .cw:nth-child(4)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 3.84);
+    tl.fromTo("#cap-g1 .cw:nth-child(5)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 4.16);
+    tl.to("#cap-g1", { opacity: 0, duration: 0.12, ease: "power2.in" }, 4.22);
+    tl.set("#cap-g1", { opacity: 0, visibility: "hidden" }, 4.34);
+    tl.set("#cap-g2", { opacity: 1, visibility: "visible" }, 4.35);
+    tl.fromTo("#cap-g2 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 4.4);
+    tl.fromTo("#cap-g2 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 4.64);
+    tl.fromTo("#cap-g2 .cw:nth-child(3)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 4.88);
+    tl.fromTo("#cap-g2 .cw:nth-child(4)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 5.28);
+    tl.fromTo("#cap-g2 .cw:nth-child(5)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 5.52);
+    tl.to("#cap-g2", { opacity: 0, duration: 0.12, ease: "power2.in" }, 6.06);
+    tl.set("#cap-g2", { opacity: 0, visibility: "hidden" }, 6.18);
+    tl.set("#cap-g3", { opacity: 1, visibility: "visible" }, 6.19);
+    tl.fromTo("#cap-g3 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 6.24);
+    tl.fromTo("#cap-g3 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 6.48);
+    tl.fromTo("#cap-g3 .cw:nth-child(3)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 6.72);
+    tl.fromTo("#cap-g3 .cw:nth-child(4)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 7.04);
+    tl.fromTo("#cap-g3 .cw:nth-child(5)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 7.44);
+    tl.to("#cap-g3", { opacity: 0, duration: 0.12, ease: "power2.in" }, 8.22);
+    tl.set("#cap-g3", { opacity: 0, visibility: "hidden" }, 8.34);
+    tl.set("#cap-g4", { opacity: 1, visibility: "visible" }, 8.35);
+    tl.fromTo("#cap-g4 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 8.4);
+    tl.fromTo("#cap-g4 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 8.8);
+    tl.fromTo("#cap-g4 .cw:nth-child(3)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 8.96);
+    tl.fromTo("#cap-g4 .cw:nth-child(4)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 9.12);
+    tl.fromTo("#cap-g4 .cw:nth-child(5)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 9.44);
+    tl.to("#cap-g4", { opacity: 0, duration: 0.12, ease: "power2.in" }, 9.42);
+    tl.set("#cap-g4", { opacity: 0, visibility: "hidden" }, 9.54);
+    tl.set("#cap-g5", { opacity: 1, visibility: "visible" }, 9.55);
+    tl.fromTo("#cap-g5 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 9.6);
+    tl.fromTo("#cap-g5 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 9.68);
+    tl.to("#cap-g5", { opacity: 0, duration: 0.12, ease: "power2.in" }, 10.3);
+    tl.set("#cap-g5", { opacity: 0, visibility: "hidden" }, 10.42);
+    tl.set("#cap-g6", { opacity: 1, visibility: "visible" }, 10.43);
+    tl.fromTo("#cap-g6 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 10.48);
+    tl.fromTo("#cap-g6 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 11.12);
+    tl.fromTo("#cap-g6 .cw:nth-child(3)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 11.44);
+    tl.to("#cap-g6", { opacity: 0, duration: 0.12, ease: "power2.in" }, 11.74);
+    tl.set("#cap-g6", { opacity: 0, visibility: "hidden" }, 11.86);
+    tl.set("#cap-g7", { opacity: 1, visibility: "visible" }, 11.87);
+    tl.fromTo("#cap-g7 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 11.92);
+    tl.fromTo("#cap-g7 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 12.48);
+    tl.fromTo("#cap-g7 .cw:nth-child(3)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 12.8);
+    tl.fromTo("#cap-g7 .cw:nth-child(4)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 12.96);
+    tl.to("#cap-g7", { opacity: 0, duration: 0.12, ease: "power2.in" }, 13.82);
+    tl.set("#cap-g7", { opacity: 0, visibility: "hidden" }, 13.94);
+    tl.set("#cap-g8", { opacity: 1, visibility: "visible" }, 13.95);
+    tl.fromTo("#cap-g8 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 14.0);
+    tl.fromTo("#cap-g8 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 14.8);
+    tl.fromTo("#cap-g8 .cw:nth-child(3)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 15.2);
+    tl.fromTo("#cap-g8 .cw:nth-child(4)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 15.44);
+    tl.fromTo("#cap-g8 .cw:nth-child(5)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 15.68);
+    tl.to("#cap-g8", { opacity: 0, duration: 0.12, ease: "power2.in" }, 15.66);
+    tl.set("#cap-g8", { opacity: 0, visibility: "hidden" }, 15.78);
+    tl.set("#cap-g9", { opacity: 1, visibility: "visible" }, 15.79);
+    tl.fromTo("#cap-g9 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 15.84);
+    tl.fromTo("#cap-g9 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 16.4);
+    tl.fromTo("#cap-g9 .cw:nth-child(3)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 16.56);
+    tl.fromTo("#cap-g9 .cw:nth-child(4)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 16.96);
+    tl.to("#cap-g9", { opacity: 0, duration: 0.12, ease: "power2.in" }, 17.9);
+    tl.set("#cap-g9", { opacity: 0, visibility: "hidden" }, 18.02);
+    tl.set("#cap-g10", { opacity: 1, visibility: "visible" }, 18.03);
+    tl.fromTo("#cap-g10 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 18.08);
+    tl.fromTo("#cap-g10 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 18.48);
+    tl.fromTo("#cap-g10 .cw:nth-child(3)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 18.8);
+    tl.to("#cap-g10", { opacity: 0, duration: 0.12, ease: "power2.in" }, 19.18);
+    tl.set("#cap-g10", { opacity: 0, visibility: "hidden" }, 19.3);
+    tl.set("#cap-g11", { opacity: 1, visibility: "visible" }, 19.31);
+    tl.fromTo("#cap-g11 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 19.36);
+    tl.fromTo("#cap-g11 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 19.76);
+    tl.fromTo("#cap-g11 .cw:nth-child(3)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 20.08);
+    tl.fromTo("#cap-g11 .cw:nth-child(4)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 20.32);
+    tl.fromTo("#cap-g11 .cw:nth-child(5)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 20.64);
+    tl.to("#cap-g11", { opacity: 0, duration: 0.12, ease: "power2.in" }, 21.02);
+    tl.set("#cap-g11", { opacity: 0, visibility: "hidden" }, 21.14);
+    tl.set("#cap-g12", { opacity: 1, visibility: "visible" }, 21.15);
+    tl.fromTo("#cap-g12 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 21.2);
+    tl.fromTo("#cap-g12 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 21.44);
+    tl.fromTo("#cap-g12 .cw:nth-child(3)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 21.84);
+    tl.fromTo("#cap-g12 .cw:nth-child(4)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 22.08);
+    tl.to("#cap-g12", { opacity: 0, duration: 0.12, ease: "power2.in" }, 22.46);
+    tl.set("#cap-g12", { opacity: 0, visibility: "hidden" }, 22.58);
+    tl.set("#cap-g13", { opacity: 1, visibility: "visible" }, 22.59);
+    tl.fromTo("#cap-g13 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 22.64);
+    tl.fromTo("#cap-g13 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 22.96);
+    tl.fromTo("#cap-g13 .cw:nth-child(3)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 23.12);
+    tl.fromTo("#cap-g13 .cw:nth-child(4)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 23.68);
+    tl.to("#cap-g13", { opacity: 0, duration: 0.12, ease: "power2.in" }, 24.3);
+    tl.set("#cap-g13", { opacity: 0, visibility: "hidden" }, 24.42);
+    tl.set("#cap-g14", { opacity: 1, visibility: "visible" }, 24.43);
+    tl.fromTo("#cap-g14 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 24.48);
+    tl.fromTo("#cap-g14 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 24.64);
+    tl.fromTo("#cap-g14 .cw:nth-child(3)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 24.96);
+    tl.fromTo("#cap-g14 .cw:nth-child(4)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 25.2);
+    tl.fromTo("#cap-g14 .cw:nth-child(5)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 25.52);
+    tl.to("#cap-g14", { opacity: 0, duration: 0.12, ease: "power2.in" }, 26.46);
+    tl.set("#cap-g14", { opacity: 0, visibility: "hidden" }, 26.58);
+    tl.set("#cap-g15", { opacity: 1, visibility: "visible" }, 26.59);
+    tl.fromTo("#cap-g15 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 26.64);
+    tl.fromTo("#cap-g15 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 26.88);
+    tl.fromTo("#cap-g15 .cw:nth-child(3)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 27.12);
+    tl.fromTo("#cap-g15 .cw:nth-child(4)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 27.44);
+    tl.fromTo("#cap-g15 .cw:nth-child(5)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 27.84);
+    tl.to("#cap-g15", { opacity: 0, duration: 0.12, ease: "power2.in" }, 28.22);
+    tl.set("#cap-g15", { opacity: 0, visibility: "hidden" }, 28.34);
+    tl.set("#cap-g16", { opacity: 1, visibility: "visible" }, 28.35);
+    tl.fromTo("#cap-g16 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 28.4);
+    tl.fromTo("#cap-g16 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 28.56);
+    tl.fromTo("#cap-g16 .cw:nth-child(3)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 28.8);
+    tl.fromTo("#cap-g16 .cw:nth-child(4)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 29.04);
+    tl.to("#cap-g16", { opacity: 0, duration: 0.12, ease: "power2.in" }, 29.42);
+    tl.set("#cap-g16", { opacity: 0, visibility: "hidden" }, 29.54);
+    tl.set("#cap-g17", { opacity: 1, visibility: "visible" }, 29.55);
+    tl.fromTo("#cap-g17 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 29.6);
+    tl.fromTo("#cap-g17 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 29.84);
+    tl.fromTo("#cap-g17 .cw:nth-child(3)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 30.4);
+    tl.fromTo("#cap-g17 .cw:nth-child(4)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 30.64);
+    tl.fromTo("#cap-g17 .cw:nth-child(5)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 30.88);
+    tl.to("#cap-g17", { opacity: 0, duration: 0.12, ease: "power2.in" }, 30.94);
+    tl.set("#cap-g17", { opacity: 0, visibility: "hidden" }, 31.06);
+    tl.set("#cap-g18", { opacity: 1, visibility: "visible" }, 31.07);
+    tl.fromTo("#cap-g18 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 31.12);
+    tl.fromTo("#cap-g18 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 31.52);
+    tl.fromTo("#cap-g18 .cw:nth-child(3)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 31.76);
+    tl.fromTo("#cap-g18 .cw:nth-child(4)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 32.16);
+    tl.fromTo("#cap-g18 .cw:nth-child(5)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 32.4);
+    tl.to("#cap-g18", { opacity: 0, duration: 0.12, ease: "power2.in" }, 33.34);
+    tl.set("#cap-g18", { opacity: 0, visibility: "hidden" }, 33.46);
+    tl.set("#cap-g19", { opacity: 1, visibility: "visible" }, 33.47);
+    tl.fromTo("#cap-g19 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 33.52);
+    tl.fromTo("#cap-g19 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 33.84);
+    tl.fromTo("#cap-g19 .cw:nth-child(3)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 34.08);
+    tl.fromTo("#cap-g19 .cw:nth-child(4)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 34.32);
+    tl.to("#cap-g19", { opacity: 0, duration: 0.12, ease: "power2.in" }, 34.74);
+    tl.set("#cap-g19", { opacity: 0, visibility: "hidden" }, 34.86);
+    tl.set("#cap-g20", { opacity: 1, visibility: "visible" }, 34.87);
+    tl.fromTo("#cap-g20 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 34.92);
+    tl.fromTo("#cap-g20 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 35.68);
+    tl.fromTo("#cap-g20 .cw:nth-child(3)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 36);
+    tl.to("#cap-g20", { opacity: 0, duration: 0.12, ease: "power2.in" }, 36.22);
+    tl.set("#cap-g20", { opacity: 0, visibility: "hidden" }, 36.34);
+    tl.set("#cap-g21", { opacity: 1, visibility: "visible" }, 36.35);
+    tl.fromTo("#cap-g21 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 36.4);
+    tl.fromTo("#cap-g21 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 37.04);
+    tl.to("#cap-g21", { opacity: 0, duration: 0.12, ease: "power2.in" }, 37.26);
+    tl.set("#cap-g21", { opacity: 0, visibility: "hidden" }, 37.38);
+    tl.set("#cap-g22", { opacity: 1, visibility: "visible" }, 37.39);
+    tl.fromTo("#cap-g22 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 37.44);
+    tl.fromTo("#cap-g22 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 37.76);
+    tl.fromTo("#cap-g22 .cw:nth-child(3)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 38.08);
+    tl.to("#cap-g22", { opacity: 0, duration: 0.12, ease: "power2.in" }, 38.62);
+    tl.set("#cap-g22", { opacity: 0, visibility: "hidden" }, 38.74);
+    tl.set("#cap-g23", { opacity: 1, visibility: "visible" }, 38.75);
+    tl.fromTo("#cap-g23 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 38.8);
+    tl.fromTo("#cap-g23 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 38.96);
+    tl.to("#cap-g23", { opacity: 0, duration: 0.12, ease: "power2.in" }, 39.5);
+    tl.set("#cap-g23", { opacity: 0, visibility: "hidden" }, 39.62);
+    tl.set("#cap-g24", { opacity: 1, visibility: "visible" }, 39.63);
+    tl.fromTo("#cap-g24 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 39.68);
+    tl.fromTo("#cap-g24 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 40);
+    tl.to("#cap-g24", { opacity: 0, duration: 0.12, ease: "power2.in" }, 40.94);
+    tl.set("#cap-g24", { opacity: 0, visibility: "hidden" }, 41.06);
+    tl.set("#cap-g25", { opacity: 1, visibility: "visible" }, 41.07);
+    tl.fromTo("#cap-g25 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 41.12);
+    tl.fromTo("#cap-g25 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 41.92);
+    tl.to("#cap-g25", { opacity: 0, duration: 0.12, ease: "power2.in" }, 42.46);
+    tl.set("#cap-g25", { opacity: 0, visibility: "hidden" }, 42.58);
+    tl.set("#cap-g26", { opacity: 1, visibility: "visible" }, 42.59);
+    tl.fromTo("#cap-g26 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 42.64);
+    tl.fromTo("#cap-g26 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 43.12);
+    tl.fromTo("#cap-g26 .cw:nth-child(3)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 43.6);
+    tl.fromTo("#cap-g26 .cw:nth-child(4)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 44.08);
+    tl.to("#cap-g26", { opacity: 0, duration: 0.12, ease: "power2.in" }, 44.7);
+    tl.set("#cap-g26", { opacity: 0, visibility: "hidden" }, 44.82);
+    tl.set("#cap-g27", { opacity: 1, visibility: "visible" }, 44.83);
+    tl.fromTo("#cap-g27 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 44.88);
+    tl.fromTo("#cap-g27 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 45.12);
+    tl.fromTo("#cap-g27 .cw:nth-child(3)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 45.52);
+    tl.fromTo("#cap-g27 .cw:nth-child(4)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 45.76);
+    tl.fromTo("#cap-g27 .cw:nth-child(5)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 45.92);
+    tl.to("#cap-g27", { opacity: 0, duration: 0.12, ease: "power2.in" }, 45.98);
+    tl.set("#cap-g27", { opacity: 0, visibility: "hidden" }, 46.1);
+    tl.set("#cap-g28", { opacity: 1, visibility: "visible" }, 46.11);
+    tl.fromTo("#cap-g28 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 46.16);
+    tl.fromTo("#cap-g28 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 46.48);
+    tl.fromTo("#cap-g28 .cw:nth-child(3)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 46.88);
+    tl.fromTo("#cap-g28 .cw:nth-child(4)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 46.96);
+    tl.to("#cap-g28", { opacity: 0, duration: 0.12, ease: "power2.in" }, 47.5);
+    tl.set("#cap-g28", { opacity: 0, visibility: "hidden" }, 47.62);
+    tl.set("#cap-g29", { opacity: 1, visibility: "visible" }, 47.63);
+    tl.fromTo("#cap-g29 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 47.68);
+    tl.fromTo("#cap-g29 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 47.92);
+    tl.fromTo("#cap-g29 .cw:nth-child(3)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 48.32);
+    tl.to("#cap-g29", { opacity: 0, duration: 0.12, ease: "power2.in" }, 49.26);
+    tl.set("#cap-g29", { opacity: 0, visibility: "hidden" }, 49.38);
+    tl.set("#cap-g30", { opacity: 1, visibility: "visible" }, 49.39);
+    tl.fromTo("#cap-g30 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 49.44);
+    tl.fromTo("#cap-g30 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 50);
+    tl.fromTo("#cap-g30 .cw:nth-child(3)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 50.32);
+    tl.fromTo("#cap-g30 .cw:nth-child(4)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 50.56);
+    tl.fromTo("#cap-g30 .cw:nth-child(5)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 50.96);
+    tl.to("#cap-g30", { opacity: 0, duration: 0.12, ease: "power2.in" }, 51.02);
+    tl.set("#cap-g30", { opacity: 0, visibility: "hidden" }, 51.14);
+    tl.set("#cap-g31", { opacity: 1, visibility: "visible" }, 51.15);
+    tl.fromTo("#cap-g31 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 51.2);
+    tl.fromTo("#cap-g31 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 52);
+    tl.fromTo("#cap-g31 .cw:nth-child(3)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 52.4);
+    tl.fromTo("#cap-g31 .cw:nth-child(4)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 52.56);
+    tl.fromTo("#cap-g31 .cw:nth-child(5)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 52.96);
+    tl.to("#cap-g31", { opacity: 0, duration: 0.12, ease: "power2.in" }, 53.36);
+    tl.set("#cap-g31", { opacity: 0, visibility: "hidden" }, 53.48);
+    tl.set("#cap-g32", { opacity: 1, visibility: "visible" }, 53.55);
+    tl.fromTo("#cap-g32 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 53.6);
+    tl.fromTo("#cap-g32 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 54);
+    tl.fromTo("#cap-g32 .cw:nth-child(3)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 54.16);
+    tl.fromTo("#cap-g32 .cw:nth-child(4)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 54.32);
+    tl.fromTo("#cap-g32 .cw:nth-child(5)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 54.72);
+    tl.to("#cap-g32", { opacity: 0, duration: 0.12, ease: "power2.in" }, 55.02);
+    tl.set("#cap-g32", { opacity: 0, visibility: "hidden" }, 55.14);
+    tl.set("#cap-g33", { opacity: 1, visibility: "visible" }, 55.15);
+    tl.fromTo("#cap-g33 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 55.2);
+    tl.to("#cap-g33", { opacity: 0, duration: 0.12, ease: "power2.in" }, 55.98);
+    tl.set("#cap-g33", { opacity: 0, visibility: "hidden" }, 56.1);
+    tl.set("#cap-g34", { opacity: 1, visibility: "visible" }, 56.11);
+    tl.fromTo("#cap-g34 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 56.16);
+    tl.fromTo("#cap-g34 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 56.48);
+    tl.fromTo("#cap-g34 .cw:nth-child(3)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 56.88);
+    tl.to("#cap-g34", { opacity: 0, duration: 0.12, ease: "power2.in" }, 57.18);
+    tl.set("#cap-g34", { opacity: 0, visibility: "hidden" }, 57.3);
+    tl.set("#cap-g35", { opacity: 1, visibility: "visible" }, 57.31);
+    tl.fromTo("#cap-g35 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 57.36);
+    tl.fromTo("#cap-g35 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 57.68);
+    tl.fromTo("#cap-g35 .cw:nth-child(3)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 57.76);
+    tl.fromTo("#cap-g35 .cw:nth-child(4)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 58.24);
+    tl.fromTo("#cap-g35 .cw:nth-child(5)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 58.56);
+    tl.to("#cap-g35", { opacity: 0, duration: 0.12, ease: "power2.in" }, 58.7);
+    tl.set("#cap-g35", { opacity: 0, visibility: "hidden" }, 58.82);
+    tl.set("#cap-g36", { opacity: 1, visibility: "visible" }, 58.83);
+    tl.fromTo("#cap-g36 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 58.88);
+    tl.fromTo("#cap-g36 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 59.2);
+    tl.fromTo("#cap-g36 .cw:nth-child(3)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 59.44);
+    tl.fromTo("#cap-g36 .cw:nth-child(4)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 59.84);
+    tl.to("#cap-g36", { opacity: 0, duration: 0.12, ease: "power2.in" }, 60.14);
+    tl.set("#cap-g36", { opacity: 0, visibility: "hidden" }, 60.26);
+    tl.set("#cap-g37", { opacity: 1, visibility: "visible" }, 60.27);
+    tl.fromTo("#cap-g37 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 60.32);
+    tl.fromTo("#cap-g37 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 60.64);
+    tl.fromTo("#cap-g37 .cw:nth-child(3)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 60.88);
+    tl.fromTo("#cap-g37 .cw:nth-child(4)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 61.12);
+    tl.to("#cap-g37", { opacity: 0, duration: 0.12, ease: "power2.in" }, 61.58);
+    tl.set("#cap-g37", { opacity: 0, visibility: "hidden" }, 61.7);
+    tl.set("#cap-g38", { opacity: 1, visibility: "visible" }, 61.71);
+    tl.fromTo("#cap-g38 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 61.76);
+    tl.fromTo("#cap-g38 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 62.08);
+    tl.to("#cap-g38", { opacity: 0, duration: 0.12, ease: "power2.in" }, 63.1);
+    tl.set("#cap-g38", { opacity: 0, visibility: "hidden" }, 63.22);
+    tl.set("#cap-g39", { opacity: 1, visibility: "visible" }, 63.23);
+    tl.fromTo("#cap-g39 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 63.28);
+    tl.fromTo("#cap-g39 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 63.6);
+    tl.fromTo("#cap-g39 .cw:nth-child(3)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 64.16);
+    tl.fromTo("#cap-g39 .cw:nth-child(4)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 64.4);
+    tl.fromTo("#cap-g39 .cw:nth-child(5)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 64.8);
+    tl.to("#cap-g39", { opacity: 0, duration: 0.12, ease: "power2.in" }, 64.86);
+    tl.set("#cap-g39", { opacity: 0, visibility: "hidden" }, 64.98);
+    tl.set("#cap-g40", { opacity: 1, visibility: "visible" }, 64.99);
+    tl.fromTo("#cap-g40 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 65.04);
+    tl.fromTo("#cap-g40 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 65.44);
+    tl.fromTo("#cap-g40 .cw:nth-child(3)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 65.92);
+    tl.to("#cap-g40", { opacity: 0, duration: 0.12, ease: "power2.in" }, 66.46);
+    tl.set("#cap-g40", { opacity: 0, visibility: "hidden" }, 66.58);
+    tl.set("#cap-g41", { opacity: 1, visibility: "visible" }, 66.59);
+    tl.fromTo("#cap-g41 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 66.64);
+    tl.fromTo("#cap-g41 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 67.04);
+    tl.fromTo("#cap-g41 .cw:nth-child(3)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 67.36);
+    tl.to("#cap-g41", { opacity: 0, duration: 0.12, ease: "power2.in" }, 67.66);
+    tl.set("#cap-g41", { opacity: 0, visibility: "hidden" }, 67.78);
+    tl.set("#cap-g42", { opacity: 1, visibility: "visible" }, 67.79);
+    tl.fromTo("#cap-g42 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 67.84);
+    tl.fromTo("#cap-g42 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 68);
+    tl.fromTo("#cap-g42 .cw:nth-child(3)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 68.32);
+    tl.fromTo("#cap-g42 .cw:nth-child(4)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 68.72);
+    tl.to("#cap-g42", { opacity: 0, duration: 0.12, ease: "power2.in" }, 69.9);
+    tl.set("#cap-g42", { opacity: 0, visibility: "hidden" }, 70.02);
+    tl.set("#cap-g43", { opacity: 1, visibility: "visible" }, 70.03);
+    tl.fromTo("#cap-g43 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 70.08);
+    tl.fromTo("#cap-g43 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 70.48);
+    tl.fromTo("#cap-g43 .cw:nth-child(3)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 71.04);
+    tl.fromTo("#cap-g43 .cw:nth-child(4)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 71.28);
+    tl.fromTo("#cap-g43 .cw:nth-child(5)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 71.52);
+    tl.to("#cap-g43", { opacity: 0, duration: 0.12, ease: "power2.in" }, 72.3);
+    tl.set("#cap-g43", { opacity: 0, visibility: "hidden" }, 72.42);
+    tl.set("#cap-g44", { opacity: 1, visibility: "visible" }, 72.43);
+    tl.fromTo("#cap-g44 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 72.48);
+    tl.fromTo("#cap-g44 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 72.88);
+    tl.fromTo("#cap-g44 .cw:nth-child(3)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 73.52);
+    tl.fromTo("#cap-g44 .cw:nth-child(4)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 73.84);
+    tl.to("#cap-g44", { opacity: 0, duration: 0.12, ease: "power2.in" }, 74.22);
+    tl.set("#cap-g44", { opacity: 0, visibility: "hidden" }, 74.34);
+    tl.set("#cap-g45", { opacity: 1, visibility: "visible" }, 74.35);
+    tl.fromTo("#cap-g45 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 74.4);
+    tl.fromTo("#cap-g45 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 74.64);
+    tl.fromTo("#cap-g45 .cw:nth-child(3)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 75.2);
+    tl.fromTo("#cap-g45 .cw:nth-child(4)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 75.36);
+    tl.fromTo("#cap-g45 .cw:nth-child(5)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 75.52);
+    tl.to("#cap-g45", { opacity: 0, duration: 0.12, ease: "power2.in" }, 75.5);
+    tl.set("#cap-g45", { opacity: 0, visibility: "hidden" }, 75.62);
+    tl.set("#cap-g46", { opacity: 1, visibility: "visible" }, 75.63);
+    tl.fromTo("#cap-g46 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 75.68);
+    tl.fromTo("#cap-g46 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 76);
+    tl.fromTo("#cap-g46 .cw:nth-child(3)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 76.24);
+    tl.fromTo("#cap-g46 .cw:nth-child(4)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 76.4);
+    tl.fromTo("#cap-g46 .cw:nth-child(5)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 76.72);
+    tl.to("#cap-g46", { opacity: 0, duration: 0.12, ease: "power2.in" }, 76.7);
+    tl.set("#cap-g46", { opacity: 0, visibility: "hidden" }, 76.82);
+    tl.set("#cap-g47", { opacity: 1, visibility: "visible" }, 76.83);
+    tl.fromTo("#cap-g47 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 76.88);
+    tl.fromTo("#cap-g47 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 77.36);
+    tl.fromTo("#cap-g47 .cw:nth-child(3)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 77.68);
+    tl.to("#cap-g47", { opacity: 0, duration: 0.12, ease: "power2.in" }, 78.54);
+    tl.set("#cap-g47", { opacity: 0, visibility: "hidden" }, 78.66);
+    tl.set("#cap-g48", { opacity: 1, visibility: "visible" }, 78.67);
+    tl.fromTo("#cap-g48 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 78.72);
+    tl.fromTo("#cap-g48 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 79.48);
+    tl.fromTo("#cap-g48 .cw:nth-child(3)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 80.24);
+    tl.to("#cap-g48", { opacity: 0, duration: 0.12, ease: "power2.in" }, 80.7);
+    tl.set("#cap-g48", { opacity: 0, visibility: "hidden" }, 80.82);
+    tl.set("#cap-g49", { opacity: 1, visibility: "visible" }, 80.83);
+    tl.fromTo("#cap-g49 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 80.88);
+    tl.fromTo("#cap-g49 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 81.173);
+    tl.to("#cap-g49", { opacity: 0, duration: 0.12, ease: "power2.in" }, 81.287);
+    tl.set("#cap-g49", { opacity: 0, visibility: "hidden" }, 81.407);
+    tl.set("#cap-g50", { opacity: 1, visibility: "visible" }, 81.417);
+    tl.fromTo("#cap-g50 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 81.467);
+    tl.fromTo("#cap-g50 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 81.76);
+    tl.fromTo("#cap-g50 .cw:nth-child(3)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 82.16);
+    tl.to("#cap-g50", { opacity: 0, duration: 0.12, ease: "power2.in" }, 82.7);
+    tl.set("#cap-g50", { opacity: 0, visibility: "hidden" }, 82.82);
+    tl.set("#cap-g51", { opacity: 1, visibility: "visible" }, 82.83);
+    tl.fromTo("#cap-g51 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 82.88);
+    tl.fromTo("#cap-g51 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 83.28);
+    tl.to("#cap-g51", { opacity: 0, duration: 0.12, ease: "power2.in" }, 83.5);
+    tl.set("#cap-g51", { opacity: 0, visibility: "hidden" }, 83.62);
+    tl.set("#cap-g52", { opacity: 1, visibility: "visible" }, 83.63);
+    tl.fromTo("#cap-g52 .cw:nth-child(1)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 83.68);
+    tl.fromTo("#cap-g52 .cw:nth-child(2)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 83.92);
+    tl.fromTo("#cap-g52 .cw:nth-child(3)", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.12, ease: "power2.out" }, 84.32);
+    tl.to("#cap-g52", { opacity: 0, duration: 0.12, ease: "power2.in" }, 85.28);
+    tl.set("#cap-g52", { opacity: 0, visibility: "hidden" }, 85.4);
+    window.__timelines["captions"] = tl;
+  </script>
+</template>

@@ -1,0 +1,74 @@
+<template>
+  <style>
+@font-face { font-family: 'Barlow Condensed'; font-weight: 600; src: url('assets/fonts/BarlowCondensed-SemiBold.woff2'); }
+@font-face { font-family: 'Barlow Condensed'; font-weight: 700; src: url('assets/fonts/BarlowCondensed-Bold.woff2'); }
+@font-face { font-family: 'Public Sans'; font-weight: 400; src: url('assets/fonts/PublicSans-Regular.woff2'); }
+@font-face { font-family: 'Public Sans'; font-weight: 600; src: url('assets/fonts/PublicSans-SemiBold.woff2'); }
+#root { position: absolute; inset: 0; background: #F6F7F5; font-family: 'Public Sans', sans-serif; color: #23262B; overflow: hidden; }
+.cam, .stage { position: absolute; inset: 0; }
+.plate { position: absolute; border-radius: 6px; overflow: hidden; background: #fff;
+          box-shadow: 0 18px 40px rgba(35,38,43,0.14), 0 1px 0 rgba(35,38,43,0.06); }
+.plate img { display: block; width: 100%; height: 100%; }
+.mark { position: absolute; border: 4px solid #B07A1E; border-radius: 4px; opacity: 0; }
+.ring { position: absolute; border: 5px solid #5B6470; border-radius: 14px; opacity: 0; }
+.lbl { position: absolute; font-family: 'Barlow Condensed'; font-weight: 600; color: #23262B; white-space: nowrap; }
+.lbl b { color: #8A5D12; font-weight: 700; }
+.lead { position: absolute; background: #B07A1E; }
+.wheel { display: inline-flex; font-variant-numeric: tabular-nums; }
+.wd { display: inline-block; height: 1em; overflow: hidden; line-height: 1em; }
+.ws { display: grid; }
+.ws span { height: 1em; line-height: 1em; }
+
+.rul { position: absolute; left: 360px; top: 700px; width: 1200px; height: 3px; background: #23262B; }
+.tk { position: absolute; top: 686px; width: 3px; height: 31px; background: #23262B; }
+.tkl { position: absolute; top: 728px; font-size: 28px; color: #5B6470; transform: translateX(-50%); }
+.fill { position: absolute; left: 360px; top: 690px; height: 23px; width: 800px; background: rgba(176,122,30,0.28); }
+.pin { position: absolute; top: 630px; width: 4px; height: 76px; background: #B07A1E; }
+.cap2 { position: absolute; left: 360px; top: 782px; font-size: 26px; color: #5B6470; }
+</style>
+  <div id="root" data-composition-id="metrics" data-width="1920" data-height="1080">
+
+    <div id="metrics-cam" class="cam">
+      <div id="metrics-p1" class="plate" style="left:180px; top:150px; width:1560px; height:435px;"><img src="assets/screens/metrics_control.png" alt=""></div>
+      <div id="metrics-m2" class="mark" style="left:203px; top:164px; width:1014px; height:177px;"></div>
+      <div id="metrics-m3" class="mark" style="left:702px; top:338px; width:453px; height:203px;"></div>
+      <div id="metrics-tk0" class="tk" style="left:359px;"></div><div id="metrics-tl0" class="tkl" style="left:360px;">₹0</div>
+      <div id="metrics-tk1" class="tk" style="left:759px;"></div><div id="metrics-tl1" class="tkl" style="left:760px;">₹1.25</div>
+      <div id="metrics-tk2" class="tk" style="left:1159px;"></div><div id="metrics-tl2" class="tkl" style="left:1160px;">₹2.5</div>
+      <div id="metrics-tk3" class="tk" style="left:1559px;"></div><div id="metrics-tl3" class="tkl" style="left:1560px;">₹3.75</div>
+      <div id="metrics-rul" class="rul"></div><div id="metrics-fill" class="fill"></div>
+      <div id="metrics-pin" class="pin" style="left:360px;"></div>
+      <div id="metrics-cap2" class="cap2">GOLDGUINEA moves in ticks of ₹1 per 8 g = ₹1.25 per 10 g</div>
+    </div>
+      <div id="metrics-l4" class="lbl" style="left:1184px; top:560px; font-size:54px;">Break-even <b>₹2.7</b></div>
+  </div>
+  <script>
+
+    document.querySelectorAll('#root .wheel').forEach(el => {
+      if (el.dataset.ready) return;
+      const v = el.dataset.value; el.textContent = '';
+      for (const ch of v) {
+        if (!/\d/.test(ch)) { el.append(document.createTextNode(ch)); continue; }
+        const d = document.createElement('span'); d.className = 'wd';
+        const s = document.createElement('span'); s.className = 'ws'; s.dataset.target = (-(10 + Number(ch))) + 'em';
+        for (let i = 0; i <= 10 + Number(ch); i++) { const n = document.createElement('span'); n.textContent = String(i % 10); s.appendChild(n); }
+        d.appendChild(s); el.appendChild(d);
+      }
+      el.dataset.ready = '1';
+    });
+
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#metrics-cam", { x: 620, filter: "blur(18px)" }, { x: 0, filter: "blur(0px)", duration: 0.32, ease: "expo.out" }, 0);
+    tl.fromTo("#metrics-p1", { clipPath: "inset(0 100% 0 0 round 6px)" }, { clipPath: "inset(0 0% 0 0 round 6px)", duration: 0.55, ease: "expo.out" }, 0.1);
+    tl.fromTo("#metrics-m2", { opacity: 0, scale: 1.08 }, { opacity: 1, scale: 1, duration: 0.27, ease: "power3.out" }, 0.173);
+    tl.to("#metrics-m2", { opacity: 0, duration: 0.18, ease: "power2.in" }, 4.073);
+    tl.fromTo("#metrics-m3", { opacity: 0, scale: 1.08 }, { opacity: 1, scale: 1, duration: 0.27, ease: "power3.out" }, 4.173);
+    tl.fromTo("#metrics-rul", { scaleX: 0, transformOrigin: "0% 50%" }, { scaleX: 1, duration: 0.5, ease: "power3.out" }, 3.973);
+    tl.fromTo([".tk", ".tkl", "#metrics-cap2"], { opacity: 0 }, { opacity: 1, duration: 0.2, stagger: 0.05 }, 4.173);
+    tl.fromTo("#metrics-pin", { opacity: 0, x: 0 }, { opacity: 1, x: 864, duration: 0.9, ease: "power3.out" }, 4.473);
+    tl.fromTo("#metrics-l4", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.4, ease: "expo.out" }, 5.173);
+    tl.fromTo("#metrics-fill", { scaleX: 0, transformOrigin: "0% 50%" }, { scaleX: 1, duration: 0.5, ease: "power2.out" }, 7.073);
+    tl.to("#metrics-cam", { opacity: 0, filter: "blur(8px)", duration: 0.18, ease: "power2.in" }, 8.244);
+    window.__timelines["metrics"] = tl;
+  </script>
+</template>

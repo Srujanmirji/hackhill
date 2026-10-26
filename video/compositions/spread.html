@@ -1,0 +1,64 @@
+<template>
+  <style>
+@font-face { font-family: 'Barlow Condensed'; font-weight: 600; src: url('assets/fonts/BarlowCondensed-SemiBold.woff2'); }
+@font-face { font-family: 'Barlow Condensed'; font-weight: 700; src: url('assets/fonts/BarlowCondensed-Bold.woff2'); }
+@font-face { font-family: 'Public Sans'; font-weight: 400; src: url('assets/fonts/PublicSans-Regular.woff2'); }
+@font-face { font-family: 'Public Sans'; font-weight: 600; src: url('assets/fonts/PublicSans-SemiBold.woff2'); }
+#root { position: absolute; inset: 0; background: #F6F7F5; font-family: 'Public Sans', sans-serif; color: #23262B; overflow: hidden; }
+.cam, .stage { position: absolute; inset: 0; }
+.plate { position: absolute; border-radius: 6px; overflow: hidden; background: #fff;
+          box-shadow: 0 18px 40px rgba(35,38,43,0.14), 0 1px 0 rgba(35,38,43,0.06); }
+.plate img { display: block; width: 100%; height: 100%; }
+.mark { position: absolute; border: 4px solid #B07A1E; border-radius: 4px; opacity: 0; }
+.ring { position: absolute; border: 5px solid #5B6470; border-radius: 14px; opacity: 0; }
+.lbl { position: absolute; font-family: 'Barlow Condensed'; font-weight: 600; color: #23262B; white-space: nowrap; }
+.lbl b { color: #8A5D12; font-weight: 700; }
+.lead { position: absolute; background: #B07A1E; }
+.wheel { display: inline-flex; font-variant-numeric: tabular-nums; }
+.wd { display: inline-block; height: 1em; overflow: hidden; line-height: 1em; }
+.ws { display: grid; }
+.ws span { height: 1em; line-height: 1em; }
+.cnt { position: absolute; left: 1290px; top: 96px; padding: 14px 24px; background: #F6F7F5; border-radius: 6px; box-shadow: 0 10px 30px rgba(35,38,43,0.12); font-family: 'Barlow Condensed'; font-weight: 600; font-size: 44px; opacity: 0; white-space: nowrap; }
+.cnt .wheel { color: #8A5D12; font-weight: 700; }</style>
+  <div id="root" data-composition-id="spread" data-width="1920" data-height="1080">
+
+    <div id="spread-cam" class="cam">
+      <div id="spread-p1" class="plate" style="left:220px; top:70px; width:1480px; height:776px;"><img src="assets/screens/spread_control.png" alt=""></div>
+      <div id="spread-ld3" class="lead" style="left:1080px; top:356px; width:3px; height:65px;"></div>
+      <div id="spread-l2" class="lbl" style="left:1010px; top:300px; font-size:50px;">Must settle at <b>₹0</b></div>
+      <div id="spread-m4" class="mark" style="left:1625px; top:372px; width:75px; height:187px;"></div>
+      <div id="spread-cnt" class="cnt"><span class="wheel" data-value="18"></span> of 18 expiries settled within ₹1</div>
+      <div id="spread-m5" class="mark" style="left:1522px; top:411px; width:171px; height:303px;"></div>
+    </div>
+      <div id="spread-l6" class="lbl" style="left:710px; top:209px; font-size:52px;">Widens, then snaps shut <b>after</b> the exit</div>
+  </div>
+  <script>
+
+    document.querySelectorAll('#root .wheel').forEach(el => {
+      if (el.dataset.ready) return;
+      const v = el.dataset.value; el.textContent = '';
+      for (const ch of v) {
+        if (!/\d/.test(ch)) { el.append(document.createTextNode(ch)); continue; }
+        const d = document.createElement('span'); d.className = 'wd';
+        const s = document.createElement('span'); s.className = 'ws'; s.dataset.target = (-(10 + Number(ch))) + 'em';
+        for (let i = 0; i <= 10 + Number(ch); i++) { const n = document.createElement('span'); n.textContent = String(i % 10); s.appendChild(n); }
+        d.appendChild(s); el.appendChild(d);
+      }
+      el.dataset.ready = '1';
+    });
+
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#spread-cam", { scale: 1.14, filter: "blur(14px)" }, { scale: 1, filter: "blur(0px)", duration: 0.45, ease: "expo.out" }, 0);
+    tl.fromTo("#spread-ld3", { scaleY: 0, transformOrigin: "50% 0%" }, { scaleY: 1, duration: 0.25, ease: "power3.out" }, 4.08);
+    tl.fromTo("#spread-l2", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.4, ease: "expo.out" }, 4.2);
+    tl.fromTo("#spread-m4", { opacity: 0, scale: 1.08 }, { opacity: 1, scale: 1, duration: 0.27, ease: "power3.out" }, 6.64);
+    tl.fromTo("#spread-cnt", { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.2 }, 5.12);
+    tl.fromTo("#spread-cnt .ws", { y: "0em" }, { y: (k, el) => el.dataset.target, duration: 1.1, ease: "power3.out", stagger: 0.05 }, 5.12);
+    tl.to(["#spread-l2", "#spread-ld3", "#spread-m4", "#spread-cnt"], { opacity: 0, duration: 0.15 }, 9.34);
+    tl.set("#spread-cam", { transformOrigin: "1596px 551px" }, 9.48);
+    tl.to("#spread-cam", { scale: 1.9, duration: 0.55, ease: "power3.inOut" }, 9.49);
+    tl.fromTo("#spread-m5", { opacity: 0, scale: 1.08 }, { opacity: 1, scale: 1, duration: 0.27, ease: "power3.out" }, 10.09);
+    tl.fromTo("#spread-l6", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.4, ease: "expo.out" }, 13.76);
+    window.__timelines["spread"] = tl;
+  </script>
+</template>

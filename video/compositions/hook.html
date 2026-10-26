@@ -1,0 +1,128 @@
+<template>
+  <style>
+@font-face { font-family: 'Barlow Condensed'; font-weight: 600; src: url('assets/fonts/BarlowCondensed-SemiBold.woff2'); }
+@font-face { font-family: 'Barlow Condensed'; font-weight: 700; src: url('assets/fonts/BarlowCondensed-Bold.woff2'); }
+@font-face { font-family: 'Public Sans'; font-weight: 400; src: url('assets/fonts/PublicSans-Regular.woff2'); }
+@font-face { font-family: 'Public Sans'; font-weight: 600; src: url('assets/fonts/PublicSans-SemiBold.woff2'); }
+#root { position: absolute; inset: 0; background: #F6F7F5; font-family: 'Public Sans', sans-serif; color: #23262B; overflow: hidden; }
+.cam, .stage { position: absolute; inset: 0; }
+.plate { position: absolute; border-radius: 6px; overflow: hidden; background: #fff;
+          box-shadow: 0 18px 40px rgba(35,38,43,0.14), 0 1px 0 rgba(35,38,43,0.06); }
+.plate img { display: block; width: 100%; height: 100%; }
+.mark { position: absolute; border: 4px solid #B07A1E; border-radius: 4px; opacity: 0; }
+.ring { position: absolute; border: 5px solid #5B6470; border-radius: 14px; opacity: 0; }
+.lbl { position: absolute; font-family: 'Barlow Condensed'; font-weight: 600; color: #23262B; white-space: nowrap; }
+.lbl b { color: #8A5D12; font-weight: 700; }
+.lead { position: absolute; background: #B07A1E; }
+.wheel { display: inline-flex; font-variant-numeric: tabular-nums; }
+.wd { display: inline-block; height: 1em; overflow: hidden; line-height: 1em; }
+.ws { display: grid; }
+.ws span { height: 1em; line-height: 1em; }
+
+.src { position: absolute; left: 180px; top: 96px; font-size: 30px; color: #5B6470; }
+.row { position: absolute; left: 180px; display: flex; align-items: baseline; gap: 36px; }
+.sym { width: 330px; font-family: 'Barlow Condensed'; font-weight: 600; font-size: 60px; color: #5B6470; }
+.px { position: relative; width: 470px; height: 112px; font-family: 'Barlow Condensed'; font-weight: 700; font-size: 112px; line-height: 1; }
+.px > span { position: absolute; left: 0; top: 0; }
+.unit { position: relative; width: 150px; font-size: 32px; color: #5B6470; }
+.unit > span { position: absolute; left: 0; bottom: -10px; white-space: nowrap; }
+.note { position: absolute; left: 1250px; font-size: 28px; color: #5B6470; white-space: nowrap; }
+.note::before { content: ""; display: inline-block; width: 22px; height: 3px; background: #B07A1E; vertical-align: middle; margin-right: 12px; }
+.q { position: absolute; left: 1290px; top: 430px; font-family: 'Barlow Condensed'; font-weight: 700; font-size: 132px; color: #B07A1E; opacity: 0; }
+.bracket { position: absolute; left: 1250px; top: 186px; width: 4px; height: 620px; background: #B07A1E; }
+</style>
+  <div id="root" data-composition-id="hook" data-width="1920" data-height="1080">
+
+    <div id="hook-cam" class="cam">
+      <div id="hook-src" class="src">MCX closing prices, 23 Oct 2026</div>
+      <div id="hook-src2" class="src" style="opacity:0; color:#23262B;">Same prices, in ₹ per 10 g at 999 purity</div>
+      <div id="hook-r0" class="row" style="top:170px;"><span class="sym">GOLD</span><span class="px"><span id="hook-a0">₹1,42,024</span><span id="hook-b0" class="wheel" data-value="₹1,42,595" style="opacity:0;"></span></span><span class="unit"><span id="hook-ua0">per 10 g</span><span id="hook-ub0" style="opacity:0;">per 10 g</span></span></div>
+      <div id="hook-r1" class="row" style="top:302px;"><span class="sym">GOLDM</span><span class="px"><span id="hook-a1">₹1,40,453</span><span id="hook-b1" class="wheel" data-value="₹1,41,018" style="opacity:0;"></span></span><span class="unit"><span id="hook-ua1">per 10 g</span><span id="hook-ub1" style="opacity:0;">per 10 g</span></span></div>
+      <div id="hook-r2" class="row" style="top:434px;"><span class="sym">GOLDTEN</span><span class="px"><span id="hook-a2">₹1,40,832</span><span id="hook-b2" class="wheel" data-value="₹1,40,832" style="opacity:0;"></span></span><span class="unit"><span id="hook-ua2">per 10 g</span><span id="hook-ub2" style="opacity:0;">per 10 g</span></span></div>
+      <div id="hook-r3" class="row" style="top:566px;"><span class="sym">GOLDGUINEA</span><span class="px"><span id="hook-a3">₹1,13,168</span><span id="hook-b3" class="wheel" data-value="₹1,41,460" style="opacity:0;"></span></span><span class="unit"><span id="hook-ua3">per 8 g</span><span id="hook-ub3" style="opacity:0;">per 10 g</span></span></div>
+      <div id="hook-r4" class="row" style="top:698px;"><span class="sym">GOLDPETAL</span><span class="px"><span id="hook-a4">₹14,155</span><span id="hook-b4" class="wheel" data-value="₹1,41,550" style="opacity:0;"></span></span><span class="unit"><span id="hook-ua4">per 1 g</span><span id="hook-ub4" style="opacity:0;">per 10 g</span></span></div>
+      <div id="hook-units" class="mark" style="left:1006px; top:178px; width:190px; height:660px;"></div>
+      <div id="hook-q" class="q">Free money?</div>
+      <div id="hook-n00" class="note" style="top:184px;">995 → 999 purity</div>
+      <div id="hook-n01" class="note" style="top:224px;">expires 4 Dec</div>
+      <div id="hook-n10" class="note" style="top:316px;">995 → 999 purity</div>
+      <div id="hook-n11" class="note" style="top:356px;">expires 5 Nov</div>
+      <div id="hook-n30" class="note" style="top:580px;">quoted per 8 g</div>
+      <div id="hook-n40" class="note" style="top:712px;">quoted per 1 g, settles Mumbai</div>
+      <div id="hook-br" class="bracket"></div>
+    </div>
+      <div id="hook-l1" class="lbl" style="left:1290px; top:452px; font-size:64px;">All five within <b>1.3%</b></div>
+  </div>
+  <script>
+
+    document.querySelectorAll('#root .wheel').forEach(el => {
+      if (el.dataset.ready) return;
+      const v = el.dataset.value; el.textContent = '';
+      for (const ch of v) {
+        if (!/\d/.test(ch)) { el.append(document.createTextNode(ch)); continue; }
+        const d = document.createElement('span'); d.className = 'wd';
+        const s = document.createElement('span'); s.className = 'ws'; s.dataset.target = (-(10 + Number(ch))) + 'em';
+        for (let i = 0; i <= 10 + Number(ch); i++) { const n = document.createElement('span'); n.textContent = String(i % 10); s.appendChild(n); }
+        d.appendChild(s); el.appendChild(d);
+      }
+      el.dataset.ready = '1';
+    });
+
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#hook-units", { opacity: 0, scale: 1.06 }, { opacity: 1, scale: 1, duration: 0.27, ease: "power3.out" }, 2.0);
+    tl.fromTo("#hook-r0", { x: 0 }, { x: 0, duration: 0.55, ease: "elastic.out(1, 0.6)" }, 3.84);
+    tl.fromTo("#hook-r1", { x: 0 }, { x: 46, duration: 0.55, ease: "elastic.out(1, 0.6)" }, 3.9);
+    tl.fromTo("#hook-r2", { x: 0 }, { x: -34, duration: 0.55, ease: "elastic.out(1, 0.6)" }, 3.96);
+    tl.fromTo("#hook-r3", { x: 0 }, { x: 78, duration: 0.55, ease: "elastic.out(1, 0.6)" }, 4.02);
+    tl.fromTo("#hook-r4", { x: 0 }, { x: -52, duration: 0.55, ease: "elastic.out(1, 0.6)" }, 4.08);
+    tl.to("#hook-units", { opacity: 0, duration: 0.15 }, 3.84);
+    tl.fromTo("#hook-q", { opacity: 0, scale: 1.35, rotation: -8 }, { opacity: 1, scale: 1, rotation: -3, duration: 0.16, ease: "power4.in" }, 6.88);
+    tl.set("#hook-cam", { x: 7, y: -4 }, 7.04);
+    tl.set("#hook-cam", { x: -5, y: 3 }, 7.073);
+    tl.set("#hook-cam", { x: 3, y: -2 }, 7.107);
+    tl.set("#hook-cam", { x: 0, y: 0 }, 7.14);
+    tl.to("#hook-q", { opacity: 0, filter: "blur(8px)", duration: 0.2, ease: "power2.in" }, 9.48);
+    tl.fromTo("#hook-n00", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.4, ease: "expo.out" }, 10.48);
+    tl.to("#hook-n00", { opacity: 0, filter: "blur(6px)", duration: 0.16 }, 14.75);
+    tl.fromTo("#hook-n01", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.4, ease: "expo.out" }, 12.96);
+    tl.to("#hook-n01", { opacity: 0, filter: "blur(6px)", duration: 0.16 }, 14.75);
+    tl.fromTo("#hook-n10", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.4, ease: "expo.out" }, 10.55);
+    tl.to("#hook-n10", { opacity: 0, filter: "blur(6px)", duration: 0.16 }, 14.75);
+    tl.fromTo("#hook-n11", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.4, ease: "expo.out" }, 13.03);
+    tl.to("#hook-n11", { opacity: 0, filter: "blur(6px)", duration: 0.16 }, 14.75);
+    tl.fromTo("#hook-n30", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.4, ease: "expo.out" }, 11.19);
+    tl.to("#hook-n30", { opacity: 0, filter: "blur(6px)", duration: 0.16 }, 14.75);
+    tl.fromTo("#hook-n40", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.4, ease: "expo.out" }, 11.92);
+    tl.to("#hook-n40", { opacity: 0, filter: "blur(6px)", duration: 0.16 }, 14.75);
+    tl.to("#hook-r0", { x: 0, duration: 0.5, ease: "power3.inOut" }, 14.8);
+    tl.to("#hook-a0", { opacity: 0, filter: "blur(8px)", duration: 0.16, ease: "power2.in" }, 14.8);
+    tl.set("#hook-b0", { opacity: 1 }, 14.92);
+    tl.fromTo("#hook-b0 .ws", { y: "0em" }, { y: (k, el) => el.dataset.target, duration: 1.0, ease: "power3.out", stagger: 0.03 }, 14.92);
+    tl.to("#hook-r1", { x: 0, duration: 0.5, ease: "power3.inOut" }, 14.84);
+    tl.to("#hook-a1", { opacity: 0, filter: "blur(8px)", duration: 0.16, ease: "power2.in" }, 14.85);
+    tl.set("#hook-b1", { opacity: 1 }, 14.97);
+    tl.fromTo("#hook-b1 .ws", { y: "0em" }, { y: (k, el) => el.dataset.target, duration: 1.0, ease: "power3.out", stagger: 0.03 }, 14.97);
+    tl.to("#hook-r2", { x: 0, duration: 0.5, ease: "power3.inOut" }, 14.88);
+    tl.to("#hook-a2", { opacity: 0, filter: "blur(8px)", duration: 0.16, ease: "power2.in" }, 14.9);
+    tl.set("#hook-b2", { opacity: 1 }, 15.02);
+    tl.fromTo("#hook-b2 .ws", { y: "0em" }, { y: (k, el) => el.dataset.target, duration: 1.0, ease: "power3.out", stagger: 0.03 }, 15.02);
+    tl.to("#hook-r3", { x: 0, duration: 0.5, ease: "power3.inOut" }, 14.92);
+    tl.to("#hook-a3", { opacity: 0, filter: "blur(8px)", duration: 0.16, ease: "power2.in" }, 14.95);
+    tl.set("#hook-b3", { opacity: 1 }, 15.07);
+    tl.fromTo("#hook-b3 .ws", { y: "0em" }, { y: (k, el) => el.dataset.target, duration: 1.0, ease: "power3.out", stagger: 0.03 }, 15.07);
+    tl.to("#hook-ua3", { opacity: 0, duration: 0.15 }, 14.8);
+    tl.fromTo("#hook-ub3", { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.2 }, 15.4);
+    tl.to("#hook-r4", { x: 0, duration: 0.5, ease: "power3.inOut" }, 14.96);
+    tl.to("#hook-a4", { opacity: 0, filter: "blur(8px)", duration: 0.16, ease: "power2.in" }, 15.0);
+    tl.set("#hook-b4", { opacity: 1 }, 15.12);
+    tl.fromTo("#hook-b4 .ws", { y: "0em" }, { y: (k, el) => el.dataset.target, duration: 1.0, ease: "power3.out", stagger: 0.03 }, 15.12);
+    tl.to("#hook-ua4", { opacity: 0, duration: 0.15 }, 14.8);
+    tl.fromTo("#hook-ub4", { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.2 }, 15.4);
+    tl.to("#hook-src", { opacity: 0, filter: "blur(6px)", duration: 0.16 }, 14.8);
+    tl.fromTo("#hook-src2", { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.2 }, 14.98);
+    tl.fromTo("#hook-br", { scaleY: 0, transformOrigin: "50% 0%" }, { scaleY: 1, duration: 0.45, ease: "power3.out" }, 16.86);
+    tl.fromTo("#hook-l1", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.4, ease: "expo.out" }, 17.11);
+    tl.to("#hook-cam", { scale: 2.4, transformOrigin: "780px 490px", filter: "blur(14px)", duration: 0.4, ease: "power3.in" }, 17.6);
+    window.__timelines["hook"] = tl;
+  </script>
+</template>

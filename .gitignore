@@ -10,3 +10,10 @@ data/processed/*
 !data/raw/ddr/
 .DS_Store
 .streamlit/secrets.toml
+
+# demo video build outputs
+video/renders/
+video/.hyperframes/
+video/.thumbnails/
+video/.waveform-cache/
+video/assets/vo/s[0-9][0-9].wav
