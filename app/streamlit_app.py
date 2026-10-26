@@ -3,6 +3,7 @@ import sys
 from pathlib import Path
 
 import pandas as pd
+import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
 
@@ -23,7 +24,7 @@ def data():
 
 
 df = data()
-source = df["source"].iloc[0]
+source = "SYNTHETIC" if (df["source"] == "SYNTHETIC").any() else df["source"].iloc[0]
 
 st.title("AuLens — is this gold spread real, and tradable after costs?")
 if source == "SYNTHETIC":
@@ -33,7 +34,8 @@ st.caption(f"Source: {source} · {df['date'].min():%d %b %Y} → {df['date'].max
 
 with st.sidebar:
     st.header("Pair")
-    labels = [f"{a} vs {b}" + ("  (control pair)" if i == 0 else "") for i, (a, b) in enumerate(PAIRS)]
+    tags = {0: "  (control pair)", 2: "  (stretch, carry-adjusted)"}
+    labels = [f"{a} vs {b}" + tags.get(i, "") for i, (a, b) in enumerate(PAIRS)]
     a, b = PAIRS[st.radio("Pair", range(len(PAIRS)), format_func=lambda i: labels[i])]
     st.header("Assumptions")
     slip = st.slider("Slippage, ₹ per 10 g per leg", 0, 60, 20, 5,
@@ -51,6 +53,25 @@ def run(a, b, slip, min_vol, scale):
     prm = Params(slippage_per_leg=slip, min_volume=min_vol, lot_scale=scale)
     res = walk_forward(df, a, b, prm)
     return res, verdict(res)
+
+
+@st.cache_data
+def sensitivity(a, b, min_vol, scale):
+    return pd.DataFrame([{"slippage": s, "net": run(a, b, s, min_vol, scale)[1].get("net_pnl", 0)}
+                         for s in [0, 10, 20, 30, 40, 60]])
+
+
+def calendar(panel, tender, buffer):
+    """Per expiry: first pair day, last tradable day, tender start, expiry. Days after the
+    last data date are weekdays only (future holidays unknown), so live contracts are estimates."""
+    last_data = panel["date"].max()
+    rows = []
+    for exp, g in panel.groupby("expiry"):
+        days = list(g["date"]) + list(pd.bdate_range(last_data + pd.Timedelta(days=1), exp))
+        n = len(days)  # same rule as backtest.add_signals: hold only while days_left > tender + buffer
+        rows.append({"expiry": exp, "first": days[0], "last_tradable": days[max(n - 2 - tender - buffer, 0)],
+                     "tender_start": days[max(n - tender, 0)], "live": exp > last_data})
+    return pd.DataFrame(rows)
 
 
 res, v = run(a, b, slip, min_vol, scale)
@@ -99,28 +120,51 @@ for d, label in REGIME_BREAKS.items():
         fig.add_vline(x=pd.Timestamp(d), line=dict(color=RED, dash="dot"))
 fig.update_layout(height=420, yaxis_title="₹ per 10 g @ 999", margin=dict(l=10, r=10, t=10, b=10),
                   legend=dict(orientation="h", y=-0.15))
-st.plotly_chart(fig, use_container_width=True)
+st.plotly_chart(fig, width="stretch")
+st.caption("The black line is the price gap between the two contracts (₹ per 10 g); the dashed line is "
+           "where the exchange rules say it must end up; a trade is only worth taking outside the green band.")
 
 # ---- Sensitivity + regimes
 l, r = st.columns(2)
 with l:
     st.subheader("Slippage sensitivity")
-    rows = []
-    for s in [0, 10, 20, 30, 40, 60]:
-        _, vv = run(a, b, s, min_vol, scale)
-        rows.append({"slippage": s, "net": vv.get("net_pnl", 0)})
-    sens = pd.DataFrame(rows)
+    sens = sensitivity(a, b, min_vol, scale)
     f2 = go.Figure(go.Bar(x=sens["slippage"], y=sens["net"],
                           marker_color=[GREEN if n > 0 else GREY for n in sens["net"]]))
     f2.update_layout(height=300, xaxis_title="₹ per 10 g per leg", yaxis_title="Net P&L ₹", margin=dict(l=10, r=10, t=10, b=10))
-    st.plotly_chart(f2, use_container_width=True)
+    st.plotly_chart(f2, width="stretch")
+    st.caption("Total net profit if every fill costs this much extra per 10 g per leg; grey bars lose money.")
 with r:
     st.subheader("Results by regime")
     if "by_regime" in v:
         st.dataframe(v["by_regime"].rename(columns={"count": "Trades", "sum": "Net ₹"}).style.format({"Net ₹": "₹{:,.0f}"}))
-        st.caption(f"Gold beta of trade P&L: {v['gold_beta']:.3f} (near 0 = gold-neutral)")
+        st.caption("The same trades split by the market regime they were opened in; a real edge makes money in every row. "
+                   f"Gold beta of trade P&L: {v['gold_beta']:.3f} (near 0 = the result is not just gold going up).")
     else:
         st.info("No trades yet.")
+
+# ---- Contract calendar
+st.subheader("Contract calendar")
+tender = max(SPECS[a].tender_days, SPECS[b].tender_days)
+cal = calendar(panel, tender, res["params"].exit_buffer_days)
+segments = pd.concat([
+    cal.assign(start=cal["first"], end=cal["last_tradable"], phase="Can hold a position"),
+    cal.assign(start=cal["last_tradable"], end=cal["tender_start"], phase="Forced exit (broker buffer)"),
+    cal.assign(start=cal["tender_start"], end=cal["expiry"], phase="Tender window → expiry"),
+])
+segments["contract"] = segments["expiry"].dt.strftime("%b %Y") + segments["live"].map({True: " (live, est.)", False: ""})
+f3 = px.timeline(segments, x_start="start", x_end="end", y="contract", color="phase",
+                 color_discrete_map={"Can hold a position": GOLD, "Forced exit (broker buffer)": GREY,
+                                     "Tender window → expiry": RED},
+                 hover_data={"first": "|%d %b %Y", "last_tradable": "|%d %b %Y", "expiry": "|%d %b %Y",
+                             "start": False, "end": False, "contract": False})
+f3.update_yaxes(autorange="reversed", title=None)
+f3.update_layout(height=max(300, 22 * len(cal)), margin=dict(l=10, r=10, t=10, b=10),
+                 legend=dict(orientation="h", y=-0.12, title=None))
+st.plotly_chart(f3, width="stretch")
+st.caption("One bar per contract: gold is when AuLens may hold the pair, grey is the early-exit buffer, red is "
+           "the delivery (tender) window up to expiry. Dates after the last data day skip weekends only, so live "
+           "contracts are estimates.")
 
 with st.expander("Trade log"):
     st.dataframe(trades, hide_index=True)

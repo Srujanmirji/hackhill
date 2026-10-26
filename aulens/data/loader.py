@@ -8,6 +8,8 @@ Handles the known MCX quirks:
 """
 from __future__ import annotations
 
+from pathlib import Path
+
 import pandas as pd
 
 from aulens.specs import SPECS
@@ -45,11 +47,32 @@ def tidy(raw: pd.DataFrame) -> pd.DataFrame:
     return df.sort_values(["symbol", "expiry", "date"]).reset_index(drop=True)
 
 
+def apply_ddr(df: pd.DataFrame, ddr: pd.DataFrame) -> pd.DataFrame:
+    """On each contract's final day, use MCX's Due Date Rate (final settlement price) as close.
+
+    The Bhavcopy close on expiry day is the last trade of a thin, tender-window session, not
+    the price the contract settles at. The original value is kept in `bhav_close`.
+    `ddr` has columns Date (YYYY-MM-DD), Symbol, DDR (per the contract's own quote unit).
+    """
+    d = ddr.rename(columns={"Date": "date", "Symbol": "symbol", "DDR": "ddr"})[["date", "symbol", "ddr"]]
+    d = d.assign(date=pd.to_datetime(d["date"]), symbol=d["symbol"].str.strip().str.upper())
+    # The expiring contract is the nearest expiry still listed on the DDR date.
+    front = (df.groupby(["symbol", "date"], as_index=False)["expiry"].min()
+               .merge(d, on=["symbol", "date"]))
+    out = df.merge(front, on=["symbol", "date", "expiry"], how="left")
+    out["bhav_close"] = out["close"]
+    out["close"] = out["ddr"].fillna(out["close"])
+    return out.drop(columns="ddr")
+
+
 def assert_requested_date(raw: pd.DataFrame, requested: pd.Timestamp) -> bool:
     """True only if MCX returned the day we asked for (it may return the nearest day)."""
     dates = pd.to_datetime(raw["Date"].astype(str).str.strip(), format="%m/%d/%Y").unique()
     return len(dates) == 1 and pd.Timestamp(dates[0]).normalize() == pd.Timestamp(requested).normalize()
 
 
-def load_processed(path: str = "data/processed/gold_futures.parquet") -> pd.DataFrame:
+PROCESSED = Path(__file__).resolve().parents[2] / "data" / "processed" / "gold_futures.parquet"
+
+
+def load_processed(path: str | Path = PROCESSED) -> pd.DataFrame:
     return pd.read_parquet(path)

@@ -32,6 +32,7 @@ SPECS = {
 PAIRS = [
     ("GOLDTEN", "GOLDGUINEA"),   # control pair
     ("GOLDTEN", "GOLDPETAL"),    # adds Mumbai vs Ahmedabad basis
+    ("GOLDM", "GOLDTEN"),        # stretch: GOLDM (5th of M+1) vs GOLDTEN (end of M), carry-adjusted
 ]
 
 # Pre-set structural breaks used to split every backtest.

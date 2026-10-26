@@ -40,12 +40,18 @@ Old Python libraries (`mcxlib`, `mcxpy`) used `backpage.aspx` routes that MCX re
 
 ## Validation log (fill this in)
 
+Raw file: `data/raw/gold_bhavcopy_20250401_20261023.csv`, fetched from the Bhavcopy page's
+`GetDateWiseBhavCopy` endpoint (`InstrumentName=FUTCOM`, `fromDate=DD/MM/YYYY`, needs the
+`X-Requested-With: XMLHttpRequest` header) inside a real browser session; plain scripts get
+Akamai 403. Gold futures rows only. MCX's own field names match `COLMAP`, so no mapping changes.
+
 | Check | Result | Who / when |
 |---|---|---|
-| Date range loaded | | |
-| Expiries per symbol | | |
-| 3 closes checked by hand against MCX | | |
-| Days dropped as holiday mismatches | | |
+| Date range loaded | 01 Apr 2025 → 23 Oct 2026, 402 trading days, 10,768 rows (GOLD 2,343 · GOLDM 2,046 · GOLDTEN 2,045 · GOLDGUINEA 2,167 · GOLDPETAL 2,167). No duplicate (date, symbol, expiry) keys; every symbol present on every trading day. | Claude, 26 Oct 2026 |
+| Expiries per symbol | GOLD 16 · GOLDM 25 · GOLDTEN 24 · GOLDGUINEA 24 · GOLDPETAL 24 (includes contracts still listed on 23 Oct 2026). Every expired contract trades until its expiry date, except the 31 Mar 2026 TEN/GUINEA/PETAL contracts and the 3 Apr 2026 GOLDM contract, whose last row is one day earlier (holiday at expiry). | Claude, 26 Oct 2026 |
+| 3 closes checked by hand against MCX | **TODO (by hand)** — e.g. GOLDTEN 30OCT2026 on 22 Oct 2026 = 142223, GOLDGUINEA 30OCT2026 = 114285, GOLDM 05NOV2026 = 141802. Check these on the MCX Bhavcopy page. | |
+| Days dropped as holiday mismatches | 7 weekdays returned no rows (none returned a different date): 18 Apr 2025, 15 Aug 2025, 2 Oct 2025, 25 Dec 2025, 26 Jan 2026, 3 Apr 2026, 2 Oct 2026. | Claude, 26 Oct 2026 |
+| Zero-volume rows | GOLD 897 (far months) · GOLDGUINEA 6 · GOLDM 8 · GOLDTEN 1 · GOLDPETAL 0. Kept; the backtest's volume filter excludes them from trading. | Claude, 26 Oct 2026 |
 
 ## Synthetic data
 

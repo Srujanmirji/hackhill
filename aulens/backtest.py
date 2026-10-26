@@ -35,10 +35,13 @@ class Params:
 
 
 def expected_spread(p: pd.DataFrame, a: str, b: str, lookback: int) -> pd.Series:
-    """Convergence target E. Same city + purity + expiry -> 0. Otherwise the trailing
-    median basis (e.g. Mumbai vs Ahmedabad), using past data only."""
+    """Convergence target E. Same city + purity + expiry -> 0. Different expiry (GOLDM 5th vs
+    GOLDTEN month-end) -> carry over the expiry gap, from the past-only curve carry. Otherwise
+    the trailing median basis (e.g. Mumbai vs Ahmedabad), using past data only."""
     sa, sb = SPECS[a], SPECS[b]
-    if sa.settle_city == sb.settle_city and sa.expiry_rule == sb.expiry_rule:
+    if sa.expiry_rule != sb.expiry_rule:
+        return p["px10_b"] * np.expm1(p["carry"] * p["gap_days"] / 365)
+    if sa.settle_city == sb.settle_city:
         return pd.Series(0.0, index=p.index)
     basis = p.groupby("expiry")["spread"].transform(lambda s: s.shift(1).rolling(lookback * 3, min_periods=lookback).median())
     return basis
@@ -61,9 +64,9 @@ def add_signals(p: pd.DataFrame, a: str, b: str, prm: Params) -> pd.DataFrame:
 
 def _trades_for_expiry(e: pd.DataFrame, z_entry: float, prm: Params, grams: float) -> list[dict]:
     trades, pos, entry = [], 0, None
-    rows = e.reset_index(drop=True)
+    rows = list(e.itertuples(index=False))
     for i in range(len(rows) - 1):
-        r, nxt = rows.iloc[i], rows.iloc[i + 1]   # decide on day i, fill on day i+1
+        r, nxt = rows[i], rows[i + 1]             # decide on day i, fill on day i+1
         if pos == 0:
             if not (r.can_hold and r.liquid and np.isfinite(r.z) and abs(r.z) > z_entry):
                 continue

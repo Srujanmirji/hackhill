@@ -1,0 +1,9 @@
+[theme]
+base = "light"
+primaryColor = "#B07A1E"              # gold
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F4F1EA"  # warm off-white sidebar
+textColor = "#1D1D1F"                 # charcoal
+
+[server]
+headless = true

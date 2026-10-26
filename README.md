@@ -13,7 +13,7 @@ costs, walk-forward and across 2024–26 regime breaks, and returns one honest v
 
 Team **CodeWick** · Hack in Hills '26 · Track 03: Commodity Derivatives Intelligence
 
-![AuLens dashboard (synthetic data)](docs/dashboard.png)
+![AuLens dashboard on real MCX data, 1 Apr 2025 – 23 Oct 2026](docs/dashboard.png)
 
 ## Quick start
 
@@ -41,7 +41,7 @@ pytest -q
 | Step | Module | What happens |
 |---|---|---|
 | Normalize | `aulens/normalize.py` | Every contract → ₹ per 10 g at 999 purity using MCX's own formulas |
-| Pair | `aulens/normalize.py` | Gram-matched lots (e.g. 4 GOLDTEN vs 5 GOLDGUINEA = 40 g), same expiry only |
+| Pair | `aulens/normalize.py` | Gram-matched lots (e.g. 4 GOLDTEN vs 5 GOLDGUINEA = 40 g), same expiry only (GOLDM month M+1 vs GOLDTEN month M) |
 | Expect | `aulens/backtest.py` | Convergence target from settlement rules (0 for the control pair) |
 | Validate | `aulens/backtest.py` | Walk-forward, T+1 fills, exits before tender, volume filter |
 | Cost | `aulens/costs.py` | CTT, MCX fee, SEBI fee, stamp duty, GST, brokerage, slippage |
@@ -62,6 +62,64 @@ pytest -q
 | [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md) | 2-minute demo video script |
 | [docs/SUBMISSION_CHECKLIST.md](docs/SUBMISSION_CHECKLIST.md) | Before every round |
 
+## Results (real MCX data, 1 Apr 2025 – 23 Oct 2026)
+
+**No pair shows an edge after costs.** Default assumptions: ₹20 slippage per 10 g per leg,
+50-lot minimum volume, walk-forward `z_entry`.
+
+| Pair | Verdict | Trades | Net P&L | Break-even slippage (₹/10 g/leg) | Gold beta |
+|---|---|---|---|---|---|
+| GOLDTEN vs GOLDGUINEA (control) | **NO EDGE** | 61 | ₹-25,726 | ₹-6.4 | 0.063 |
+| GOLDTEN vs GOLDPETAL | **NO EDGE** | 48 | ₹34,450 | ₹64.9 | 0.136 |
+| GOLDM vs GOLDTEN (stretch) | **NO EDGE** | 29 | ₹-167,976 | ₹-124.8 | 0.254 |
+
+- **Control pair:** loses money even at zero slippage (negative break-even). Its spread is ±₹1
+  at the final settlement price on all 18 expiries, which validates the normalization, but it
+  converges only after the tender-window exit.
+- **GOLDTEN vs GOLDPETAL:** net positive, but the profit comes from one regime (22 Sep 2025 –
+  1 Apr 2026) and it loses after 13 May 2026, so it fails the every-regime test.
+- **GOLDM vs GOLDTEN:** most of the loss is one crash day (30 Jan 2026), when the two expiries
+  fell 17.5% and 12%. See [docs/LIMITATIONS.md](docs/LIMITATIONS.md).
+
+Exact output of `python scripts/run_backtest.py`:
+
+```
+Data source: MCX
+
+== GOLDTEN vs GOLDGUINEA  [NO EDGE]  4 x GOLDTEN  vs  5 x GOLDGUINEA  (40 g)
+   Does not survive costs, slippage and regime splits with confidence.
+   trades 61  gross ₹11,621  costs ₹17,827  slippage ₹19,520  net ₹-25,726  hit 41%
+   break-even slippage ₹-6.4/10 g/leg   gold beta 0.063
+                  count           sum
+regime                               
+From 01 Apr 2025      4   -343.373494
+From 22 Sep 2025     26 -14300.040986
+From 01 Apr 2026      4  -4092.986550
+From 13 May 2026     27  -6989.979303 
+
+== GOLDTEN vs GOLDPETAL  [NO EDGE]  4 x GOLDTEN  vs  40 x GOLDPETAL  (40 g)
+   Does not survive costs, slippage and regime splits with confidence.
+   trades 48  gross ₹63,720  costs ₹13,910  slippage ₹15,360  net ₹34,450  hit 40%
+   break-even slippage ₹64.9/10 g/leg   gold beta 0.136
+                  count           sum
+regime                               
+From 01 Apr 2025      4   2671.647840
+From 22 Sep 2025     27  33195.824266
+From 01 Apr 2026      3    247.194325
+From 13 May 2026     14  -1664.656702 
+
+== GOLDM vs GOLDTEN  [NO EDGE]  1 x GOLDM  vs  10 x GOLDTEN  (100 g)
+   Does not survive costs, slippage and regime splits with confidence.
+   trades 29  gross ₹-128,353  costs ₹16,423  slippage ₹23,200  net ₹-167,976  hit 38%
+   break-even slippage ₹-124.8/10 g/leg   gold beta 0.254
+                  count            sum
+regime                                
+From 01 Apr 2025      5   -2589.684613
+From 22 Sep 2025     16 -146595.595555
+From 01 Apr 2026      3  -12075.595336
+From 13 May 2026      5   -6714.916906
+```
+
 ## Status
 
 - [x] Contract rulebook, normalizer, gram matching
@@ -69,9 +127,13 @@ pytest -q
 - [x] Walk-forward backtest with T+1 fills, tender exits, volume filter
 - [x] Verdicts with bootstrap CI, regime split and gold beta
 - [x] Streamlit dashboard, tests, synthetic data generator
-- [ ] **Real MCX history loaded** ← the most important open item
+- [x] Real MCX history loaded (402 trading days, 10,768 contract-days; see [docs/DATA.md](docs/DATA.md))
+- [x] Expiry-day closes replaced by MCX's published final settlement prices (DDR)
+- [x] Control-pair convergence verified on real data (`tests/test_real_data.py`)
+- [x] Contract calendar, chart captions, cached sensitivity (page loads in < 5 s)
+- [x] GOLDM vs GOLDTEN pair, carry-adjusted for the 5th vs month-end expiry gap
 - [ ] Contract specs verified against July 2026 MCX PDFs
-- [ ] GOLDM vs GOLDTEN pair (needs carry adjustment for the 5th vs month-end expiry gap)
+- [ ] GOLDM 3-day-average DDR modelled in the GOLDM vs GOLDTEN expected spread
 - [ ] Carry decomposition panel, measured slippage from live bid/ask
 
 ## License

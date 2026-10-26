@@ -19,6 +19,12 @@ The 999/995 factor is the same conversion MCX uses to set GOLDTEN/GUINEA/PETAL s
 prices, so it is a rule, not an estimate. It accounts for a fixed ~0.40% gap (≈ ₹590 per
 10 g at ₹1.46 lakh) that must never be reported as an opportunity.
 
+**Expiry-day price = DDR.** On each contract's final day the Bhavcopy close is the last trade of a
+thin tender-window session (often < 100 lots), not the settlement price. `build_dataset.py`
+replaces it with MCX's published Due Date Rate (`data/raw/ddr/mcx_ddr.csv`) and keeps the original
+in `bhav_close`. Check on real data: GOLDGUINEA DDR × 10/8 equals GOLDTEN DDR within ₹1 on all 18
+expiries (Apr 2025 – Sep 2026), which confirms the normalization formula above.
+
 ## 2. Pairs and position sizing
 
 Pairs are formed **only between contracts with the same expiry date**, so no artificial roll
@@ -40,8 +46,13 @@ At expiry each contract settles on a polled spot price (its DDR). So:
   999-converted spot → `E = 0`. This is the **control pair**.
 - **Different city (GOLDTEN vs GOLDPETAL):** Petal settles on Mumbai spot → `E` = trailing
   median of the spread over past days only (an estimate of the Mumbai–Ahmedabad basis).
-- **Different expiry (GOLDM, 5th vs month-end):** not in the prototype; needs a carry
-  adjustment from the curve.
+- **Different expiry (GOLDM vs GOLDTEN, stretch):** GOLDM expires on the 5th and GOLDTEN at
+  month-end, so GOLDM month *M+1* is paired with GOLDTEN month *M* (gap 3–7 days). The 995→999
+  purity gap is removed by normalization. `E = px10_TEN × (e^(c·gap/365) − 1)`, where `c` is the
+  annual carry implied by the two nearest GOLDTEN expiries, as a 60-day trailing median shifted one
+  day (past data only). On real data `c` ranges 4–21% a year (median ≈ 10%). Not modelled: GOLDM's
+  DDR is a 3-day spot average, GOLDTEN's a single poll. Positions close `max(tender) + buffer`
+  trading days before the GOLDTEN expiry, which is earlier than GOLDM's tender window.
 
 Residual `R = S − E`. Only `R` can be an edge.
 
