@@ -13,6 +13,8 @@ costs, walk-forward and across 2024–26 regime breaks, and returns one honest v
 
 Team **CodeWick** · Hack in Hills '26 · Track 03: Commodity Derivatives Intelligence
 
+**Live demo:** <https://hackhill-wikhjmugah4iqupyf4nlh4.streamlit.app/> · real MCX data, 1 Apr 2025 – 23 Oct 2026
+
 ![AuLens dashboard on real MCX data, 1 Apr 2025 – 23 Oct 2026](docs/dashboard.png)
 
 ## Quick start

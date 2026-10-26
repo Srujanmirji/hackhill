@@ -5,10 +5,10 @@
 - [ ] Submit at least 6 hours early
 
 ## Prototype round
-- [ ] Public GitHub repo, clean README with screenshot
-- [ ] `pip install -r requirements.txt && streamlit run app/streamlit_app.py` works from a fresh clone
-- [ ] Real MCX data loaded (`source == MCX`), no synthetic banner
-- [ ] Hosted demo link (Streamlit Community Cloud)
+- [x] Public GitHub repo, clean README with screenshot
+- [x] `pip install -r requirements.txt && streamlit run app/streamlit_app.py` works from a fresh clone
+- [x] Real MCX data loaded (`source == MCX`), no synthetic banner
+- [x] Hosted demo link (Streamlit Community Cloud): https://hackhill-wikhjmugah4iqupyf4nlh4.streamlit.app/
 - [ ] Demo video (see DEMO_SCRIPT.md), uploaded unlisted on YouTube or Drive with view access
 - [ ] TinyFish first run completed (required by organisers)
 
