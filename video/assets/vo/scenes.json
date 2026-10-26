@@ -65,37 +65,37 @@
  {
   "id": "s08",
   "shot": "pairs",
-  "text": "All three pairs, including the stretch pair Gold Mini against Gold Ten, come back the same: no edge.",
-  "start": 56.045,
-  "duration": 7.123,
-  "voice_start": 56.395,
-  "voice_len": 6.123
+  "text": "Six pairs in gold and silver, including two carry pairs across expiries, come back the same: no edge.",
+  "start": 56.046,
+  "duration": 7.784,
+  "voice_start": 56.396,
+  "voice_len": 6.784
  },
  {
   "id": "s09",
   "shot": "carry",
   "text": "The curve also shows what holding gold costs: about six percent a year through 2025, nearly fourteen since the rally.",
-  "start": 63.168,
+  "start": 63.83,
   "duration": 9.299,
-  "voice_start": 63.518,
+  "voice_start": 64.18,
   "voice_len": 8.299
  },
  {
   "id": "s10",
   "shot": "alerts",
   "text": "So AuLens stays quiet. It alerts only when a pair earns an edge and clears its costs.",
-  "start": 72.467,
+  "start": 73.129,
   "duration": 6.163,
-  "voice_start": 72.817,
+  "voice_start": 73.479,
   "voice_len": 5.163
  },
  {
   "id": "s11",
   "shot": "end",
-  "text": "AuLens. Five contracts, one metal, one honest verdict. Open source, and live today.",
-  "start": 78.629,
-  "duration": 9.832,
-  "voice_start": 78.979,
-  "voice_len": 5.632
+  "text": "AuLens. Gold and silver, six pairs, one honest verdict. Open source, and live today.",
+  "start": 79.292,
+  "duration": 9.981,
+  "voice_start": 79.642,
+  "voice_len": 5.781
  }
 ]

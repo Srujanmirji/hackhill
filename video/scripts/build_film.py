@@ -382,15 +382,17 @@ s.mark(rg, (0.02, 0.755, 0.98, 0.995), s.L(cue("s07", "April")))
 s.exit("whip-up")
 s.write()
 
-# ================= pairs: three stamps, three presses =================
+# ================= pairs: six stamps (gold row, then carry + silver row), six presses =================
 s = Scene("pairs")
 s.enter("whip-up")
-t_all, t_no = s.L(cue("s08", "All")), s.L(cue("s08", "no"))
-for i, (tag, rot) in enumerate([("control", -3), ("petal", 2), ("goldm", -2)]):
-    st = s.plate(f"assets/screens/stamp_{tag}.png", 90 + i * 590, 260, 560, reveal=None)
-    at = round(t_all + 0.25 + i * (t_no - t_all - 0.25) / 2, 3)
-    s.press(f'#{st["id"]}', at, rot=rot, ring=(70 + i * 590, 240, 600, round(st["h"] + 40)), vol=0.35 + 0.12 * i)
-s.exit("zoom", origin=(1475, 400))
+t_all, t_no = s.L(cue("s08", "Six")), s.L(cue("s08", "no"))
+STAMPS = [("control", -3), ("goldgoldm", 2), ("petal", -2), ("goldm", 2), ("silverm", -3), ("silver", -1)]
+for i, (tag, rot) in enumerate(STAMPS):
+    x, y = 105 + (i % 3) * 605, 190 + (i // 3) * 320
+    st = s.plate(f"assets/screens/stamp_{tag}.png", x, y, 500, reveal=None)
+    at = round(t_all + 0.25 + i * (t_no - t_all - 0.25) / (len(STAMPS) - 1), 3)
+    s.press(f'#{st["id"]}', at, rot=rot, ring=(x - 20, y - 20, 540, round(st["h"] + 40)), vol=0.3 + 0.06 * i)
+s.exit("zoom", origin=(1565, 645))
 s.write()
 
 # ================= carry: scan reveal, two real medians =================
@@ -429,11 +431,11 @@ s.css = f"""
 .team {{ position: absolute; left: 0; right: 0; top: 790px; text-align: center; font-size: 28px; color: {STEEL}; }}
 """
 s.add('<div id="end-hm" class="hm"><span>AuLens</span></div>')
-s.add('<div id="end-tag" class="tag">' + "".join(f'<span class="w">{w}</span>' for w in "Five contracts, one metal, one honest verdict.".split()) + "</div>")
+s.add('<div id="end-tag" class="tag">' + "".join(f'<span class="w">{w}</span>' for w in "Gold and silver, six pairs, one honest verdict.".split()) + "</div>")
 s.add('<div id="end-links" class="links">hackhill-wikhjmugah4iqupyf4nlh4.streamlit.app<br>github.com/Srujanmirji/hackhill</div>')
 s.add("<div id=\"end-team\" class=\"team\">Team CodeWick · Hack in Hills '26 · Track 03</div>")
 s.press("#end-hm", s.L(cue("s11", "AuLens")) + 0.05, rot=0, ring=(620, 210, 680, 290), vol=0.6)
-s.tw(f'tl.fromTo("#end-tag .w", {{ opacity: 0, filter: "blur(6px)" }}, {{ opacity: 1, filter: "blur(0px)", duration: 0.13, stagger: 0.09 }}, {s.L(cue("s11", "Five"))});')
+s.tw(f'tl.fromTo("#end-tag .w", {{ opacity: 0, filter: "blur(6px)" }}, {{ opacity: 1, filter: "blur(0px)", duration: 0.13, stagger: 0.09 }}, {s.L(cue("s11", "Gold"))});')
 s.tw(f'tl.fromTo("#end-links", {{ clipPath: "inset(0 100% 0 0)" }}, {{ clipPath: "inset(0 0% 0 0)", duration: 0.5, ease: "expo.out" }}, {s.L(cue("s11", "Open"))});')
 s.tw(f'tl.fromTo("#end-team", {{ opacity: 0 }}, {{ opacity: 1, duration: 0.4 }}, {round(s.L(cue("s11", "Open")) + 0.4, 3)});')
 s.write()

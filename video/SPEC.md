@@ -15,11 +15,11 @@ SHOTS:   s01 0-8.3 hook: five closes print row by row on "five sizes"; "free mon
          s05 33.5-40.9 NO EDGE stamp; stamp hit on "no edge".
          s06 40.9-49.4 key numbers; boxes on Trades/Net P&L, then Break-even.
          s07 49.4-56.0 slippage + regime plates; box on Apr/May 2026 rows.
-         s08 56.0-63.2 three stamps print one per pair; last lands on "no edge".
+         s08 56.0-63.8 six stamps (4 gold, 2 silver) print one per pair; last lands on "no edge".
          s09 63.2-72.5 carry chart; box 2025 side at "six percent", rally side at "fourteen".
          s10 72.5-78.6 quiet alerts table; box on the "No alerts" line.
          s11 78.6-88.5 end card: AuLens hallmark performed, tagline, live link + repo, team.
 BANNED:  dark void; glow; gradients; everything centred; fade-and-slide-up entrances; drifting text while read;
          title over a dimmed screenshot; logo docked in a corner; invented UI or numbers.
 QA:      4.0 (hook rows), 16.5 (lede box), 25.0 (settle box), 31.0 (punch), 39.5 (stamp), 47.0 (break-even box),
-         54.0 (regime box), 62.0 (three stamps), 70.0 (carry box), 76.5 (alerts box), 84.0 (end card).
+         54.0 (regime box), 62.0 (six stamps), 70.0 (carry box), 76.5 (alerts box), 84.0 (end card).

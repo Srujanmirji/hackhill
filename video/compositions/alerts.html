@@ -48,8 +48,8 @@
     const tl = gsap.timeline({ paused: true });
     tl.fromTo("#alerts-cam", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.16, ease: "power2.out" }, 0);
     tl.fromTo("#alerts-p1", { clipPath: "inset(0 100% 0 0 round 6px)" }, { clipPath: "inset(0 0% 0 0 round 6px)", duration: 0.55, ease: "expo.out" }, 0.1);
-    tl.fromTo("#alerts-m2", { opacity: 0, scale: 1.08 }, { opacity: 1, scale: 1, duration: 0.27, ease: "power3.out" }, 1.373);
-    tl.fromTo("#alerts-zero", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.2 }, 1.723);
+    tl.fromTo("#alerts-m2", { opacity: 0, scale: 1.08 }, { opacity: 1, scale: 1, duration: 0.27, ease: "power3.out" }, 1.351);
+    tl.fromTo("#alerts-zero", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.2 }, 1.701);
     tl.to("#alerts-cam", { x: -620, filter: "blur(18px)", duration: 0.22, ease: "power3.in" }, 5.943);
     window.__timelines["alerts"] = tl;
   </script>

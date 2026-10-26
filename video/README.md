@@ -1,6 +1,6 @@
 # AuLens demo video (HyperFrames)
 
-Source for the ~1:28 hackathon demo. Real MCX data and real captures of the live app only.
+Source for the ~1:29 hackathon demo. Real MCX data and real captures of the live app only.
 
 ```bash
 cd video

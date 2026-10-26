@@ -22,12 +22,18 @@
   <div id="root" data-composition-id="pairs" data-width="1920" data-height="1080">
 
     <div id="pairs-cam" class="cam">
-      <div id="pairs-p1" class="plate" style="left:90px; top:260px; width:560px; height:303px;"><img src="assets/screens/stamp_control.png" alt=""></div>
-      <div id="pairs-ring2" class="ring" style="left:70px; top:240px; width:600px; height:343px;"></div>
-      <div id="pairs-p3" class="plate" style="left:680px; top:260px; width:560px; height:303px;"><img src="assets/screens/stamp_petal.png" alt=""></div>
-      <div id="pairs-ring4" class="ring" style="left:660px; top:240px; width:600px; height:343px;"></div>
-      <div id="pairs-p5" class="plate" style="left:1270px; top:260px; width:560px; height:303px;"><img src="assets/screens/stamp_goldm.png" alt=""></div>
-      <div id="pairs-ring6" class="ring" style="left:1250px; top:240px; width:600px; height:343px;"></div>
+      <div id="pairs-p1" class="plate" style="left:105px; top:190px; width:500px; height:270px;"><img src="assets/screens/stamp_control.png" alt=""></div>
+      <div id="pairs-ring2" class="ring" style="left:85px; top:170px; width:540px; height:310px;"></div>
+      <div id="pairs-p3" class="plate" style="left:710px; top:190px; width:500px; height:270px;"><img src="assets/screens/stamp_goldgoldm.png" alt=""></div>
+      <div id="pairs-ring4" class="ring" style="left:690px; top:170px; width:540px; height:310px;"></div>
+      <div id="pairs-p5" class="plate" style="left:1315px; top:190px; width:500px; height:270px;"><img src="assets/screens/stamp_petal.png" alt=""></div>
+      <div id="pairs-ring6" class="ring" style="left:1295px; top:170px; width:540px; height:310px;"></div>
+      <div id="pairs-p7" class="plate" style="left:105px; top:510px; width:500px; height:270px;"><img src="assets/screens/stamp_goldm.png" alt=""></div>
+      <div id="pairs-ring8" class="ring" style="left:85px; top:490px; width:540px; height:310px;"></div>
+      <div id="pairs-p9" class="plate" style="left:710px; top:510px; width:500px; height:270px;"><img src="assets/screens/stamp_silverm.png" alt=""></div>
+      <div id="pairs-ring10" class="ring" style="left:690px; top:490px; width:540px; height:310px;"></div>
+      <div id="pairs-p11" class="plate" style="left:1315px; top:510px; width:500px; height:270px;"><img src="assets/screens/stamp_silver.png" alt=""></div>
+      <div id="pairs-ring12" class="ring" style="left:1295px; top:490px; width:540px; height:310px;"></div>
     </div>
 
   </div>
@@ -48,25 +54,43 @@
 
     const tl = gsap.timeline({ paused: true });
     tl.fromTo("#pairs-cam", { y: 520, filter: "blur(18px)" }, { y: 0, filter: "blur(0px)", duration: 0.32, ease: "expo.out" }, 0);
-    tl.fromTo("#pairs-p1", { opacity: 0, scale: 1.35, rotation: -8 }, { opacity: 1, scale: 1, rotation: -3, duration: 0.16, ease: "power4.in" }, 0.205);
-    tl.fromTo("#pairs-ring2", { opacity: 0.5, scale: 0.95, rotation: -3 }, { opacity: 0, scale: 1.3, rotation: -3, duration: 0.55, ease: "expo.out", immediateRender: false }, 0.365);
-    tl.set("#pairs-cam", { x: 7, y: -4 }, 0.365);
-    tl.set("#pairs-cam", { x: -5, y: 3 }, 0.398);
-    tl.set("#pairs-cam", { x: 3, y: -2 }, 0.432);
-    tl.set("#pairs-cam", { x: 0, y: 0 }, 0.465);
-    tl.fromTo("#pairs-p3", { opacity: 0, scale: 1.35, rotation: -3 }, { opacity: 1, scale: 1, rotation: 2, duration: 0.16, ease: "power4.in" }, 2.88);
-    tl.fromTo("#pairs-ring4", { opacity: 0.5, scale: 0.95, rotation: 2 }, { opacity: 0, scale: 1.3, rotation: 2, duration: 0.55, ease: "expo.out", immediateRender: false }, 3.04);
-    tl.set("#pairs-cam", { x: 7, y: -4 }, 3.04);
-    tl.set("#pairs-cam", { x: -5, y: 3 }, 3.073);
-    tl.set("#pairs-cam", { x: 3, y: -2 }, 3.107);
-    tl.set("#pairs-cam", { x: 0, y: 0 }, 3.14);
-    tl.fromTo("#pairs-p5", { opacity: 0, scale: 1.35, rotation: -7 }, { opacity: 1, scale: 1, rotation: -2, duration: 0.16, ease: "power4.in" }, 5.555);
-    tl.fromTo("#pairs-ring6", { opacity: 0.5, scale: 0.95, rotation: -2 }, { opacity: 0, scale: 1.3, rotation: -2, duration: 0.55, ease: "expo.out", immediateRender: false }, 5.715);
-    tl.set("#pairs-cam", { x: 7, y: -4 }, 5.715);
-    tl.set("#pairs-cam", { x: -5, y: 3 }, 5.748);
-    tl.set("#pairs-cam", { x: 3, y: -2 }, 5.782);
-    tl.set("#pairs-cam", { x: 0, y: 0 }, 5.815);
-    tl.to("#pairs-cam", { scale: 2.4, transformOrigin: "1475px 400px", filter: "blur(14px)", duration: 0.4, ease: "power3.in" }, 6.723);
+    tl.fromTo("#pairs-p1", { opacity: 0, scale: 1.35, rotation: -8 }, { opacity: 1, scale: 1, rotation: -3, duration: 0.16, ease: "power4.in" }, 0.204);
+    tl.fromTo("#pairs-ring2", { opacity: 0.5, scale: 0.95, rotation: -3 }, { opacity: 0, scale: 1.3, rotation: -3, duration: 0.55, ease: "expo.out", immediateRender: false }, 0.364);
+    tl.set("#pairs-cam", { x: 7, y: -4 }, 0.364);
+    tl.set("#pairs-cam", { x: -5, y: 3 }, 0.397);
+    tl.set("#pairs-cam", { x: 3, y: -2 }, 0.431);
+    tl.set("#pairs-cam", { x: 0, y: 0 }, 0.464);
+    tl.fromTo("#pairs-p3", { opacity: 0, scale: 1.35, rotation: -3 }, { opacity: 1, scale: 1, rotation: 2, duration: 0.16, ease: "power4.in" }, 1.418);
+    tl.fromTo("#pairs-ring4", { opacity: 0.5, scale: 0.95, rotation: 2 }, { opacity: 0, scale: 1.3, rotation: 2, duration: 0.55, ease: "expo.out", immediateRender: false }, 1.578);
+    tl.set("#pairs-cam", { x: 7, y: -4 }, 1.578);
+    tl.set("#pairs-cam", { x: -5, y: 3 }, 1.611);
+    tl.set("#pairs-cam", { x: 3, y: -2 }, 1.645);
+    tl.set("#pairs-cam", { x: 0, y: 0 }, 1.678);
+    tl.fromTo("#pairs-p5", { opacity: 0, scale: 1.35, rotation: -7 }, { opacity: 1, scale: 1, rotation: -2, duration: 0.16, ease: "power4.in" }, 2.632);
+    tl.fromTo("#pairs-ring6", { opacity: 0.5, scale: 0.95, rotation: -2 }, { opacity: 0, scale: 1.3, rotation: -2, duration: 0.55, ease: "expo.out", immediateRender: false }, 2.792);
+    tl.set("#pairs-cam", { x: 7, y: -4 }, 2.792);
+    tl.set("#pairs-cam", { x: -5, y: 3 }, 2.825);
+    tl.set("#pairs-cam", { x: 3, y: -2 }, 2.859);
+    tl.set("#pairs-cam", { x: 0, y: 0 }, 2.892);
+    tl.fromTo("#pairs-p7", { opacity: 0, scale: 1.35, rotation: -3 }, { opacity: 1, scale: 1, rotation: 2, duration: 0.16, ease: "power4.in" }, 3.846);
+    tl.fromTo("#pairs-ring8", { opacity: 0.5, scale: 0.95, rotation: 2 }, { opacity: 0, scale: 1.3, rotation: 2, duration: 0.55, ease: "expo.out", immediateRender: false }, 4.006);
+    tl.set("#pairs-cam", { x: 7, y: -4 }, 4.006);
+    tl.set("#pairs-cam", { x: -5, y: 3 }, 4.039);
+    tl.set("#pairs-cam", { x: 3, y: -2 }, 4.073);
+    tl.set("#pairs-cam", { x: 0, y: 0 }, 4.106);
+    tl.fromTo("#pairs-p9", { opacity: 0, scale: 1.35, rotation: -8 }, { opacity: 1, scale: 1, rotation: -3, duration: 0.16, ease: "power4.in" }, 5.06);
+    tl.fromTo("#pairs-ring10", { opacity: 0.5, scale: 0.95, rotation: -3 }, { opacity: 0, scale: 1.3, rotation: -3, duration: 0.55, ease: "expo.out", immediateRender: false }, 5.22);
+    tl.set("#pairs-cam", { x: 7, y: -4 }, 5.22);
+    tl.set("#pairs-cam", { x: -5, y: 3 }, 5.253);
+    tl.set("#pairs-cam", { x: 3, y: -2 }, 5.287);
+    tl.set("#pairs-cam", { x: 0, y: 0 }, 5.32);
+    tl.fromTo("#pairs-p11", { opacity: 0, scale: 1.35, rotation: -6 }, { opacity: 1, scale: 1, rotation: -1, duration: 0.16, ease: "power4.in" }, 6.274);
+    tl.fromTo("#pairs-ring12", { opacity: 0.5, scale: 0.95, rotation: -1 }, { opacity: 0, scale: 1.3, rotation: -1, duration: 0.55, ease: "expo.out", immediateRender: false }, 6.434);
+    tl.set("#pairs-cam", { x: 7, y: -4 }, 6.434);
+    tl.set("#pairs-cam", { x: -5, y: 3 }, 6.467);
+    tl.set("#pairs-cam", { x: 3, y: -2 }, 6.501);
+    tl.set("#pairs-cam", { x: 0, y: 0 }, 6.534);
+    tl.to("#pairs-cam", { scale: 2.4, transformOrigin: "1565px 645px", filter: "blur(14px)", duration: 0.4, ease: "power3.in" }, 7.384);
     window.__timelines["pairs"] = tl;
   </script>
 </template>
