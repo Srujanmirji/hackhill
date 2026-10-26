@@ -32,6 +32,7 @@ SPECS = {
 # expiry and tender schedule, so its normalized spread must converge to zero at DDR.
 PAIRS = [
     ("GOLDTEN", "GOLDGUINEA"),   # control pair
+    ("GOLD", "GOLDM"),           # second control: same purity, city, 3-day DDR and expiry; settles on one DDR
     ("GOLDTEN", "GOLDPETAL"),    # adds Mumbai vs Ahmedabad basis
     ("GOLDM", "GOLDTEN"),        # stretch: GOLDM (5th of M+1) vs GOLDTEN (end of M), carry-adjusted
 ]

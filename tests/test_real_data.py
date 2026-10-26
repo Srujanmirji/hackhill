@@ -63,3 +63,11 @@ def test_curve_carry_is_annualized_front_to_next(df):
     from aulens.normalize import curve_carry
     c = curve_carry(df)
     assert c.notna().all() and c.between(-1, 1).all()   # annual rate; Jan 2026 rally peaks near 51%
+
+
+def test_gold_goldm_settle_on_the_same_price(df):
+    """GOLD and GOLDM settle on one DDR, so every expired common contract ends at exactly ₹0."""
+    p = pair_panel(df, "GOLD", "GOLDM")
+    p = p[p["expiry"] <= df["date"].max()]
+    final = p.sort_values("date").groupby("expiry")["spread"].last()
+    assert len(final) >= 5 and (final.abs() < 0.01).all()

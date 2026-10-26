@@ -9,6 +9,10 @@ import streamlit as st
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+# Streamlit Cloud reruns this file after a git push but can keep the old aulens package in memory
+# (seen as an ImportError on a newly added function). Drop it so every run imports the current code.
+for _m in [m for m in sys.modules if m == "aulens" or m.startswith("aulens.") or m == "theme"]:
+    del sys.modules[_m]
 from aulens.backtest import Params, latest_signals, walk_forward  # noqa: E402
 from aulens.costs import CostModel  # noqa: E402
 from aulens.data.loader import load_processed  # noqa: E402
@@ -33,7 +37,7 @@ source = "SYNTHETIC" if (df["source"] == "SYNTHETIC").any() else df["source"].il
 with st.sidebar:
     st.header("AuLens")
     st.caption("An edge validator for MCX gold futures.")
-    tags = {0: " (control)", 2: " (stretch)"}
+    tags = {0: " (control)", 1: " (control)", 3: " (stretch)"}
     labels = [f"{a} vs {b}" + tags.get(i, "") for i, (a, b) in enumerate(PAIRS)]
     a, b = PAIRS[st.radio("Pair to test", range(len(PAIRS)), format_func=lambda i: labels[i])]
     st.subheader("Assumptions")
@@ -61,6 +65,45 @@ def run(a, b, slip, min_vol, scale, cap_pct):
 def sensitivity(a, b, min_vol, scale, cap_pct):
     return pd.DataFrame([{"slippage": s, "net": run(a, b, s, min_vol, scale, cap_pct)[1].get("net_pnl", 0)}
                          for s in [0, 10, 20, 30, 40, 60]])
+
+
+@st.cache_data
+def robustness(a, b, min_vol, scale):
+    """Net P&L over a slippage x capacity-cap grid: does NO EDGE survive other reasonable settings?"""
+    slips, caps = [0, 10, 20, 30, 40, 60], [1, 2, 3, 5]
+    z = [[run(a, b, sl, min_vol, scale, cp)[1].get("net_pnl", 0) for sl in slips] for cp in caps]
+    return slips, caps, z
+
+
+def report(v, res, a, b, slip, min_vol, scale, cap_pct):
+    """Plain-text summary of the verdict and the assumptions it was made under."""
+    lo, hi = v.get("mean_trade_ci90", (float("nan"), float("nan")))
+    reg = v["by_regime"].to_string() if "by_regime" in v else "no trades"
+    return f"""AuLens verdict report
+Pair: {v['pair']} ({v['lots']})
+Data: MCX settlement data {df['date'].min():%d %b %Y} to {df['date'].max():%d %b %Y}
+Verdict: {v['verdict']}. {v['reason']}
+
+Assumptions
+  Slippage per 10 g per leg: Rs {slip}
+  Minimum daily volume, both legs: {min_vol} lots
+  Capacity cap: {cap_pct}% of each leg's daily volume
+  Size multiplier: {scale}
+
+Results
+  Trades (walk-forward): {v['trades']}
+  Gross P&L: Rs {v.get('gross_pnl', 0):,.0f}   Costs: Rs {v.get('costs', 0):,.0f}   Slippage: Rs {v.get('slippage', 0):,.0f}
+  Net P&L: Rs {v.get('net_pnl', 0):,.0f}   Win rate: {v.get('hit_rate', 0):.0%}
+  Net Sharpe: {v.get('net_sharpe', float('nan')):.2f}   Gold beta: {v.get('gold_beta', float('nan')):.3f}
+  Break-even slippage: Rs {v.get('breakeven_slippage_per_leg', float('nan')):.1f} per 10 g per leg
+  90% CI of the mean trade: Rs {lo:,.0f} to Rs {hi:,.0f}
+
+By regime
+{reg}
+
+Method: walk-forward z_entry, signals on day t, fills at t+1 settlement, exits before the tender window.
+Not financial advice. https://github.com/Srujanmirji/hackhill
+"""
 
 
 def calendar(panel, tender, buffer):
@@ -214,6 +257,40 @@ else:
 st.table(alerts)
 st.caption("Gap and hurdle are ₹ per 10 g for the contract closest to its hurdle. Entry rules also need a large "
            "enough z-score, enough volume and enough days before the delivery window.")
+
+# ---- Robustness
+st.subheader("Does NO EDGE survive other settings?")
+st.caption("Net P&L for this pair across slippage and capacity-cap settings, everything else as in the sidebar. "
+           "About 24 backtests, so it runs on request and is then cached.")
+if st.button("Run the robustness grid", key="robust") or st.session_state.get("robust_done"):
+    st.session_state["robust_done"] = True
+    with st.spinner("Running 24 walk-forward backtests…"):
+        slips, caps, z = robustness(a, b, min_vol, scale)
+    zabs = max(abs(x) for row in z for x in row) or 1
+    f5 = go.Figure(go.Heatmap(
+        z=z, x=[f"₹{x}" for x in slips], y=[f"{c}%" for c in caps], zmid=0, zmin=-zabs, zmax=zabs,
+        colorscale=[[0, STEEL], [0.5, "#F6F7F5"], [1, VERDIGRIS]], showscale=False,
+        text=[[rupees(x) for x in row] for row in z], texttemplate="%{text}", textfont=dict(size=13),
+        hovertemplate="Slippage %{x}, cap %{y}: %{text}<extra></extra>"))
+    f5.update_layout(height=320, xaxis_title="Slippage, ₹ per 10 g per leg", yaxis_title="Capacity cap",
+                     xaxis=dict(type="category"), yaxis=dict(type="category"))
+    st.plotly_chart(f5, width="stretch", config=PLOTLY_CONFIG)
+    wins = sum(x > 0 for row in z for x in row)
+    total = len(slips) * len(caps)
+    why = ""
+    if wins == total and v["verdict"] != "EDGE":
+        why = (" Costs and slippage are not what stops this pair: it is still NO EDGE because it loses in at "
+               "least one regime and its 90% confidence interval includes zero.")
+    st.caption(f"{wins} of {total} settings make money. Green makes money, grey loses; "
+               f"a real edge would stay green across most of the grid.{why}")
+
+# ---- Take the numbers with you
+st.subheader("Take the numbers with you")
+d1, d2 = st.columns(2)
+d1.download_button("Download verdict report (.txt)", report(v, res, a, b, slip, min_vol, scale, cap_pct),
+                   file_name=f"aulens_{a}_{b}_verdict.txt", mime="text/plain", width="stretch")
+d2.download_button("Download trade log (.csv)", trades.assign(pair=f"{a} vs {b}").to_csv(index=False),
+                   file_name=f"aulens_{a}_{b}_trades.csv", mime="text/csv", width="stretch", disabled=trades.empty)
 
 # ---- Contract calendar
 st.subheader("When a position can be held")
