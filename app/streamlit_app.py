@@ -39,7 +39,8 @@ def grams(g):
     return f"{g / 1000:g} kg" if g >= 1000 else f"{g:g} g"
 
 
-df = data(PROCESSED.stat().st_mtime if PROCESSED.exists() else 0.0)
+VER = PROCESSED.stat().st_mtime if PROCESSED.exists() else 0.0   # passed to every cached function that reads df
+df = data(VER)
 source = "SYNTHETIC" if (df["source"] == "SYNTHETIC").any() else df["source"].iloc[0]
 
 with st.sidebar:
@@ -66,7 +67,7 @@ with st.sidebar:
 
 
 @st.cache_data
-def run(a, b, slip, min_vol, scale, cap_pct):
+def run(ver, a, b, slip, min_vol, scale, cap_pct):
     """slip is ₹ per display unit per leg (₹/10 g gold, ₹/kg silver); the engine works in ₹ per 10 g."""
     prm = Params(slippage_per_leg=slip / UNITS[metal(a)][0], min_volume=min_vol, lot_scale=scale, capacity_pct=cap_pct / 100)
     res = walk_forward(df, a, b, prm)
@@ -74,16 +75,16 @@ def run(a, b, slip, min_vol, scale, cap_pct):
 
 
 @st.cache_data
-def sensitivity(a, b, min_vol, scale, cap_pct):
-    return pd.DataFrame([{"slippage": s, "net": run(a, b, s, min_vol, scale, cap_pct)[1].get("net_pnl", 0)}
+def sensitivity(ver, a, b, min_vol, scale, cap_pct):
+    return pd.DataFrame([{"slippage": s, "net": run(ver, a, b, s, min_vol, scale, cap_pct)[1].get("net_pnl", 0)}
                          for s in SLIP_GRID[metal(a)]])
 
 
 @st.cache_data
-def robustness(a, b, min_vol, scale):
+def robustness(ver, a, b, min_vol, scale):
     """Net P&L over a slippage x capacity-cap grid: does NO EDGE survive other reasonable settings?"""
     slips, caps = SLIP_GRID[metal(a)], [1, 2, 3, 5]
-    z = [[run(a, b, sl, min_vol, scale, cp)[1].get("net_pnl", 0) for sl in slips] for cp in caps]
+    z = [[run(ver, a, b, sl, min_vol, scale, cp)[1].get("net_pnl", 0) for sl in slips] for cp in caps]
     return slips, caps, z
 
 
@@ -132,7 +133,7 @@ def calendar(panel, tender, buffer):
     return pd.DataFrame(rows)
 
 
-res, v = run(a, b, slip, min_vol, scale, cap_pct)
+res, v = run(VER, a, b, slip, min_vol, scale, cap_pct)
 panel, trades = res["panel"], res["trades"]
 hurdle = CostModel().breakeven_per_10g(panel["px10_a"].iloc[-1], res["grams"])
 
@@ -209,7 +210,7 @@ st.caption("The dark line is the price gap between the two contracts. The dashed
 l, r = st.columns(2, gap="large")
 with l:
     st.subheader("What slippage does to it")
-    sens = sensitivity(a, b, min_vol, scale, cap_pct)
+    sens = sensitivity(VER, a, b, min_vol, scale, cap_pct)
     f2 = go.Figure(go.Bar(x=sens["slippage"], y=sens["net"], width=6,
                           marker_color=[VERDIGRIS if n > 0 else STEEL for n in sens["net"]],
                           marker_line=dict(color=[GOLD if s == slip else "rgba(0,0,0,0)" for s in sens["slippage"]], width=2.5),
@@ -255,7 +256,7 @@ st.subheader("Quiet alerts")
 rows = []
 for i, (pa, pb) in enumerate(PAIRS):
     m_, (u_, un_) = metal(pa), UNITS[metal(pa)]
-    r_res, r_v = run(pa, pb, slip if m_ == MET else DEFAULT_SLIPPAGE[m_], min_vol, 4 if pb == "GOLDPETAL" else 1, cap_pct)
+    r_res, r_v = run(VER, pa, pb, slip if m_ == MET else DEFAULT_SLIPPAGE[m_], min_vol, 4 if pb == "GOLDPETAL" else 1, cap_pct)
     sig = latest_signals(r_res)
     ratio = (sig["residual"].abs() / sig["hurdle"]).dropna()   # newest contracts may lack a basis estimate yet
     if ratio.empty:
@@ -283,7 +284,7 @@ st.caption("Net P&L for this pair across slippage and capacity-cap settings, eve
 if st.button("Run the robustness grid", key="robust") or st.session_state.get("robust_done"):
     st.session_state["robust_done"] = True
     with st.spinner("Running 24 walk-forward backtests…"):
-        slips, caps, z = robustness(a, b, min_vol, scale)
+        slips, caps, z = robustness(VER, a, b, min_vol, scale)
     zabs = max(abs(x) for row in z for x in row) or 1
     f5 = go.Figure(go.Heatmap(
         z=z, x=[f"₹{x}" for x in slips], y=[f"{c}%" for c in caps], zmid=0, zmin=-zabs, zmax=zabs,
