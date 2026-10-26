@@ -257,7 +257,10 @@ for i, (pa, pb) in enumerate(PAIRS):
     m_, (u_, un_) = metal(pa), UNITS[metal(pa)]
     r_res, r_v = run(pa, pb, slip if m_ == MET else DEFAULT_SLIPPAGE[m_], min_vol, 4 if pb == "GOLDPETAL" else 1, cap_pct)
     sig = latest_signals(r_res)
-    top = sig.loc[(sig["residual"].abs() / sig["hurdle"]).idxmax()]
+    ratio = (sig["residual"].abs() / sig["hurdle"]).dropna()   # newest contracts may lack a basis estimate yet
+    if ratio.empty:
+        continue
+    top = sig.loc[ratio.idxmax()]
     status = ("Alert" if top["clears"] and r_v["verdict"] == "EDGE"
               else "Clears the hurdle, but the verdict is not EDGE" if top["clears"] else "Below the entry rules")
     rows.append({"Pair": f"{pa} vs {pb}", "Closest contract": top["expiry"].strftime("%b %Y"),
