@@ -130,7 +130,11 @@ def walk_forward(df: pd.DataFrame, a: str, b: str, prm: Params | None = None) ->
         if len(test_trades):
             test_trades = test_trades[test_trades["entry_date"].dt.to_period("M") == months[k]]
             all_trades.append(test_trades.assign(z_entry=best_z))
-        chosen.append({"month": str(months[k]), "z_entry": best_z})
+        test = p[p["date"].dt.to_period("M") == months[k]]
+        chosen.append({"month": str(months[k]), "z_entry": best_z,
+                       "train_start": train["date"].min(), "train_end": train["date"].max(),
+                       "test_start": test["date"].min(), "test_end": test["date"].max(),
+                       "train_days": train["date"].nunique(), "test_days": test["date"].nunique()})
     trades = pd.concat(all_trades, ignore_index=True) if all_trades else pd.DataFrame(
         columns=["entry_date", "exit_date", "expiry", "side", "gross", "costs", "slippage", "net",
                  "gold_move_leg_a", "grams", "z_entry"])

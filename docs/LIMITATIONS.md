@@ -11,7 +11,9 @@ AuLens is honest about what it cannot see. Show this list when asked "is this re
 5. **The Petal basis is estimated** from past spreads, not from polled Mumbai/Ahmedabad spot
    prices. Adding the MCX polled-spot series would replace the estimate.
 6. **Contract specs are verified** against the current MCX PDFs (26 Oct 2026); MCX revises them, so re-check before relying on them.
-7. **Margin and funding are not modelled.** The two legs block margin; that cost is ignored.
+7. **Margin and funding are not modelled.** Margin capital, opportunity cost and variation-margin
+   financing are omitted, as is measured market impact beyond assumed slippage. Net P&L is
+   net of configured model costs, not all possible costs; return on margin is not reported.
 8. **Broker cut-offs vary.** We exit `tender_days + 2` trading days early; your broker may
    force exits earlier.
 9. **Convergence happens only at the DDR, after we must exit.** On real data the control pair's
@@ -32,6 +34,19 @@ AuLens is honest about what it cannot see. Show this list when asked "is this re
     The volume filter and capacity cap limit what can trade on them, but such prints are not fills.
 12. **SILVER100 is not included.** It has only four expiries in the window, and its DDR is quoted
     per 10 g rather than per kg, so it cannot support a walk-forward test yet.
+
+13. **No final untouched holdout.** Monthly entry thresholds use earlier months, but the history
+    has already been inspected during development. Other research choices are not independently
+    validated by that procedure. Monthly replays close existing positions at the last observation of each expiry slice,
+    omit final-observation entries and do not carry positions between months; see [VALIDATION.md](VALIDATION.md).
+14. **Beta is diagnostic.** A low slope of net trade P&L against leg A's metal move is not proof
+    of market neutrality or alpha. Small samples, overlapping trades and outliers matter; no
+    beta confidence interval is reported. The trade bootstrap assumes independent trades.
+15. **GOLDM averaging is incomplete.** The GOLDM vs GOLDTEN expected spread does not yet model
+    GOLDM's three-day-average DDR adjustment.
+16. **Execution uses the next available observation.** Missing sessions can delay a simulated
+    fill beyond T+1. Filters use signal-day volume; fill-day capacity, partial fills and legging
+    risk are not simulated.
 
 ## Not financial advice
 

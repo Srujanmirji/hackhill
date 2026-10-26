@@ -32,8 +32,10 @@ expiries (Apr 2025 – Sep 2026), which confirms the normalization formula above
 
 ## 2. Pairs and position sizing
 
-Pairs are formed **only between contracts with the same expiry date**, so no artificial roll
-jumps enter the spread. Lots are matched by grams so a pair is gold-neutral by construction:
+Pairs track individual contract expiries, never a spliced near-month series. Same-expiry-rule
+pairs match expiry dates; carry pairs match the earlier month-end expiry to the following
+month's 5th-day expiry. Lots match grams, which reduces directional exposure but does not
+guarantee market neutrality:
 
 | Pair | Lots | Grams |
 |---|---|---|
@@ -76,8 +78,10 @@ Direction: `z > 0` → spread rich → sell A, buy B; `z < 0` → the reverse.
 
 ## 5. Execution and exits
 
-- The decision on day *t* fills at day *t+1*'s settlement price (T+1). This removes the
-  look-ahead of trading at the same price that produced the signal.
+- A decision on day *t* uses the **next available pair observation's settlement prices**
+  as simulated fills. If sessions are missing, that observation may be later than T+1.
+  Settlement is not an executable quote; slippage is assumed, and signal-day daily-volume
+  filters do not establish fill-day depth or simultaneous execution.
 - Exit when `|z| < z_exit`, or on the last tradable day before the tender window.
 - P&L = position × ΔS × grams / 10, minus costs, minus slippage.
 
@@ -86,7 +90,18 @@ Direction: `z > 0` → spread rich → sell A, buy B; `z < 0` → the reverse.
 For each month *M* (after a minimum training period), `z_entry` is chosen from a small grid
 by the net P&L it would have earned on **all months before M**, then applied to trades
 entered in *M*. Results from all test months are concatenated. No parameter ever sees the
-month it is tested on.
+month it is tested on for that threshold selection. The app records observed training/test
+dates, trading-date counts and the chosen threshold for every month, including no-trade months.
+
+Each replay is truncated at its test month's last available observation. Existing positions
+are forced closed at the last observation of their expiry slice, but an entry filled on that
+final observation is omitted from completed trades. This terminal-entry omission is a known
+limitation. Only completed trades entered in the test month are retained; positions do not
+carry between replays. This differs from continuous portfolio execution.
+
+**There is no final untouched holdout.** Development has already inspected the available
+history, and the monthly procedure does not independently validate other model choices.
+See [Validation evidence and model limits](VALIDATION.md) for reproduction steps and limitations.
 
 ## 7. Verdict
 
@@ -96,11 +111,17 @@ month it is tested on.
 | **EDGE** | 90% bootstrap CI of mean trade P&L is above zero **and** net P&L is positive in every regime that has trades |
 | **NO EDGE** | Anything else |
 
+The bootstrap resamples trades independently; it does not adjust for overlapping-trade
+dependence, multiple comparisons or research selection. NO EDGE is a failure to establish
+an edge under this model, not proof of absence. Net P&L excludes margin/funding costs and
+measured market impact; the GOLDM three-day-average DDR adjustment remains unmodelled.
+
 Also reported:
 - **Break-even slippage** — the slippage per 10 g per leg at which net P&L reaches zero.
   This is the honest headline, because slippage is the cost we cannot measure from Bhavcopy.
-- **Gold beta** — slope of trade P&L on the gold move over the holding period. Near zero
-  means the result is not just gold going up.
+- **Metal beta** — slope of net trade P&L on leg A's gram-scaled rupee metal move over the
+  same holding period. It is a diagnostic, not proof of neutrality or risk-adjusted alpha.
+  Small samples, overlapping trades and outliers affect it; no beta interval is reported.
 - **Net Sharpe** — mean net trade / its standard deviation × √(trades per year). Trades are
   irregular, so this is a per-trade Sharpe scaled by how often the pair traded, not a daily one.
 - **Carry panel** — annual carry implied by the two nearest GOLDTEN contracts, against the RBI

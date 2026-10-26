@@ -1,12 +1,12 @@
 # Finale Q&A
 
 Short, honest answers backed by the real-data run (MCX, 1 Apr 2025 – 23 Oct 2026, default
-assumptions: ₹20 slippage per 10 g per leg, 50-lot minimum volume). Every number here comes from
+assumptions: ₹20 slippage per display unit per leg (gold /10 g, silver /kg), 50-lot minimum volume). Every number here comes from
 `python scripts/run_backtest.py` or `tests/test_real_data.py`; re-check them if the data changes.
 
 ## "Where's the edge?"
 
-There isn't one after costs, and AuLens can show exactly why.
+This test does not establish an edge after modelled costs. It is not proof that no opportunity can exist.
 
 - **The gap is real.** GOLDGUINEA trades about 0.4% above GOLDTEN in calm months and up to ~2.7%
   above it in the Dec 2025 – Mar 2026 rally, even though both settle on the same price.
@@ -35,8 +35,9 @@ One line: *"The spread is real; the trade isn't. That's the answer a trader need
   **break-even slippage**, the slippage at which the strategy stops making money, so anyone can
   compare it to the spreads they see on their own screen. For the control pair it is ₹3.0 per 10 g
   per leg, about two GOLDGUINEA ticks: almost any real fill erases it.
-- Live data is the natural next step, not a missing piece. It would refine the slippage number; it
-  cannot rescue a strategy that loses before slippage.
+- Executable-price data is needed to validate fill assumptions. Within the current simulation,
+  lowering slippage alone cannot rescue negative pre-slippage P&L; different executable
+  prices could change the measured result.
 
 ## "How is this different from other teams?"
 
@@ -46,17 +47,19 @@ One line: *"The spread is real; the trade isn't. That's the answer a trader need
   enforces it against MCX's own settlement prices. That check found the real data problem: the
   expiry-day Bhavcopy close is a thin last trade, which left the control-pair spread up to ₹3,560
   per 10 g away from where it actually settled.
-- **No look-ahead.** Signals use data up to day *t*, fills happen at *t+1*, parameters are chosen
-  walk-forward on earlier months only, and every position exits before the tender window. Tests
-  cover the z-score and the carry estimate.
+- **Auditable monthly selection.** Signals use day *t* data and simulated fills use the next
+  available observation. Entry thresholds are selected on earlier months; the app exports
+  actual training/test boundaries and thresholds. Tests cover shifted z-scores/carry and
+  threshold stability under later-price shocks. No final untouched holdout is claimed.
 - **The rulebook is in the maths.** Purity (995 vs 999), quote units, settlement city and expiry
   rules are normalized with MCX's own formulas before anything is compared.
 
 ## Likely follow-ups
 
 **"Could a bigger trader do better?"**
-No: size makes it worse. Every trade is capped at 2% of each leg's daily volume (adjustable
-1–5% on the dashboard), so results only count fills the market could plausibly absorb.
+We cannot establish that from Bhavcopy. The default cap is 2% of each leg's signal-day
+volume (adjustable 1–5%). That is a capacity assumption, not evidence of fill-day depth or
+executable size. Larger trades may face additional market impact, which is not measured.
 
 **"Why is GUINEA richer than TEN if they settle on the same price?"**
 We measure it; we don't claim to know the cause. A plausible reading is retail demand for
@@ -69,13 +72,15 @@ charges and broker cut-offs. AuLens models what a trader without a vault can do:
 `tender days + 2` trading days early.
 
 **"Is 62 trades enough?"**
-Enough to say NO EDGE with confidence for the control pair: its 90% interval for the average trade
-is −₹1,305 to ₹845. It is not enough to claim an edge, which is why the bar for EDGE is high.
+The control pair's 90% trade-bootstrap interval is −₹1,305 to ₹845, so it does not establish
+a positive average net trade. That is a NO EDGE classification under the model, not proof
+that the true edge is absent. The bootstrap treats trades as independent despite possible overlap.
 
 **"What is gold beta?"**
-The slope of trade P&L against the gold price move over the same holding period. Near zero (0.07
-for the control pair) means results are not just a bet on gold going up. GOLDM vs GOLDTEN is 0.25,
-driven mostly by the 30 Jan 2026 crash day.
+The slope of net trade P&L against leg A's gram-scaled rupee metal move over the same holding
+period. Near zero (0.07 for the gold control) is a diagnostic, not proof of market neutrality
+or alpha. Samples are small, trades can overlap and outliers matter; no beta interval or
+significance test is reported. GOLDM vs GOLDTEN is 0.25, heavily affected by 30 Jan 2026.
 
 **"What would change your mind?"**
 A pair whose confidence interval sits above zero and that makes money in every regime, at a
@@ -87,3 +92,18 @@ The check caught one error, GOLD/GOLDM's tender window was 3 days, not 5, and we
 normalization is also confirmed by MCX's own settlement prices: GUINEA × 10/8 equals TEN within
 ₹1 on all 18 expiries.
 
+
+## "Is this an untouched out-of-sample test?"
+
+Only the monthly threshold selection uses strictly earlier months. We have inspected the
+history during development, so we do not claim a final untouched holdout for the whole
+research process. Each replay closes existing positions at its expiry slice's last observation and omits
+entries filled on that final observation, rather than carrying a continuous portfolio. The app's validation table makes the date boundaries visible.
+
+## "Are those actual fills, and are all costs included?"
+
+No. Fills are next-available settlement observations with assumed slippage. Daily volume is
+not order-book depth. Reported P&L deducts configured fees, taxes, brokerage and slippage;
+it excludes margin/funding costs and measured market impact. Delivery/storage costs are
+excluded because the model exits before tender. GOLDM averaging remains incomplete.
+See [VALIDATION.md](VALIDATION.md) for the full boundary of the claims.

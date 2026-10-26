@@ -30,3 +30,11 @@ Bhavcopy has no bid/ask, so slippage is an **assumption** (default ₹20 per 10 
 crossing; 4 crossings per round trip). The dashboard shows how net P&L changes from ₹0 to ₹60
 and reports the break-even slippage. Tick floors: GOLDTEN ₹1, GOLDGUINEA ₹1.25, GOLDPETAL ₹10
 per 10 g.
+
+## Costs outside this model
+
+"Net P&L" means net of the configured charges above plus assumed slippage. It excludes
+margin capital, funding/opportunity cost, variation-margin financing and measured market
+impact or bid/ask costs beyond the slippage assumption. Delivery/storage costs are not
+charged because the model intends to exit before tender. No return on margin/capital is
+reported. These exclusions can overstate real-world profitability; see [VALIDATION.md](VALIDATION.md).

@@ -19,6 +19,15 @@
 - [ ] Instagram reel (optional) with the same tags
 - [ ] Links submitted via the official Google Form (one submission per team)
 
+## Validation evidence and claim check
+- [ ] Export monthly validation CSV, verdict report and trade log at the submitted assumptions
+- [ ] Show training/test dates and disclose monthly replay-end forced closes
+- [ ] State that no final untouched holdout is claimed
+- [ ] Describe fills as next-available settlement simulations; volume is not depth
+- [ ] Say net of modelled costs; disclose margin/funding, market impact and GOLDM averaging omissions
+- [ ] Describe beta as diagnostic, with no proof of neutrality or alpha
+- [ ] Check video/deck wording against docs/VALIDATION.md; Markdown edits do not update those assets
+
 ## Finale (Manali)
 - [x] Contract specs verified against MCX PDFs (`CONTRACT_SPECS.md` log filled in)
 - [ ] One stretch feature done (carry panel or measured slippage)

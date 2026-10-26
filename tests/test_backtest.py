@@ -73,3 +73,49 @@ def test_missing_pair_returns_untestable_instead_of_crashing():
     res = walk_forward(df, "GOLDTEN", "GOLDGUINEA")
     assert res["panel"].empty and res["trades"].empty
     assert verdict(res)["verdict"] == "UNTESTABLE"
+
+
+def test_walk_forward_evidence_uses_only_prior_months():
+    df = _df()
+    res = walk_forward(df, "GOLDTEN", "GOLDGUINEA")
+    folds = res["z_choices"]
+    assert len(folds) == 7
+    assert folds.iloc[0]["month"] == "2025-07"
+    for row in folds.itertuples():
+        train = res["panel"][res["panel"]["date"].dt.to_period("M") < pd.Period(row.month)]
+        test = res["panel"][res["panel"]["date"].dt.to_period("M") == pd.Period(row.month)]
+        assert row.train_start == train["date"].min()
+        assert row.train_end == train["date"].max() < row.test_start
+        assert row.test_start == test["date"].min() and row.test_end == test["date"].max()
+        assert row.train_days == train["date"].nunique() and row.test_days == test["date"].nunique()
+        assert row.z_entry in Params().z_grid
+    shocked = df.copy()
+    shocked.loc[shocked["date"] >= "2026-01-01", "close"] *= 2
+    # Even January's threshold must be frozen before the January shock.
+    pd.testing.assert_frame_equal(folds, walk_forward(shocked, "GOLDTEN", "GOLDGUINEA")["z_choices"])
+
+
+def test_simulated_trade_uses_next_observation_and_deducts_model_costs():
+    from aulens.backtest import _trades_for_expiry
+    prm = Params(slippage_per_leg=2)
+    days = pd.to_datetime(["2025-07-01", "2025-07-03", "2025-07-04", "2025-07-07"])
+    panel = pd.DataFrame({"date": days, "expiry": pd.Timestamp("2025-07-31"),
+                          "spread": [20, 30, 25, 10], "px10_a": [110, 120, 115, 100],
+                          "px10_b": [90, 90, 90, 90], "z": [2, 2, 0, 0],
+                          "residual": 1000, "can_hold": True, "liquid": True})
+    trade, = _trades_for_expiry(panel, 1.5, prm, 40)
+    assert trade["entry_date"] == days[1] and trade["exit_date"] == days[3]
+    assert trade["gross"] == 80  # short spread, (30 - 10) * 40/10
+    assert trade["costs"] == pytest.approx(prm.costs.pair_round_trip(120 * 4, 90 * 4))
+    assert trade["slippage"] == 4 * 2 * 4
+    assert trade["net"] == pytest.approx(80 - trade["costs"] - trade["slippage"])
+
+
+def test_terminal_entry_is_omitted_from_completed_trades():
+    from aulens.backtest import _trades_for_expiry
+    panel = pd.DataFrame({"date": pd.date_range("2025-07-01", periods=3),
+                          "expiry": pd.Timestamp("2025-07-31"), "spread": [0, 30, 20],
+                          "px10_a": [90, 120, 110], "px10_b": 90, "z": [0, 2, 2],
+                          "residual": 1000, "can_hold": True, "liquid": True})
+    # Document the current replay boundary limitation without changing the strategy.
+    assert _trades_for_expiry(panel, 1.5, Params(), 40) == []

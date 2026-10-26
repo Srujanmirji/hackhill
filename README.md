@@ -8,7 +8,7 @@ exactly, and most of the gap is written into the contract rules: purity (995 vs 
 quotation unit, settlement city (Ahmedabad vs Mumbai), expiry date and tender window.
 
 AuLens removes everything the rulebook explains, tests whether the residual survives real
-costs, walk-forward and across 2024–26 regime breaks, and returns one honest verdict per pair:
+costs, walk-forward and across regime breaks within the available history, and returns one honest verdict per pair:
 **EDGE**, **NO EDGE** or **UNTESTABLE**.
 
 Team **CodeWick** · Hack in Hills '26 · Track 03: Commodity Derivatives Intelligence
@@ -56,6 +56,7 @@ pytest -q
 | [docs/BUILD_GUIDE.md](docs/BUILD_GUIDE.md) | Step-by-step: how to build and finish the prototype |
 | [docs/TEAM_TASKS.md](docs/TEAM_TASKS.md) | Who does what, day by day |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | System design and data flow |
+| [docs/VALIDATION.md](docs/VALIDATION.md) | Walk-forward evidence, execution assumptions, beta and omitted costs |
 | [docs/METHODOLOGY.md](docs/METHODOLOGY.md) | The maths: normalization, convergence, walk-forward, verdicts |
 | [docs/DATA.md](docs/DATA.md) | Getting real MCX data, and its quirks |
 | [docs/MCX_DATA_API.md](docs/MCX_DATA_API.md) | MCX endpoints, reconstructed from the site's own scripts |
@@ -68,7 +69,7 @@ pytest -q
 
 ## Results (real MCX data, 1 Apr 2025 – 23 Oct 2026)
 
-**None of the six pairs shows an edge after costs.** Default assumptions: ₹20 slippage per leg
+**None of the six pairs establishes an edge after modelled costs.** Default assumptions: ₹20 slippage per leg
 (per 10 g for gold, per kg for silver), 50-lot minimum volume, each leg capped at 2% of its daily
 volume, walk-forward `z_entry`.
 
@@ -192,6 +193,16 @@ From 13 May 2026      5  -39513.314862
 - [x] Contract lifecycle: liquidity by days to expiry, every entry and exit drawn on the contract calendar
 - [ ] GOLDM 3-day-average DDR modelled in the GOLDM vs GOLDTEN expected spread
 - [ ] COMEX carry comparison, measured slippage from live bid/ask
+
+## Validation scope
+
+The dashboard exports monthly observed training/test dates and selected entry thresholds.
+Replays close existing positions at each expiry slice's last observation; final-observation
+entries are omitted from completed trades. Positions do not carry between monthly replays. **No final untouched holdout is claimed.** Fills are simulated
+from next-available settlement observations plus assumed slippage; volume is not depth.
+Net P&L excludes margin/funding costs and measured market impact. Metal beta is a diagnostic,
+not proof of neutrality or alpha. GOLDM averaging remains unmodelled.
+See [validation evidence and model limits](docs/VALIDATION.md) before quoting results.
 
 ## License
 

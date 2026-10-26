@@ -72,7 +72,7 @@ if "SYNTHETIC" in source:
     st.warning("Synthetic data, for UI development only. Numbers below are not findings.")
 st.markdown(f"<p class='lede'>{escape(source)} settlement data from "
             f"{df['date'].min():%-d %b %Y} to {df['date'].max():%-d %b %Y}, {len(df):,} contract-days. Every price is "
-            "converted to one unit at 999 purity (gold per 10 g, silver per kg), so the rulebook gaps are gone before we compare.</p>",
+            "converted to one unit at 999 purity (gold per 10 g, silver per kg), before estimating residual spreads from contract rules, basis and carry.</p>",
             unsafe_allow_html=True)
 last_date = df["date"].max().normalize()
 age_days = (pd.Timestamp.now(tz="Asia/Kolkata").tz_localize(None).normalize() - last_date).days
@@ -197,13 +197,13 @@ with hero:
     st.markdown(f"<div class='reason'>{v['reason']}</div>", unsafe_allow_html=True)
     if "mean_trade_ci90" in v:
         lo, hi = v["mean_trade_ci90"]
-        st.caption(f"90% confidence that the average trade nets between {rupees(lo)} and {rupees(hi)}; "
+        st.caption(f"90% trade-bootstrap interval for the average net trade: {rupees(lo)} to {rupees(hi)}; "
                    f"{v['hit_rate']:.0%} of trades made money.")
 with numbers:
     r1, r2 = st.columns(3), st.columns(3)
     beta = v.get("gold_beta", float("nan"))
-    r1[0].metric("Trades", v["trades"], help="Walk-forward: each month is traded with settings chosen on earlier months only.")
-    r1[1].metric("Net P&L", rupees(v.get("net_pnl", 0)), help="After statutory costs, brokerage and the slippage set under Assumptions.")
+    r1[0].metric("Trades", v["trades"], help="Monthly walk-forward: the entry threshold is chosen on earlier months. Other assumptions are fixed for the run; no final untouched holdout is claimed.")
+    r1[1].metric("Net P&L", rupees(v.get("net_pnl", 0)), help="Net of configured fees, brokerage and assumed slippage; excludes margin/funding costs and measured market impact.")
     sharpe = v.get("net_sharpe", float("nan"))
     r1[2].metric("Net Sharpe", "–" if pd.isna(sharpe) else f"{sharpe:.2f}",
                  help="Average net trade divided by its spread, scaled by how many trades a year the pair made.")
@@ -211,7 +211,30 @@ with numbers:
     r2[1].metric("Break-even", rupees(v.get("breakeven_slippage_per_leg", float("nan")) * U, 1),
                  help=f"Slippage per {UNAME} per leg at which net P&L reaches zero. Negative means it loses even with perfect fills.")
     r2[2].metric(f"{MET.title()} beta", "–" if pd.isna(beta) else f"{beta:.2f}",
-                 help=f"Slope of trade P&L on the {MET} price move. Near 0 means the result is not just {MET} going up.")
+                 help=f"Slope of net trade P&L on the same-period, gram-scaled {MET} move of leg A. A diagnostic only: near zero does not prove market neutrality or alpha; no beta confidence interval is reported.")
+
+st.caption("Simulation: next available settlement prices plus assumed slippage; fills and depth are not observed. "
+           "Net P&L excludes margin/funding costs and measured market impact. Metal beta is a diagnostic, "
+           "not proof of market neutrality. No final untouched holdout is claimed.")
+with st.expander("Validation evidence and model limits"):
+    folds = res["z_choices"]
+    if folds.empty:
+        st.info(f"No test months yet. At least {res['params'].min_train_months} observed pair months are needed "
+                "for training, followed by a test month.")
+    else:
+        st.write(f"{len(folds)} monthly test windows; observed test dates "
+                 f"{folds['test_start'].min():%d %b %Y} to {folds['test_end'].max():%d %b %Y}. "
+                 f"Entry thresholds tested: {', '.join(map(str, res['params'].z_grid))}.")
+        dates = ("train_start", "train_end", "test_start", "test_end")
+        st.dataframe(folds.assign(**{col: folds[col].dt.date for col in dates}).rename(
+                     columns={"month": "Test month", "z_entry": "Selected z entry",
+                              "train_start": "Training start", "train_end": "Training end",
+                              "test_start": "Test start", "test_end": "Test end",
+                              "train_days": "Training days", "test_days": "Test days"}),
+                     hide_index=True, width="stretch")
+    st.download_button("Monthly validation evidence (.csv)", folds.to_csv(index=False),
+                       file_name=f"aulens_{a}_{b}_validation.csv", mime="text/csv", disabled=folds.empty)
+    st.markdown(_HERE.parents[1].joinpath("docs", "VALIDATION.md").read_text())
 
 # ---- Spread chart for one expiry
 st.subheader("The spread, one contract at a time")
@@ -428,7 +451,7 @@ if st.button("Run the robustness grid", key="robust") or st.session_state.get("r
 # ---- Take the numbers with you
 st.subheader("Take the numbers with you")
 d1, d2 = st.columns(2)
-d1.download_button("Download verdict report (.txt)", report(v, df, a, slip, min_vol, scale, cap_pct),
+d1.download_button("Download verdict report (.txt)", report(v, res, df, a, slip, min_vol, scale, cap_pct),
                    file_name=f"aulens_{a}_{b}_verdict.txt", mime="text/plain", width="stretch")
 d2.download_button("Download trade log (.csv)", trades.assign(pair=f"{a} vs {b}").to_csv(index=False),
                    file_name=f"aulens_{a}_{b}_trades.csv", mime="text/csv", width="stretch", disabled=trades.empty)

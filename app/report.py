@@ -1,11 +1,15 @@
 """Downloadable verdict summary, including the actual dataset source."""
+from pathlib import Path
+
 from aulens.specs import UNITS, metal
 
 
-def report(v, df, a, slip, min_vol, scale, cap_pct):
+def report(v, res, df, a, slip, min_vol, scale, cap_pct):
     """Plain-text summary of the verdict and the assumptions it was made under."""
     lo, hi = v.get("mean_trade_ci90", (float("nan"), float("nan")))
     reg = v["by_regime"].to_string() if "by_regime" in v else "no trades"
+    folds = res["z_choices"].to_string(index=False) if len(res["z_choices"]) else "No test months yet."
+    limits = Path(__file__).resolve().parents[1].joinpath("docs", "VALIDATION.md").read_text()
     return f"""AuLens verdict report
 Pair: {v['pair']} ({v['lots']})
 Data: {", ".join(sorted(df["source"].unique()))} settlement data {df['date'].min():%d %b %Y} to {df['date'].max():%d %b %Y}
@@ -28,7 +32,10 @@ Results
 By regime
 {reg}
 
-Method: walk-forward z_entry, signals on day t, fills at t+1 settlement, exits before the tender window.
+Monthly validation evidence (observed dates)
+{folds}
+
+{limits}
 Not financial advice. https://github.com/Srujanmirji/hackhill
 """
 
