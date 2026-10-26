@@ -1,9 +1,20 @@
+# "Assay certificate": cool assay paper, touchstone ink, fine-gold accents.
 [theme]
 base = "light"
-primaryColor = "#B07A1E"              # gold
-backgroundColor = "#FFFFFF"
-secondaryBackgroundColor = "#F4F1EA"  # warm off-white sidebar
-textColor = "#1D1D1F"                 # charcoal
+primaryColor = "#B07A1E"              # fine gold: controls, accents
+backgroundColor = "#F6F7F5"           # assay paper
+secondaryBackgroundColor = "#E9ECE8"  # stone: sidebar, inputs
+textColor = "#23262B"                 # touchstone
+linkColor = "#8A5D12"                 # text-safe gold
+borderColor = "#D5D9D3"
+baseRadius = "small"
+font = "Public Sans:https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600&display=swap"
+headingFont = "Barlow Condensed:https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&display=swap"
+headingFontWeights = [600, 600, 600, 600, 600, 600]
+baseFontSize = 15
+
+[theme.sidebar]
+backgroundColor = "#E9ECE8"
 
 [server]
 headless = true
