@@ -25,6 +25,13 @@ AuLens is honest about what it cannot see. Show this list when asked "is this re
     10 g in a day. Three trades closed that day for a net −₹1.26 lakh, 74% of the pair's loss;
     its NO EDGE verdict and 0.25 gold beta are mostly that day. The same day supplies 57% of
     GOLDTEN vs GOLDPETAL's profit.
+11. **Silver settlement prints can be far apart on thin days.** SILVERM vs SILVERMIC share an
+    expiry and DDR and settle at exactly ₹0 on all 8 expired contracts. But on 30 Jan 2026 the
+    Aug 2026 contracts closed ₹21,870/kg apart (SILVERM 989 lots, SILVERMIC 10,437), and on
+    12 Feb 2026 ₹15,045/kg apart (SILVERM 60 lots). These are MCX's published closes, kept as-is.
+    The volume filter and capacity cap limit what can trade on them, but such prints are not fills.
+12. **SILVER100 is not included.** It has only four expiries in the window, and its DDR is quoted
+    per 10 g rather than per kg, so it cannot support a walk-forward test yet.
 
 ## Not financial advice
 

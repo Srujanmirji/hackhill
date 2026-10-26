@@ -15,6 +15,11 @@ px10 = close × (10 / quote_grams) × (999 / purity)
 | GOLDGUINEA | ₹/8 g | 999 | × 10/8 |
 | GOLDPETAL | ₹/1 g | 999 | × 10 |
 
+Silver contracts (SILVER, SILVERM, SILVERMIC) are quoted in ₹/kg at 999 purity. They use the same internal
+unit (factor × 10/1000). The dashboard and `run_backtest.py` multiply back by 100 to show
+₹/kg. Default slippage is ₹20 per leg in each metal's display unit (per 10 g for gold, per kg for
+silver). That is an assumption of roughly 0.014% of price at 2026 levels for both, not a measurement.
+
 The 999/995 factor is the same conversion MCX uses to set GOLDTEN/GUINEA/PETAL settlement
 prices, so it is a rule, not an estimate. It accounts for a fixed ~0.40% gap (≈ ₹590 per
 10 g at ₹1.46 lakh) that must never be reported as an opportunity.

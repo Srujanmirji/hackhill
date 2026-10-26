@@ -68,24 +68,29 @@ pytest -q
 
 ## Results (real MCX data, 1 Apr 2025 – 23 Oct 2026)
 
-**No pair shows an edge after costs.** Default assumptions: ₹20 slippage per 10 g per leg,
-50-lot minimum volume, each leg capped at 2% of its daily volume, walk-forward `z_entry`.
+**None of the six pairs shows an edge after costs.** Default assumptions: ₹20 slippage per leg
+(per 10 g for gold, per kg for silver), 50-lot minimum volume, each leg capped at 2% of its daily
+volume, walk-forward `z_entry`.
 
-| Pair | Verdict | Trades | Net P&L | Net Sharpe | 90% CI, mean trade | Break-even slippage (₹/10 g/leg) | Gold beta |
+| Pair | Verdict | Trades | Net P&L | Net Sharpe | 90% CI, mean trade | Break-even slippage per leg | Metal beta |
 |---|---|---|---|---|---|---|---|
-| GOLDTEN vs GOLDGUINEA (control) | **NO EDGE** | 62 | −₹17,140 | −0.38 | −₹1,309 to ₹838 | ₹2.7 | 0.07 |
-| GOLDTEN vs GOLDPETAL | **NO EDGE** | 49 | ₹35,653 | 0.83 | −₹527 to ₹2,044 | ₹65.5 | 0.14 |
-| GOLDM vs GOLDTEN (stretch) | **NO EDGE** | 32 | −₹1,69,597 | −1.24 | −₹12,236 to ₹404 | −₹112.5 | 0.25 |
+| GOLDTEN vs GOLDGUINEA (control) | **NO EDGE** | 62 | −₹17,140 | −0.38 | −₹1,309 to ₹838 | ₹2.7 /10 g | 0.07 |
+| GOLD vs GOLDM (control) | **NO EDGE** | 12 | −₹5,93,492 | −1.28 | −₹1,14,656 to −₹1,412 | −₹103.6 /10 g | 0.03 |
+| GOLDTEN vs GOLDPETAL | **NO EDGE** | 49 | ₹35,653 | 0.83 | −₹527 to ₹2,044 | ₹65.5 /10 g | 0.14 |
+| GOLDM vs GOLDTEN (stretch) | **NO EDGE** | 32 | −₹1,69,597 | −1.24 | −₹12,236 to ₹404 | −₹112.5 /10 g | 0.25 |
+| SILVERM vs SILVERMIC (silver control) | **NO EDGE** | 15 | −₹2,783 | −0.20 | −₹1,492 to ₹1,489 | ₹10.7 /kg | −0.01 |
+| SILVER vs SILVERM (silver carry) | **NO EDGE** | 20 | −₹3,55,897 | −1.85 | −₹33,657 to −₹6,579 | −₹128.3 /kg | 0.06 |
 
-- **Control pair:** breaks even at only ₹2.7 of slippage per 10 g per leg, about two GOLDGUINEA
-  ticks, so any real fill cost turns it negative. Its spread is ±₹1
-  at the final settlement price on all 18 expiries, which validates the normalization, but it
-  converges only after the tender-window exit.
+- **Control pairs:** both gold controls settle on the same price at expiry (GOLDTEN/GUINEA within
+  ±₹1 on all 18 expiries, GOLD/GOLDM exactly ₹0 on 9), and SILVERM/SILVERMIC settles at exactly
+  ₹0 on all 8 expired contracts. That validates the normalization. But the gap only closes inside the
+  tender window, after the backtest must exit, so none of them can be traded.
 - **GOLDTEN vs GOLDPETAL:** net positive, but the profit comes from one regime (22 Sep 2025 –
   1 Apr 2026), 57% of it from a single trade closed on 30 Jan 2026, and it loses after 13 May
   2026, so it fails the every-regime test.
-- **GOLDM vs GOLDTEN:** most of the loss is one crash day (30 Jan 2026), when the two expiries
-  fell 17.5% and 12%. See [docs/LIMITATIONS.md](docs/LIMITATIONS.md).
+- **GOLDM vs GOLDTEN and SILVER vs SILVERM:** the carry pairs take their worst losses on
+  30 Jan 2026, when the near and far expiries moved by very different amounts. Three GOLDM vs
+  GOLDTEN trades closed that day for 74% of that pair's loss, and one SILVER vs SILVERM trade for 47% of its loss. See [docs/LIMITATIONS.md](docs/LIMITATIONS.md).
 
 Exact output of `python scripts/run_backtest.py`:
 
@@ -103,6 +108,18 @@ From 01 Apr 2025      4   -343.373494
 From 22 Sep 2025     30 -10825.918032
 From 01 Apr 2026      2  -1932.232955
 From 13 May 2026     26  -4038.245302 
+
+== GOLD vs GOLDM  [NO EDGE]  1 x GOLD  vs  10 x GOLDM  (1 kg)
+   Does not survive costs, slippage and regime splits with confidence.
+   trades 12  gross ₹-438,556  costs ₹58,936  slippage ₹96,000  net ₹-593,492  hit 17%
+   break-even slippage ₹-103.6/10 g/leg   gold beta 0.030
+   net Sharpe -1.28   90% CI of mean trade ₹-114,656 to ₹-1,412
+                  count            sum
+regime                                
+From 01 Apr 2025      2  -26375.131456
+From 22 Sep 2025      5 -513428.531566
+From 01 Apr 2026      1  -42804.239231
+From 13 May 2026      4  -10884.031706 
 
 == GOLDTEN vs GOLDPETAL  [NO EDGE]  4 x GOLDTEN  vs  40 x GOLDPETAL  (40 g)
    Does not survive costs, slippage and regime splits with confidence.
@@ -126,7 +143,30 @@ regime
 From 01 Apr 2025      5   -2119.383105
 From 22 Sep 2025     18 -151123.302862
 From 01 Apr 2026      2   -6371.217480
-From 13 May 2026      7   -9983.303016
+From 13 May 2026      7   -9983.303016 
+
+== SILVERM vs SILVERMIC  [NO EDGE]  1 x SILVERM  vs  5 x SILVERMIC  (5 kg)
+   Does not survive costs, slippage and regime splits with confidence.
+   trades 15  gross ₹10,520  costs ₹7,303  slippage ₹6,000  net ₹-2,783  hit 13%
+   break-even slippage ₹10.7/kg/leg   silver beta -0.005
+   net Sharpe -0.20   90% CI of mean trade ₹-1,492 to ₹1,489
+                  count          sum
+regime                              
+From 01 Apr 2025      1  -645.024036
+From 22 Sep 2025     11 -1244.239259
+From 13 May 2026      3  -894.206732 
+
+== SILVER vs SILVERM  [NO EDGE]  1 x SILVER  vs  6 x SILVERM  (30 kg)
+   Does not survive costs, slippage and regime splits with confidence.
+   trades 20  gross ₹-266,520  costs ₹41,377  slippage ₹48,000  net ₹-355,897  hit 20%
+   break-even slippage ₹-128.3/kg/leg   silver beta 0.056
+   net Sharpe -1.85   90% CI of mean trade ₹-33,657 to ₹-6,579
+                  count            sum
+regime                                
+From 01 Apr 2025      4   -2186.217673
+From 22 Sep 2025     10 -277826.172908
+From 01 Apr 2026      1  -22121.304229
+From 13 May 2026      5  -53763.314862
 ```
 
 ## Status
@@ -136,7 +176,7 @@ From 13 May 2026      7   -9983.303016
 - [x] Walk-forward backtest with T+1 fills, tender exits, volume filter
 - [x] Verdicts with bootstrap CI, regime split and gold beta
 - [x] Streamlit dashboard, tests, synthetic data generator
-- [x] Real MCX history loaded (402 trading days, 10,768 contract-days; see [docs/DATA.md](docs/DATA.md))
+- [x] Real MCX history loaded (402 trading days, 16,169 contract-days, gold and silver; see [docs/DATA.md](docs/DATA.md))
 - [x] Expiry-day closes replaced by MCX's published final settlement prices (DDR)
 - [x] Control-pair convergence verified on real data (`tests/test_real_data.py`)
 - [x] Contract calendar, chart captions, cached sensitivity (page loads in < 5 s)
@@ -144,6 +184,8 @@ From 13 May 2026      7   -9983.303016
 - [x] Liquidity capacity caps (1–5% of each leg's daily volume), net Sharpe, confidence interval on the verdict
 - [x] Carry panel (GOLDTEN curve vs RBI repo) and quiet alerts (only for EDGE pairs that clear the hurdle)
 - [x] Contract specs verified against the current MCX PDFs (GOLD/GOLDM tender window corrected to 3 days)
+- [x] GOLD vs GOLDM second control, robustness grid, downloadable report
+- [x] Silver family: SILVERM vs SILVERMIC control, SILVER vs SILVERM carry pair (₹/kg display)
 - [ ] GOLDM 3-day-average DDR modelled in the GOLDM vs GOLDTEN expected spread
 - [ ] COMEX carry comparison, measured slippage from live bid/ask
 

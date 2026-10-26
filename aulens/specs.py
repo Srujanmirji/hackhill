@@ -1,4 +1,4 @@
-"""Contract rulebook for MCX gold futures.
+"""Contract rulebook for MCX gold and silver futures.
 
 Every number here should be checked against the latest MCX contract-specification
 PDFs before a pitch (see docs/CONTRACT_SPECS.md). Verified 26 Oct 2026 against the current
@@ -26,7 +26,22 @@ SPECS = {
     "GOLDTEN":    ContractSpec("GOLDTEN",      10, 10, 999, "Ahmedabad", "month_end", 1, 3),
     "GOLDGUINEA": ContractSpec("GOLDGUINEA",    8,  8, 999, "Ahmedabad", "month_end", 1, 3),
     "GOLDPETAL":  ContractSpec("GOLDPETAL",     1,  1, 999, "Mumbai",    "month_end", 1, 3),
+    # Silver: MCX spec PDFs (Silver Sep-2026/Mar-2027, Silver Mini and Micro Aug-2026/Feb-2027 onwards), read 26 Oct 2026.
+    # Quoted per kg; DDR = simple average of the last 3 polled Ahmedabad spot prices; tender = last 3 trading days.
+    "SILVER":     ContractSpec("SILVER",    30000, 1000, 999, "Ahmedabad", "5th",       3, 3),
+    "SILVERM":    ContractSpec("SILVERM",    5000, 1000, 999, "Ahmedabad", "month_end", 3, 3),
+    "SILVERMIC":  ContractSpec("SILVERMIC",  1000, 1000, 999, "Ahmedabad", "month_end", 3, 3),
 }
+
+
+def metal(symbol: str) -> str:
+    return "silver" if symbol.startswith("SILVER") else "gold"
+
+
+# Display unit per metal (internally every price is ₹ per 10 g at 999): factor to multiply by, and its name.
+UNITS = {"gold": (1, "10 g"), "silver": (100, "kg")}
+# Default slippage per leg per display unit. ASSUMPTION: ₹20 is ~0.014% of price for both metals at 2026 levels.
+DEFAULT_SLIPPAGE = {"gold": 20, "silver": 20}
 
 # Pairs the prototype analyses. The first is the control pair: same city, purity,
 # expiry and tender schedule, so its normalized spread must converge to zero at DDR.
@@ -35,6 +50,8 @@ PAIRS = [
     ("GOLD", "GOLDM"),           # second control: same purity, city, 3-day DDR and expiry; settles on one DDR
     ("GOLDTEN", "GOLDPETAL"),    # adds Mumbai vs Ahmedabad basis
     ("GOLDM", "GOLDTEN"),        # stretch: GOLDM (5th of M+1) vs GOLDTEN (end of M), carry-adjusted
+    ("SILVERM", "SILVERMIC"),    # silver control: same purity, city, 3-day DDR and expiry
+    ("SILVER", "SILVERM"),       # silver carry pair: SILVER (5th of M+1) vs SILVERM (end of M)
 ]
 
 # RBI policy repo rate, the benchmark for the carry panel. 5.50% per rbi.org.in, read 26 Oct 2026

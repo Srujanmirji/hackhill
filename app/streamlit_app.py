@@ -17,7 +17,8 @@ from aulens.backtest import Params, latest_signals, walk_forward  # noqa: E402
 from aulens.costs import CostModel  # noqa: E402
 from aulens.data.loader import load_processed  # noqa: E402
 from aulens.normalize import curve_carry  # noqa: E402
-from aulens.specs import MCX_FULL_HOLIDAYS, PAIRS, RBI_REPO_RATE, RBI_REPO_SINCE, REGIME_BREAKS, SPECS  # noqa: E402
+from aulens.specs import (DEFAULT_SLIPPAGE, MCX_FULL_HOLIDAYS, PAIRS, RBI_REPO_RATE, RBI_REPO_SINCE,  # noqa: E402
+                          REGIME_BREAKS, SPECS, UNITS, metal)
 from aulens.verdict import verdict  # noqa: E402
 from theme import (CSS, FAULT, GOLD, INK, PLOTLY_CONFIG, STEEL, VERDIGRIS,  # noqa: E402
                    hallmark, rupees)
@@ -31,17 +32,27 @@ def data():
     return load_processed()
 
 
+SLIP_GRID = {"gold": [0, 10, 20, 30, 40, 60], "silver": [0, 20, 40, 60, 80, 100]}   # ₹ per display unit per leg
+
+
+def grams(g):
+    return f"{g / 1000:g} kg" if g >= 1000 else f"{g:g} g"
+
+
 df = data()
 source = "SYNTHETIC" if (df["source"] == "SYNTHETIC").any() else df["source"].iloc[0]
 
 with st.sidebar:
     st.header("AuLens")
-    st.caption("An edge validator for MCX gold futures.")
-    tags = {0: " (control)", 1: " (control)", 3: " (stretch)"}
+    st.caption("An edge validator for MCX gold and silver futures.")
+    tags = {0: " (control)", 1: " (control)", 3: " (stretch)", 4: " (silver control)", 5: " (silver carry)"}
     labels = [f"{a} vs {b}" + tags.get(i, "") for i, (a, b) in enumerate(PAIRS)]
     a, b = PAIRS[st.radio("Pair to test", range(len(PAIRS)), format_func=lambda i: labels[i])]
+    MET = metal(a)
+    U, UNAME = UNITS[MET]   # display unit: gold ₹ per 10 g, silver ₹ per kg
     st.subheader("Assumptions")
-    slip = st.slider("Slippage, ₹ per 10 g per leg", 0, 60, 20, 5,
+    slip = st.slider(f"Slippage, ₹ per {UNAME} per leg", 0, SLIP_GRID[MET][-1], DEFAULT_SLIPPAGE[MET], SLIP_GRID[MET][1] // 2,
+                     key=f"slip_{MET}",
                      help="Bhavcopy has no order-book depth, so this is an assumption. See the slippage chart.")
     min_vol = st.slider("Minimum daily volume, lots on both legs", 0, 500, 50, 10)
     scale = st.select_slider("Size multiplier", [1, 2, 4, 8], 4 if b == "GOLDPETAL" else 1)
@@ -49,14 +60,15 @@ with st.sidebar:
                         help="A trade is skipped if our lots on either leg exceed this share of what traded that day.")
     st.subheader("Contract rules")
     for s in (SPECS[a], SPECS[b]):
-        st.markdown(f"**{s.symbol}**  \n{s.lot_grams:g} g lot, quoted per {s.quote_grams:g} g, {s.purity} purity. "
+        st.markdown(f"**{s.symbol}**  \n{grams(s.lot_grams)} lot, quoted per {grams(s.quote_grams)}, {s.purity} purity. "
                     f"Settles on {s.settle_city} spot, expires "
                     f"{'on the 5th' if s.expiry_rule == '5th' else 'at month-end'}.")
 
 
 @st.cache_data
 def run(a, b, slip, min_vol, scale, cap_pct):
-    prm = Params(slippage_per_leg=slip, min_volume=min_vol, lot_scale=scale, capacity_pct=cap_pct / 100)
+    """slip is ₹ per display unit per leg (₹/10 g gold, ₹/kg silver); the engine works in ₹ per 10 g."""
+    prm = Params(slippage_per_leg=slip / UNITS[metal(a)][0], min_volume=min_vol, lot_scale=scale, capacity_pct=cap_pct / 100)
     res = walk_forward(df, a, b, prm)
     return res, verdict(res)
 
@@ -64,13 +76,13 @@ def run(a, b, slip, min_vol, scale, cap_pct):
 @st.cache_data
 def sensitivity(a, b, min_vol, scale, cap_pct):
     return pd.DataFrame([{"slippage": s, "net": run(a, b, s, min_vol, scale, cap_pct)[1].get("net_pnl", 0)}
-                         for s in [0, 10, 20, 30, 40, 60]])
+                         for s in SLIP_GRID[metal(a)]])
 
 
 @st.cache_data
 def robustness(a, b, min_vol, scale):
     """Net P&L over a slippage x capacity-cap grid: does NO EDGE survive other reasonable settings?"""
-    slips, caps = [0, 10, 20, 30, 40, 60], [1, 2, 3, 5]
+    slips, caps = SLIP_GRID[metal(a)], [1, 2, 3, 5]
     z = [[run(a, b, sl, min_vol, scale, cp)[1].get("net_pnl", 0) for sl in slips] for cp in caps]
     return slips, caps, z
 
@@ -85,7 +97,7 @@ Data: MCX settlement data {df['date'].min():%d %b %Y} to {df['date'].max():%d %b
 Verdict: {v['verdict']}. {v['reason']}
 
 Assumptions
-  Slippage per 10 g per leg: Rs {slip}
+  Slippage per {UNITS[metal(a)][1]} per leg: Rs {slip}
   Minimum daily volume, both legs: {min_vol} lots
   Capacity cap: {cap_pct}% of each leg's daily volume
   Size multiplier: {scale}
@@ -94,8 +106,8 @@ Results
   Trades (walk-forward): {v['trades']}
   Gross P&L: Rs {v.get('gross_pnl', 0):,.0f}   Costs: Rs {v.get('costs', 0):,.0f}   Slippage: Rs {v.get('slippage', 0):,.0f}
   Net P&L: Rs {v.get('net_pnl', 0):,.0f}   Win rate: {v.get('hit_rate', 0):.0%}
-  Net Sharpe: {v.get('net_sharpe', float('nan')):.2f}   Gold beta: {v.get('gold_beta', float('nan')):.3f}
-  Break-even slippage: Rs {v.get('breakeven_slippage_per_leg', float('nan')):.1f} per 10 g per leg
+  Net Sharpe: {v.get('net_sharpe', float('nan')):.2f}   {metal(a).title()} beta: {v.get('gold_beta', float('nan')):.3f}
+  Break-even slippage: Rs {v.get('breakeven_slippage_per_leg', float('nan')) * UNITS[metal(a)][0]:.1f} per {UNITS[metal(a)][1]} per leg
   90% CI of the mean trade: Rs {lo:,.0f} to Rs {hi:,.0f}
 
 By regime
@@ -125,18 +137,18 @@ panel, trades = res["panel"], res["trades"]
 hurdle = CostModel().breakeven_per_10g(panel["px10_a"].iloc[-1], res["grams"])
 
 # ---- Header and verdict
-st.title("Is this gold spread real, and tradable after costs?")
+st.title("Is this spread real, and tradable after costs?")
 if source == "SYNTHETIC":
     st.warning("Synthetic data, for UI development only. Numbers below are not findings.")
 st.markdown(f"<p class='lede'>{'Real MCX settlement' if source == 'MCX' else 'Synthetic'} data from "
             f"{df['date'].min():%-d %b %Y} to {df['date'].max():%-d %b %Y}, {len(df):,} contract-days. Every price is "
-            "converted to rupees per 10 g at 999 purity, so the rulebook gaps are gone before we compare.</p>",
+            "converted to one unit at 999 purity (gold per 10 g, silver per kg), so the rulebook gaps are gone before we compare.</p>",
             unsafe_allow_html=True)
 
 lots_a, lots_b = res["lots"]
 hero, numbers = st.columns([1, 1.9], gap="large")
 with hero:
-    st.markdown(hallmark(v["verdict"], v["pair"], f"{lots_a} {a} against {lots_b} {b}, {res['grams']:.0f} g a side"),
+    st.markdown(hallmark(v["verdict"], v["pair"], f"{lots_a} {a} against {lots_b} {b}, {grams(res['grams'])} a side"),
                 unsafe_allow_html=True)
     st.markdown(f"<div class='reason'>{v['reason']}</div>", unsafe_allow_html=True)
     if "mean_trade_ci90" in v:
@@ -151,11 +163,11 @@ with numbers:
     sharpe = v.get("net_sharpe", float("nan"))
     r1[2].metric("Net Sharpe", "–" if pd.isna(sharpe) else f"{sharpe:.2f}",
                  help="Average net trade divided by its spread, scaled by how many trades a year the pair made.")
-    r2[0].metric("Cost hurdle", rupees(hurdle), help="Statutory charges and brokerage for a round trip, per 10 g, before slippage.")
-    r2[1].metric("Break-even", rupees(v.get("breakeven_slippage_per_leg", float("nan")), 1),
-                 help="Slippage per 10 g per leg at which net P&L reaches zero. Negative means it loses even with perfect fills.")
-    r2[2].metric("Gold beta", "–" if pd.isna(beta) else f"{beta:.2f}",
-                 help="Slope of trade P&L on the gold move. Near 0 means the result is not just gold going up.")
+    r2[0].metric("Cost hurdle", rupees(hurdle * U), help=f"Statutory charges and brokerage for a round trip, per {UNAME}, before slippage.")
+    r2[1].metric("Break-even", rupees(v.get("breakeven_slippage_per_leg", float("nan")) * U, 1),
+                 help=f"Slippage per {UNAME} per leg at which net P&L reaches zero. Negative means it loses even with perfect fills.")
+    r2[2].metric(f"{MET.title()} beta", "–" if pd.isna(beta) else f"{beta:.2f}",
+                 help=f"Slope of trade P&L on the {MET} price move. Near 0 means the result is not just {MET} going up.")
 
 # ---- Spread chart for one expiry
 st.subheader("The spread, one contract at a time")
@@ -166,7 +178,8 @@ exp = st.select_slider("Contract expiring in", exps, value=default_exp,
                        format_func=lambda d: pd.Timestamp(d).strftime("%b %Y"))
 e = panel[panel["expiry"] == exp]
 fig = go.Figure()
-band = hurdle + 4 * slip
+band = hurdle * U + 4 * slip
+e = e.assign(expected=e["expected"] * U, spread=e["spread"] * U)
 fig.add_trace(go.Scatter(x=e["date"], y=e["expected"] + band, line=dict(width=0), showlegend=False, hoverinfo="skip"))
 fig.add_trace(go.Scatter(x=e["date"], y=e["expected"] - band, fill="tonexty", fillcolor="rgba(46,125,107,0.10)",
                          line=dict(width=0), name="Cost band", hoverinfo="skip"))
@@ -187,7 +200,7 @@ for k, (d, label) in enumerate(shown):   # stagger labels so neighbouring breaks
     fig.add_annotation(x=pd.Timestamp(d), y=1 - 0.07 * (k % 2), yref="paper", text=label, showarrow=False,
                        xanchor="left", yanchor="top", xshift=6, font=dict(size=11, color=FAULT),
                        bgcolor="rgba(246,247,245,0.85)")
-fig.update_layout(height=420, yaxis_title="₹ per 10 g at 999")
+fig.update_layout(height=420, yaxis_title=f"₹ per {UNAME} at 999")
 st.plotly_chart(fig, width="stretch", config=PLOTLY_CONFIG)
 st.caption("The dark line is the price gap between the two contracts. The dashed line is where the exchange "
            "rules say it must end up; a trade is only worth taking once the gap leaves the shaded cost band.")
@@ -202,7 +215,7 @@ with l:
                           marker_line=dict(color=[GOLD if s == slip else "rgba(0,0,0,0)" for s in sens["slippage"]], width=2.5),
                           hovertemplate="₹%{x} slippage: net ₹%{y:,.0f}<extra></extra>"))
     f2.add_hline(y=0, line=dict(color=INK, width=1))
-    f2.update_layout(height=300, xaxis_title="Slippage, ₹ per 10 g per leg", yaxis_title="Net P&L, ₹",
+    f2.update_layout(height=300, xaxis_title=f"Slippage, ₹ per {UNAME} per leg", yaxis_title="Net P&L, ₹",
                      xaxis=dict(tickvals=sens["slippage"]))
     st.plotly_chart(f2, width="stretch", config=PLOTLY_CONFIG)
     st.caption("Net profit if every fill costs this much extra. Green makes money, grey loses; "
@@ -241,13 +254,15 @@ st.caption(f"Annual rate implied by the two nearest GOLDTEN contracts: median {b
 st.subheader("Quiet alerts")
 rows = []
 for i, (pa, pb) in enumerate(PAIRS):
-    r_res, r_v = run(pa, pb, slip, min_vol, 4 if pb == "GOLDPETAL" else 1, cap_pct)
+    m_, (u_, un_) = metal(pa), UNITS[metal(pa)]
+    r_res, r_v = run(pa, pb, slip if m_ == MET else DEFAULT_SLIPPAGE[m_], min_vol, 4 if pb == "GOLDPETAL" else 1, cap_pct)
     sig = latest_signals(r_res)
     top = sig.loc[(sig["residual"].abs() / sig["hurdle"]).idxmax()]
     status = ("Alert" if top["clears"] and r_v["verdict"] == "EDGE"
               else "Clears the hurdle, but the verdict is not EDGE" if top["clears"] else "Below the entry rules")
     rows.append({"Pair": f"{pa} vs {pb}", "Closest contract": top["expiry"].strftime("%b %Y"),
-                 "Gap": rupees(top["residual"]), "Hurdle": rupees(top["hurdle"]), "Status": status})
+                 "Gap": rupees(top["residual"] * u_) + f" /{un_}", "Hurdle": rupees(top["hurdle"] * u_) + f" /{un_}",
+                 "Status": status})
 alerts = pd.DataFrame(rows).set_index("Pair")
 if (alerts["Status"] == "Alert").any():
     st.success("A pair with an EDGE verdict clears its cost hurdle today.")
@@ -255,7 +270,7 @@ else:
     st.markdown(f"No alerts on {df['date'].max():%-d %b %Y}. AuLens only alerts when a pair's verdict is EDGE "
                 "**and** the gap clears costs, slippage and the entry rules, so silence is the normal state.")
 st.table(alerts)
-st.caption("Gap and hurdle are ₹ per 10 g for the contract closest to its hurdle. Entry rules also need a large "
+st.caption("Gap and hurdle are for the contract closest to its hurdle (gold per 10 g, silver per kg). Entry rules also need a large "
            "enough z-score, enough volume and enough days before the delivery window.")
 
 # ---- Robustness
@@ -272,7 +287,7 @@ if st.button("Run the robustness grid", key="robust") or st.session_state.get("r
         colorscale=[[0, STEEL], [0.5, "#F6F7F5"], [1, VERDIGRIS]], showscale=False,
         text=[[rupees(x) for x in row] for row in z], texttemplate="%{text}", textfont=dict(size=13),
         hovertemplate="Slippage %{x}, cap %{y}: %{text}<extra></extra>"))
-    f5.update_layout(height=320, xaxis_title="Slippage, ₹ per 10 g per leg", yaxis_title="Capacity cap",
+    f5.update_layout(height=320, xaxis_title=f"Slippage, ₹ per {UNAME} per leg", yaxis_title="Capacity cap",
                      xaxis=dict(type="category"), yaxis=dict(type="category"))
     st.plotly_chart(f5, width="stretch", config=PLOTLY_CONFIG)
     wins = sum(x > 0 for row in z for x in row)

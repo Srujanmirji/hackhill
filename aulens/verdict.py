@@ -35,8 +35,10 @@ def net_sharpe(trades: pd.DataFrame) -> float:
 
 def verdict(res: dict, min_trades: int = 10) -> dict:
     t = res["trades"]
+    g = res["grams"]
+    size = f"{g / 1000:g} kg" if g >= 1000 else f"{g:.0f} g"
     out = {"pair": f"{res['pair'][0]} vs {res['pair'][1]}",
-           "lots": f"{res['lots'][0]} x {res['pair'][0]}  vs  {res['lots'][1]} x {res['pair'][1]}  ({res['grams']:.0f} g)",
+           "lots": f"{res['lots'][0]} x {res['pair'][0]}  vs  {res['lots'][1]} x {res['pair'][1]}  ({size})",
            "trades": len(t)}
     if len(t) == 0:
         return {**out, "verdict": "UNTESTABLE", "reason": "No trades cleared the cost hurdle and filters."}

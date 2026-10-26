@@ -21,6 +21,9 @@ There isn't one after costs, and AuLens can show exactly why.
   all of it comes from one regime (22 Sep 2025 – 1 Apr 2026), 57% from a single trade closed on
   30 Jan 2026, and it loses after the May 2026 duty hike. Its 90% confidence interval for the
   average trade is −₹527 to ₹2,044: it straddles zero.
+- **Same story in silver.** SILVERM vs SILVERMIC settle at exactly ₹0 on all 8 expiries, yet
+  15 trades net −₹2,783 and break even at ₹10.7 per kg per leg. SILVER vs SILVERM loses
+  ₹3.56 lakh, and its whole 90% interval sits below zero. All six pairs: NO EDGE.
 
 One line: *"The spread is real; the trade isn't. That's the answer a trader needs before risking money."*
 

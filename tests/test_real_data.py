@@ -71,3 +71,13 @@ def test_gold_goldm_settle_on_the_same_price(df):
     p = p[p["expiry"] <= df["date"].max()]
     final = p.sort_values("date").groupby("expiry")["spread"].last()
     assert len(final) >= 5 and (final.abs() < 0.01).all()
+
+
+def test_silver_control_settles_on_the_same_price(df):
+    """SILVERM and SILVERMIC settle on one DDR (3-day Ahmedabad average), so expired contracts end at ₹0."""
+    if not df["symbol"].isin(["SILVERM", "SILVERMIC"]).any():
+        pytest.skip("no silver rows in the parquet")
+    p = pair_panel(df, "SILVERM", "SILVERMIC")
+    p = p[p["expiry"] <= df["date"].max()]
+    final = p.sort_values("date").groupby("expiry")["spread"].last()
+    assert len(final) >= 3 and (final.abs() < 0.01).all()

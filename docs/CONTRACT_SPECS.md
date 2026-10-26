@@ -38,6 +38,24 @@ Onwards* (MCX/TRD/041/2026), *Gold Guinea / Gold Petal July 2026 Contract Onward
 Effect of the correction: only the GOLDM vs GOLDTEN pair changes (positions may be held two
 trading days longer). Its verdict stays NO EDGE.
 
+## Silver
+
+Read 26 Oct 2026 from the MCX PDFs *Silver September 2026 / March 2027 Contract Onwards* and *Silver
+Mini / Silver Micro August 2026 / February 2027 Contract Onwards*.
+
+| | SILVER | SILVERM | SILVERMIC |
+|---|---|---|---|
+| Lot | 30 kg | 5 kg | 1 kg |
+| Quote | ₹/kg | ₹/kg | ₹/kg |
+| Purity | 999 | 999 | 999 |
+| Price basis | Ex-Ahmedabad | Ex-Ahmedabad | Ex-Ahmedabad |
+| DDR | Ahmedabad spot, avg of last 3 polled days | same | same |
+| Last trading day | 5th | Last calendar day | Last calendar day |
+| Tender window | Last 3 trading days | Last 3 trading days | Last 3 trading days |
+
+All rows match `specs.py`. SILVERM and SILVERMIC share every rule, so they form the silver control
+pair. Their published DDRs are identical on all 8 expiries in `data/raw/ddr/mcx_ddr_silver.csv`.
+
 ## Calendar facts used as regime breaks
 
 | Date | Event |
