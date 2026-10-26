@@ -21,4 +21,4 @@
 - [ ] Contract specs verified against MCX PDFs (`CONTRACT_SPECS.md` log filled in)
 - [ ] One stretch feature done (carry panel or measured slippage)
 - [ ] Laptop runs the app offline from a local parquet file
-- [ ] Answers ready: "Where's the edge?", "Why not live data?", "How is this different from other teams?"
+- [x] Answers ready (docs/QA.md): "Where's the edge?", "Why not live data?", "How is this different from other teams?"

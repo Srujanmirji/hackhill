@@ -61,6 +61,7 @@ pytest -q
 | [docs/CONTRACT_SPECS.md](docs/CONTRACT_SPECS.md) | The rulebook, with what still needs verifying |
 | [docs/COSTS.md](docs/COSTS.md) | Transaction-cost model and worked examples |
 | [docs/LIMITATIONS.md](docs/LIMITATIONS.md) | What AuLens cannot tell you |
+| [docs/QA.md](docs/QA.md) | Finale Q&A: honest answers backed by the real-data numbers |
 | [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md) | 2-minute demo video script |
 | [docs/SUBMISSION_CHECKLIST.md](docs/SUBMISSION_CHECKLIST.md) | Before every round |
 
