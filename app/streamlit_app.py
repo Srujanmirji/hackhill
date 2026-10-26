@@ -1,4 +1,5 @@
 """AuLens dashboard:  streamlit run app/streamlit_app.py"""
+import hashlib
 import sys
 from html import escape
 from pathlib import Path
@@ -29,7 +30,7 @@ st.markdown(CSS, unsafe_allow_html=True)
 
 
 @st.cache_data
-def data(version: float):   # keyed on the parquet's mtime so a git pull refreshes the cache
+def data(version: tuple):   # keyed on the parquet's mtime so a git pull refreshes the cache
     return load_processed()
 
 
@@ -40,7 +41,11 @@ def grams(g):
     return f"{g / 1000:g} kg" if g >= 1000 else f"{g:g} g"
 
 
-VER = PROCESSED.stat().st_mtime if PROCESSED.exists() else 0.0   # passed to every cached function that reads df
+# Passed to every cached function that reads df: changes when the data or the engine code changes,
+# so Streamlit Cloud never serves results computed by an older backtest after a git pull.
+ENGINE = Path(__file__).resolve().parents[1] / "aulens"
+VER = (PROCESSED.stat().st_mtime if PROCESSED.exists() else 0.0,
+       hashlib.md5(b"".join(f.read_bytes() for f in sorted(ENGINE.rglob("*.py")))).hexdigest())
 df = data(VER)
 source = "SYNTHETIC" if (df["source"] == "SYNTHETIC").any() else df["source"].iloc[0]
 
