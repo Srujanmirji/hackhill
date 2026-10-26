@@ -75,7 +75,7 @@ CSS = f"""
     font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1rem; letter-spacing: .04em; }}
 
   /* pair picker: 44 px tap targets */
-  [data-testid="stBaseButton-pills"], [data-testid="stBaseButton-pillsActive"] {{ min-height: 44px; padding-left: .9rem; padding-right: .9rem; }}
+  .st-key-pair button {{ min-height: 44px; padding-left: .9rem; padding-right: .9rem; }}
 
   /* phones: keep the six key numbers three across instead of one per row */
   @media (max-width: 640px) {{
