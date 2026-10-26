@@ -15,7 +15,7 @@ for _m in [m for m in sys.modules if m == "aulens" or m.startswith("aulens.") or
     del sys.modules[_m]
 from aulens.backtest import Params, latest_signals, walk_forward  # noqa: E402
 from aulens.costs import CostModel  # noqa: E402
-from aulens.data.loader import load_processed  # noqa: E402
+from aulens.data.loader import PROCESSED, load_processed  # noqa: E402
 from aulens.normalize import curve_carry  # noqa: E402
 from aulens.specs import (DEFAULT_SLIPPAGE, MCX_FULL_HOLIDAYS, PAIRS, RBI_REPO_RATE, RBI_REPO_SINCE,  # noqa: E402
                           REGIME_BREAKS, SPECS, UNITS, metal)
@@ -28,7 +28,7 @@ st.markdown(CSS, unsafe_allow_html=True)
 
 
 @st.cache_data
-def data():
+def data(version: float):   # keyed on the parquet's mtime so a git pull refreshes the cache
     return load_processed()
 
 
@@ -39,7 +39,7 @@ def grams(g):
     return f"{g / 1000:g} kg" if g >= 1000 else f"{g:g} g"
 
 
-df = data()
+df = data(PROCESSED.stat().st_mtime if PROCESSED.exists() else 0.0)
 source = "SYNTHETIC" if (df["source"] == "SYNTHETIC").any() else df["source"].iloc[0]
 
 with st.sidebar:
