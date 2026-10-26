@@ -1,0 +1,20 @@
+[
+ {"id": "v01", "shot": "slide-01", "text": "Hi, we're team CodeWick. This is AuLens, built for Hack in Hills, powered by TinyFish."},
+ {"id": "v02", "shot": "slide-02", "text": "On MCX, gold trades as five futures contracts, and their prices never line up. A Gold Guinea at one lakh thirteen thousand, next to a Gold Ten at one lakh forty thousand, looks like free money."},
+ {"id": "v03", "shot": "slide-02", "text": "It isn't. Quote units, purity, settlement city and expiry explain almost all of it."},
+ {"id": "v04", "shot": "slide-03", "text": "AuLens converts every contract to one unit, models where each pair must settle, and tests what's left walk-forward, net of modelled costs. One verdict per pair."},
+ {"id": "v05", "shot": "slide-04", "text": "Here's the live prototype, on eighteen months of real MCX data."},
+ {"id": "v06", "shot": "app-board", "text": "The scoreboard: six gold and silver pairs. Zero of six establishes an edge."},
+ {"id": "v07", "shot": "app-verdict", "text": "Take the control pair, Gold Ten against Gold Guinea: sixty-two trades, minus seventeen thousand rupees, break-even at three rupees of slippage. No edge."},
+ {"id": "v08", "shot": "app-spread", "text": "The gap settles within one rupee on all eighteen expiries, but only after a trader must exit for delivery."},
+ {"id": "v09", "shot": "app-gap", "text": "Check a gap you see: type two prices, and AuLens shows what's left after the rules and costs."},
+ {"id": "v10", "shot": "app-regime", "text": "Results are stress-tested for slippage and split by regime."},
+ {"id": "v12", "shot": "app-alerts", "text": "Alerts fire only for a tested edge. Today, there are none."},
+ {"id": "v14", "shot": "slide-05", "text": "Under the hood: MCX settlement data, a rule normalizer, a cost engine and a monthly walk-forward test, in Python and Streamlit."},
+ {"id": "v15", "shot": "slide-06", "text": "Gold Ten against Gold Petal made about thirty-five thousand rupees, but fails the verdict's tests: profit in every regime, and a confidence interval above zero."},
+ {"id": "v16", "shot": "slide-06", "text": "Limits: fills are simulated, funding costs are excluded, and there's no untouched holdout yet."},
+ {"id": "v17", "shot": "slide-07", "text": "Other tools show a gap. AuLens tells you if it's real, and tradable after costs."},
+ {"id": "v18", "shot": "slide-08", "text": "It's free for traders, with a Pro tier and an API for brokers."},
+ {"id": "v19", "shot": "slide-09", "text": "Next: live bid and ask for measured slippage, then base metals."},
+ {"id": "v20", "shot": "slide-10", "text": "AuLens: five contracts, one metal, one honest verdict. It's open source and live today. Thank you."}
+]

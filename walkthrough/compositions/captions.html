@@ -1,0 +1,74 @@
+<template>
+  <style>
+@font-face { font-family: 'Barlow Condensed'; font-weight: 600; src: url('assets/fonts/BarlowCondensed-SemiBold.woff2'); }
+@font-face { font-family: 'Public Sans'; font-weight: 400; src: url('assets/fonts/PublicSans-Regular.woff2'); }
+@font-face { font-family: 'Public Sans'; font-weight: 600; src: url('assets/fonts/PublicSans-SemiBold.woff2'); }
+
+#root { position: absolute; inset: 0; pointer-events: none; }
+.cap { position: absolute; left: 160px; right: 160px; top: 958px; height: 92px; display: flex; align-items: center; }
+.cap span { background: #F6F7F5; padding: 8px 18px 10px; border-radius: 6px; font-family: 'Public Sans', sans-serif; font-weight: 600;
+             font-size: 38px; line-height: 1.2; color: #23262B; white-space: nowrap; }
+  </style>
+  <div id="root" data-composition-id="captions" data-width="1920" data-height="1080">
+    <div id="cap0" class="clip cap" data-start="-0.050" data-duration="1.760"><span>Hi, we're team CodeWick.</span></div>
+    <div id="cap1" class="clip cap" data-start="1.710" data-duration="2.640"><span>This is AuLens, built for Hack in Hills,</span></div>
+    <div id="cap2" class="clip cap" data-start="4.350" data-duration="1.600"><span>powered by TinyFish.</span></div>
+    <div id="cap3" class="clip cap" data-start="5.950" data-duration="4.080"><span>On MCX, gold trades as five futures contracts,</span></div>
+    <div id="cap4" class="clip cap" data-start="10.030" data-duration="2.000"><span>and their prices never line up.</span></div>
+    <div id="cap5" class="clip cap" data-start="12.030" data-duration="2.720"><span>A Gold Guinea at one lakh thirteen thousand,</span></div>
+    <div id="cap6" class="clip cap" data-start="14.750" data-duration="2.040"><span>next to a Gold Ten at one lakh</span></div>
+    <div id="cap7" class="clip cap" data-start="16.790" data-duration="2.360"><span>forty thousand, looks like free money.</span></div>
+    <div id="cap8" class="clip cap" data-start="19.150" data-duration="1.760"><span>It isn't. Quote units,</span></div>
+    <div id="cap9" class="clip cap" data-start="20.910" data-duration="3.200"><span>purity, settlement city and expiry explain almost all</span></div>
+    <div id="cap10" class="clip cap" data-start="24.110" data-duration="0.640"><span>of it.</span></div>
+    <div id="cap11" class="clip cap" data-start="24.750" data-duration="3.040"><span>AuLens converts every contract to one unit,</span></div>
+    <div id="cap12" class="clip cap" data-start="27.790" data-duration="1.920"><span>models where each pair must settle,</span></div>
+    <div id="cap13" class="clip cap" data-start="29.710" data-duration="1.920"><span>and tests what's left walk-forward,</span></div>
+    <div id="cap14" class="clip cap" data-start="31.630" data-duration="1.680"><span>net of modelled costs.</span></div>
+    <div id="cap15" class="clip cap" data-start="33.310" data-duration="1.680"><span>One verdict per pair.</span></div>
+    <div id="cap16" class="clip cap" data-start="34.990" data-duration="1.760"><span>Here's the live prototype,</span></div>
+    <div id="cap17" class="clip cap" data-start="36.750" data-duration="2.800"><span>on eighteen months of real MCX data.</span></div>
+    <div id="cap18" class="clip cap" data-start="39.550" data-duration="2.960"><span>The scoreboard: six gold and silver pairs.</span></div>
+    <div id="cap19" class="clip cap" data-start="42.510" data-duration="2.480"><span>Zero of six establishes an edge.</span></div>
+    <div id="cap20" class="clip cap" data-start="44.990" data-duration="1.360"><span>Take the control pair,</span></div>
+    <div id="cap21" class="clip cap" data-start="46.350" data-duration="2.000"><span>Gold Ten against Gold Guinea:</span></div>
+    <div id="cap22" class="clip cap" data-start="48.350" data-duration="3.120"><span>sixty-two trades, minus seventeen thousand rupees,</span></div>
+    <div id="cap23" class="clip cap" data-start="51.470" data-duration="2.640"><span>break-even at three rupees of slippage.</span></div>
+    <div id="cap24" class="clip cap" data-start="54.110" data-duration="1.040"><span>No edge.</span></div>
+    <div id="cap25" class="clip cap" data-start="55.150" data-duration="2.480"><span>The gap settles within one rupee on all</span></div>
+    <div id="cap26" class="clip cap" data-start="57.630" data-duration="3.040"><span>eighteen expiries, but only after a trader must</span></div>
+    <div id="cap27" class="clip cap" data-start="60.670" data-duration="1.280"><span>exit for delivery.</span></div>
+    <div id="cap28" class="clip cap" data-start="61.950" data-duration="1.360"><span>Check a gap you see:</span></div>
+    <div id="cap29" class="clip cap" data-start="63.310" data-duration="2.880"><span>type two prices, and AuLens shows what's left</span></div>
+    <div id="cap30" class="clip cap" data-start="66.190" data-duration="1.680"><span>after the rules and costs.</span></div>
+    <div id="cap31" class="clip cap" data-start="67.870" data-duration="3.040"><span>Results are stress-tested for slippage and split by</span></div>
+    <div id="cap32" class="clip cap" data-start="70.910" data-duration="0.800"><span>regime.</span></div>
+    <div id="cap33" class="clip cap" data-start="71.710" data-duration="2.480"><span>Alerts fire only for a tested edge.</span></div>
+    <div id="cap34" class="clip cap" data-start="74.190" data-duration="1.440"><span>Today, there are none.</span></div>
+    <div id="cap35" class="clip cap" data-start="75.630" data-duration="2.960"><span>Under the hood: MCX settlement data,</span></div>
+    <div id="cap36" class="clip cap" data-start="78.590" data-duration="2.480"><span>a rule normalizer, a cost engine and a</span></div>
+    <div id="cap37" class="clip cap" data-start="81.070" data-duration="3.520"><span>monthly walk-forward test, in Python and Streamlit.</span></div>
+    <div id="cap38" class="clip cap" data-start="84.590" data-duration="3.040"><span>Gold Ten against Gold Petal made about thirty-five</span></div>
+    <div id="cap39" class="clip cap" data-start="87.630" data-duration="3.280"><span>thousand rupees, but fails the verdict's tests:</span></div>
+    <div id="cap40" class="clip cap" data-start="90.910" data-duration="1.760"><span>profit in every regime,</span></div>
+    <div id="cap41" class="clip cap" data-start="92.670" data-duration="2.480"><span>and a confidence interval above zero.</span></div>
+    <div id="cap42" class="clip cap" data-start="95.150" data-duration="2.160"><span>Limits: fills are simulated,</span></div>
+    <div id="cap43" class="clip cap" data-start="97.310" data-duration="1.680"><span>funding costs are excluded,</span></div>
+    <div id="cap44" class="clip cap" data-start="98.990" data-duration="2.160"><span>and there's no untouched holdout yet.</span></div>
+    <div id="cap45" class="clip cap" data-start="101.150" data-duration="1.600"><span>Other tools show a gap.</span></div>
+    <div id="cap46" class="clip cap" data-start="102.750" data-duration="1.680"><span>AuLens tells you if it's real,</span></div>
+    <div id="cap47" class="clip cap" data-start="104.430" data-duration="1.840"><span>and tradable after costs.</span></div>
+    <div id="cap48" class="clip cap" data-start="106.270" data-duration="1.440"><span>It's free for traders,</span></div>
+    <div id="cap49" class="clip cap" data-start="107.710" data-duration="2.080"><span>with a Pro tier and an API for</span></div>
+    <div id="cap50" class="clip cap" data-start="109.790" data-duration="0.800"><span>brokers.</span></div>
+    <div id="cap51" class="clip cap" data-start="110.590" data-duration="2.800"><span>Next: live bid and ask for measured slippage,</span></div>
+    <div id="cap52" class="clip cap" data-start="113.390" data-duration="1.360"><span>then base metals.</span></div>
+    <div id="cap53" class="clip cap" data-start="114.750" data-duration="2.400"><span>AuLens: five contracts, one metal,</span></div>
+    <div id="cap54" class="clip cap" data-start="117.150" data-duration="2.840"><span>one honest verdict. It's open source and live</span></div>
+    <div id="cap55" class="clip cap" data-start="119.990" data-duration="1.930"><span>today. Thank you.</span></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    window.__timelines["captions"] = tl;
+  </script>
+</template>

@@ -1,0 +1,160 @@
+{
+ "Is this spread real, and tradable after ": 82,
+ "0 of 6 pairs show an edge after costs": 413,
+ "": 9965,
+ "The spread, one contract at a time": 1533,
+ "Check a gap you see": 2205,
+ "What slippage does to it": 2886,
+ "Results by regime": 2886,
+ "What the curve pays to hold gold": 3339,
+ "Roll-down, or did the curve move?": 3833,
+ "Quiet alerts": 4368,
+ "Does NO EDGE survive other settings?": 4822,
+ "Take the numbers with you": 5012,
+ "When a position can be held": 5145,
+ "When contracts are liquid": 5888,
+ "@pills": 881,
+ "@stamp": 1055,
+ "@gap": 2406,
+ "@plot0": 1669,
+ "@plot1": 2944,
+ "@plot2": 3396,
+ "@plot3": 3891,
+ "@plot4": 5203,
+ "@plot5": 5946,
+ "@height": 6661,
+ "@rects": {
+  "main": [
+   210,
+   0,
+   1180,
+   6661
+  ],
+  "title": [
+   285,
+   82,
+   527,
+   116
+  ],
+  "board_h": [
+   285,
+   413,
+   1030,
+   27
+  ],
+  "board": [
+   285,
+   405,
+   1030,
+   461
+  ],
+  "pills": [
+   285,
+   881,
+   1014,
+   70
+  ],
+  "stamp": [
+   285,
+   1055,
+   323,
+   102
+  ],
+  "metrics": [
+   670,
+   1055,
+   645,
+   137
+  ],
+  "spread": [
+   285,
+   1669,
+   1030,
+   420
+  ],
+  "ledger": [
+   285,
+   2406,
+   690,
+   329
+  ],
+  "leftover": [
+   285,
+   2603,
+   690,
+   66
+  ],
+  "gapout": [
+   285,
+   2734,
+   690,
+   69
+  ],
+  "slip": [
+   285,
+   2944,
+   485,
+   300
+  ],
+  "carry": [
+   285,
+   3396,
+   1030,
+   300
+  ],
+  "roll": [
+   285,
+   3891,
+   1030,
+   320
+  ],
+  "calendar": [
+   285,
+   5203,
+   1030,
+   528
+  ],
+  "liquid": [
+   285,
+   5946,
+   1030,
+   340
+  ],
+  "tables": [
+   [
+    301,
+    405,
+    998,
+    299
+   ],
+   [
+    301,
+    1549,
+    998,
+    375
+   ],
+   [
+    830,
+    2944,
+    485,
+    156
+   ],
+   [
+    285,
+    4489,
+    1030,
+    218
+   ],
+   [
+    301,
+    6473,
+    998,
+    375
+   ]
+  ]
+ },
+ "@tiles": 7,
+ "@tile_px": 2000,
+ "@width_px": 3200,
+ "@height_px": 13322
+}

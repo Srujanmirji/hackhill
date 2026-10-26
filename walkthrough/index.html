@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en" data-resolution="landscape">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #F6F7F5; }
+      #root { position: relative; width: 100%; height: 100%; }
+      #captions { z-index: 10; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="121.678" data-width="1920" data-height="1080">
+      <div id="team" class="clip" data-composition-id="team" data-composition-src="compositions/team.html" data-start="0.0" data-duration="6.125" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div id="problem" class="clip" data-composition-id="problem" data-composition-src="compositions/problem.html" data-start="6.125" data-duration="18.841" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div id="solution" class="clip" data-composition-id="solution" data-composition-src="compositions/solution.html" data-start="24.966" data-duration="10.221" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div id="prototype" class="clip" data-composition-id="prototype" data-composition-src="compositions/prototype.html" data-start="35.187" data-duration="4.631" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div id="demo" class="clip" data-composition-id="demo" data-composition-src="compositions/demo.html" data-start="39.818" data-duration="36.044" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div id="architecture" class="clip" data-composition-id="architecture" data-composition-src="compositions/architecture.html" data-start="75.862" data-duration="8.898" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div id="results" class="clip" data-composition-id="results" data-composition-src="compositions/results.html" data-start="84.76" data-duration="16.644" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div id="innovation" class="clip" data-composition-id="innovation" data-composition-src="compositions/innovation.html" data-start="101.404" data-duration="5.143" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div id="market" class="clip" data-composition-id="market" data-composition-src="compositions/market.html" data-start="106.547" data-duration="4.269" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div id="roadmap" class="clip" data-composition-id="roadmap" data-composition-src="compositions/roadmap.html" data-start="110.816" data-duration="4.119" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div id="end" class="clip" data-composition-id="end" data-composition-src="compositions/end.html" data-start="114.935" data-duration="6.743" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div id="captions" class="clip" data-composition-id="captions" data-composition-src="compositions/captions.html"
+        data-start="0" data-duration="121.678" data-track-index="2" data-track-kind="captions" data-width="1920" data-height="1080"></div>
+      <audio id="vo" src="assets/vo/voiceover.wav" data-start="0" data-duration="121.228" data-track-index="3" data-volume="1"></audio>
+      <audio id="sfx0" src="assets/sfx/whoosh-short.mp3" data-start="0.000" data-duration="0.57" data-track-index="4" data-volume="0.3"></audio>
+      <audio id="sfx1" src="assets/sfx/whoosh-short.mp3" data-start="6.125" data-duration="0.57" data-track-index="5" data-volume="0.3"></audio>
+      <audio id="sfx2" src="assets/sfx/whoosh-short.mp3" data-start="24.966" data-duration="0.57" data-track-index="4" data-volume="0.3"></audio>
+      <audio id="sfx3" src="assets/sfx/whoosh-short.mp3" data-start="35.187" data-duration="0.57" data-track-index="5" data-volume="0.3"></audio>
+      <audio id="sfx4" src="assets/sfx/whoosh-short.mp3" data-start="39.818" data-duration="0.57" data-track-index="4" data-volume="0.3"></audio>
+      <audio id="sfx5" src="assets/sfx/click-soft.mp3" data-start="42.560" data-duration="0.37" data-track-index="5" data-volume="0.3"></audio>
+      <audio id="sfx6" src="assets/sfx/click-soft.mp3" data-start="45.040" data-duration="0.37" data-track-index="4" data-volume="0.3"></audio>
+      <audio id="sfx7" src="assets/sfx/click-soft.mp3" data-start="48.400" data-duration="0.37" data-track-index="5" data-volume="0.3"></audio>
+      <audio id="sfx8" src="assets/sfx/click-soft.mp3" data-start="54.160" data-duration="0.37" data-track-index="4" data-volume="0.3"></audio>
+      <audio id="sfx9" src="assets/sfx/click-soft.mp3" data-start="65.440" data-duration="0.37" data-track-index="5" data-volume="0.3"></audio>
+      <audio id="sfx10" src="assets/sfx/click-soft.mp3" data-start="67.280" data-duration="0.37" data-track-index="4" data-volume="0.3"></audio>
+      <audio id="sfx11" src="assets/sfx/click-soft.mp3" data-start="69.440" data-duration="0.37" data-track-index="5" data-volume="0.3"></audio>
+      <audio id="sfx12" src="assets/sfx/click-soft.mp3" data-start="70.240" data-duration="0.37" data-track-index="4" data-volume="0.3"></audio>
+      <audio id="sfx13" src="assets/sfx/click-soft.mp3" data-start="75.120" data-duration="0.37" data-track-index="5" data-volume="0.3"></audio>
+      <audio id="sfx14" src="assets/sfx/whoosh-short.mp3" data-start="75.862" data-duration="0.57" data-track-index="4" data-volume="0.3"></audio>
+      <audio id="sfx15" src="assets/sfx/whoosh-short.mp3" data-start="84.760" data-duration="0.57" data-track-index="5" data-volume="0.3"></audio>
+      <audio id="sfx16" src="assets/sfx/click-soft.mp3" data-start="95.820" data-duration="0.37" data-track-index="4" data-volume="0.25"></audio>
+      <audio id="sfx17" src="assets/sfx/click-soft.mp3" data-start="97.260" data-duration="0.37" data-track-index="5" data-volume="0.25"></audio>
+      <audio id="sfx18" src="assets/sfx/click-soft.mp3" data-start="99.500" data-duration="0.37" data-track-index="4" data-volume="0.25"></audio>
+      <audio id="sfx19" src="assets/sfx/click-soft.mp3" data-start="99.950" data-duration="0.37" data-track-index="5" data-volume="0.25"></audio>
+      <audio id="sfx20" src="assets/sfx/whoosh-short.mp3" data-start="101.404" data-duration="0.57" data-track-index="4" data-volume="0.3"></audio>
+      <audio id="sfx21" src="assets/sfx/whoosh-short.mp3" data-start="106.547" data-duration="0.57" data-track-index="5" data-volume="0.3"></audio>
+      <audio id="sfx22" src="assets/sfx/whoosh-short.mp3" data-start="110.816" data-duration="0.57" data-track-index="4" data-volume="0.3"></audio>
+      <audio id="sfx23" src="assets/sfx/whoosh-short.mp3" data-start="114.935" data-duration="0.57" data-track-index="5" data-volume="0.3"></audio>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = gsap.timeline({ paused: true });
+    </script>
+  </body>
+</html>

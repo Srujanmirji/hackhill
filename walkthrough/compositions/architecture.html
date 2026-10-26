@@ -1,0 +1,31 @@
+<template>
+  <style>
+@font-face { font-family: 'Barlow Condensed'; font-weight: 600; src: url('assets/fonts/BarlowCondensed-SemiBold.woff2'); }
+@font-face { font-family: 'Public Sans'; font-weight: 400; src: url('assets/fonts/PublicSans-Regular.woff2'); }
+@font-face { font-family: 'Public Sans'; font-weight: 600; src: url('assets/fonts/PublicSans-SemiBold.woff2'); }
+
+#root { position: absolute; inset: 0; background: #F6F7F5; font-family: 'Public Sans', sans-serif; color: #23262B; overflow: hidden; }
+.cam { position: absolute; inset: 0; transform-origin: 0 0; }
+.frame { position: absolute; left: 160px; top: 28px; width: 1600px; height: 900px; border-radius: 8px; overflow: hidden;
+          box-shadow: 0 18px 40px rgba(35,38,43,0.14), 0 1px 0 rgba(35,38,43,0.06); }
+.plate { position: absolute; left: 0; top: 0; width: 1600px; height: 900px; overflow: hidden; background: #fff; }
+.plate > img { display: block; width: 100%; height: 100%; }
+.mark { position: absolute; border: 4px solid #B07A1E; border-radius: 6px; opacity: 0; }
+</style>
+  <div id="root" data-composition-id="architecture" data-width="1920" data-height="1080">
+    <div id="architecture-frame" class="frame"><div id="architecture-cam" class="cam">
+      <div id="architecture-plate" class="plate" data-hold="true"><img src="assets/deck/slide-05.png" alt=""></div>
+    </div></div>
+
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    gsap.set("#architecture-cam", { x: 0, y: 0, scale: 1 });
+    tl.fromTo("#architecture-frame", { clipPath: "inset(0 100% 0 0 round 8px)" }, { clipPath: "inset(0 0% 0 0 round 8px)", duration: 0.55, ease: "expo.out" }, 0);
+    tl.to("#architecture-cam", { x: 109.7, y: -511.9, scale: 1.961, duration: 1.1, ease: "power3.inOut" }, 0.868);
+    tl.to("#architecture-cam", { x: -1019.8, y: -511.9, scale: 1.961, duration: 1.1, ease: "power3.inOut" }, 2.788);
+    tl.to("#architecture-cam", { x: -1616.0, y: -511.9, scale: 1.961, duration: 1.1, ease: "power3.inOut" }, 5.108);
+    tl.to("#architecture-cam", { x: -33.0, y: -380.5, scale: 1.031, duration: 1.1, ease: "power3.inOut" }, 6.948);
+    window.__timelines["architecture"] = tl;
+  </script>
+</template>

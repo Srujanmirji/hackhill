@@ -1,0 +1,6 @@
+renders/
+.hyperframes/
+.thumbnails/
+.waveform-cache/
+assets/app/_full.png
+node_modules/
