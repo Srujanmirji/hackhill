@@ -12,9 +12,15 @@ import streamlit as st
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 # Streamlit Cloud reruns this file after a git push but can keep the old aulens package in memory
-# (seen as an ImportError on a newly added function). Drop it so every run imports the current code.
-for _m in [m for m in sys.modules if m == "aulens" or m.startswith("aulens.") or m == "theme"]:
-    del sys.modules[_m]
+# (seen as an ImportError on a newly added function). Re-import it only when its source changed:
+# purging on every run races with other sessions' threads and breaks pickling of cached results.
+_HERE = Path(__file__).resolve()
+ENGINE_HASH = hashlib.md5(b"".join(f.read_bytes() for f in sorted([*(_HERE.parents[1] / "aulens").rglob("*.py"),
+                                                                    _HERE.parent / "theme.py"]))).hexdigest()
+if getattr(sys, "_aulens_engine", None) != ENGINE_HASH:
+    for _m in [m for m in sys.modules if m == "aulens" or m.startswith("aulens.") or m == "theme"]:
+        del sys.modules[_m]
+    sys._aulens_engine = ENGINE_HASH
 from aulens.backtest import Params, check_gap, latest_signals, walk_forward  # noqa: E402
 from aulens.costs import CostModel  # noqa: E402
 from aulens.data.loader import PROCESSED, load_processed  # noqa: E402
@@ -44,9 +50,7 @@ def grams(g):
 
 # Passed to every cached function that reads df: changes when the data or the engine code changes,
 # so Streamlit Cloud never serves results computed by an older backtest after a git pull.
-ENGINE = Path(__file__).resolve().parents[1] / "aulens"
-VER = (PROCESSED.stat().st_mtime if PROCESSED.exists() else 0.0,
-       hashlib.md5(b"".join(f.read_bytes() for f in sorted(ENGINE.rglob("*.py")))).hexdigest())
+VER = (PROCESSED.stat().st_mtime if PROCESSED.exists() else 0.0, ENGINE_HASH)
 df = data(VER)
 source = "SYNTHETIC" if (df["source"] == "SYNTHETIC").any() else df["source"].iloc[0]
 
