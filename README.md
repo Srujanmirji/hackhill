@@ -74,7 +74,7 @@ pytest -q
 |---|---|---|---|---|---|
 | GOLDTEN vs GOLDGUINEA (control) | **NO EDGE** | 61 | ₹-25,726 | ₹-6.4 | 0.063 |
 | GOLDTEN vs GOLDPETAL | **NO EDGE** | 48 | ₹34,450 | ₹64.9 | 0.136 |
-| GOLDM vs GOLDTEN (stretch) | **NO EDGE** | 29 | ₹-167,976 | ₹-124.8 | 0.254 |
+| GOLDM vs GOLDTEN (stretch) | **NO EDGE** | 35 | ₹-206,642 | ₹-127.6 | 0.316 |
 
 - **Control pair:** loses money even at zero slippage (negative break-even). Its spread is ±₹1
   at the final settlement price on all 18 expiries, which validates the normalization, but it
@@ -113,14 +113,14 @@ From 13 May 2026     14  -1664.656702
 
 == GOLDM vs GOLDTEN  [NO EDGE]  1 x GOLDM  vs  10 x GOLDTEN  (100 g)
    Does not survive costs, slippage and regime splits with confidence.
-   trades 29  gross ₹-128,353  costs ₹16,423  slippage ₹23,200  net ₹-167,976  hit 38%
-   break-even slippage ₹-124.8/10 g/leg   gold beta 0.254
+   trades 35  gross ₹-158,526  costs ₹20,116  slippage ₹28,000  net ₹-206,642  hit 34%
+   break-even slippage ₹-127.6/10 g/leg   gold beta 0.316
                   count            sum
 regime                                
-From 01 Apr 2025      5   -2589.684613
-From 22 Sep 2025     16 -146595.595555
-From 01 Apr 2026      3  -12075.595336
-From 13 May 2026      5   -6714.916906
+From 01 Apr 2025      5   -2119.383105
+From 22 Sep 2025     19 -181074.240186
+From 01 Apr 2026      4  -13465.301656
+From 13 May 2026      7   -9983.303016
 ```
 
 ## Status
@@ -135,7 +135,7 @@ From 13 May 2026      5   -6714.916906
 - [x] Control-pair convergence verified on real data (`tests/test_real_data.py`)
 - [x] Contract calendar, chart captions, cached sensitivity (page loads in < 5 s)
 - [x] GOLDM vs GOLDTEN pair, carry-adjusted for the 5th vs month-end expiry gap
-- [ ] Contract specs verified against July 2026 MCX PDFs
+- [x] Contract specs verified against the current MCX PDFs (GOLD/GOLDM tender window corrected to 3 days)
 - [ ] GOLDM 3-day-average DDR modelled in the GOLDM vs GOLDTEN expected spread
 - [ ] Carry decomposition panel, measured slippage from live bid/ask
 

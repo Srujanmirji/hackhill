@@ -65,7 +65,7 @@ is −₹1,484 to ₹715. It is not enough to claim an edge, which is why the ba
 
 **"What is gold beta?"**
 The slope of trade P&L against the gold price move over the same holding period. Near zero (0.06
-for the control pair) means results are not just a bet on gold going up. GOLDM vs GOLDTEN is 0.25,
+for the control pair) means results are not just a bet on gold going up. GOLDM vs GOLDTEN is 0.32,
 driven mostly by the 30 Jan 2026 crash day.
 
 **"What would change your mind?"**
@@ -73,6 +73,8 @@ A pair whose confidence interval sits above zero and that makes money in every r
 break-even slippage above the real bid/ask. AuLens runs that test the moment new data is loaded.
 
 **"Are the contract specs right?"**
-They follow MCX/TRD/456/2025, and the normalization is confirmed by MCX's own settlement prices
-(GUINEA × 10/8 equals TEN within ₹1 on all 18 expiries). Checking each field against the July 2026
-spec PDFs is still open (`docs/CONTRACT_SPECS.md`).
+Yes, checked field by field against the current MCX spec PDFs (log in `docs/CONTRACT_SPECS.md`).
+The check caught one error, GOLD/GOLDM's tender window was 3 days, not 5, and we fixed it. The
+normalization is also confirmed by MCX's own settlement prices: GUINEA × 10/8 equals TEN within
+₹1 on all 18 expiries.
+

@@ -10,7 +10,7 @@ AuLens is honest about what it cannot see. Show this list when asked "is this re
 4. **Regime breaks shrink samples further.** A split after 13 May 2026 leaves ~5 months.
 5. **The Petal basis is estimated** from past spreads, not from polled Mumbai/Ahmedabad spot
    prices. Adding the MCX polled-spot series would replace the estimate.
-6. **Contract specs are not yet verified** against the July 2026 MCX PDFs.
+6. **Contract specs are verified** against the current MCX PDFs (26 Oct 2026); MCX revises them, so re-check before relying on them.
 7. **Margin and funding are not modelled.** The two legs block margin; that cost is ignored.
 8. **Broker cut-offs vary.** We exit `tender_days + 2` trading days early; your broker may
    force exits earlier.
@@ -22,8 +22,8 @@ AuLens is honest about what it cannot see. Show this list when asked "is this re
    snap-back.
 10. **Crash days break cross-expiry pairs.** On 30 Jan 2026 GOLDM (Apr 2026) closed 17.5% lower
     while GOLDTEN (Mar 2026) closed 12% lower, moving the GOLDM–GOLDTEN spread by ~₹10,000 per
-    10 g in a day. Two trades lost ₹1.7 lakh between them; the pair's NO EDGE verdict and its
-    0.25 gold beta are mostly that day.
+    10 g in a day. Four trades closed that day for a net −₹1.56 lakh, 75% of the pair's loss;
+    its NO EDGE verdict and 0.32 gold beta are mostly that day.
 
 ## Not financial advice
 

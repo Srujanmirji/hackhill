@@ -1,7 +1,8 @@
 """Contract rulebook for MCX gold futures.
 
 Every number here should be checked against the latest MCX contract-specification
-PDFs before a pitch (see docs/CONTRACT_SPECS.md). Values follow MCX/TRD/456/2025.
+PDFs before a pitch (see docs/CONTRACT_SPECS.md). Verified 26 Oct 2026 against the current
+MCX spec PDFs (MCX/TRD/040-044/2026); GOLD/GOLDM tender window corrected from 5 to 3 days.
 """
 from dataclasses import dataclass
 
@@ -20,8 +21,8 @@ class ContractSpec:
 
 
 SPECS = {
-    "GOLD":       ContractSpec("GOLD",       1000, 10, 995, "Ahmedabad", "5th",       3, 5),
-    "GOLDM":      ContractSpec("GOLDM",       100, 10, 995, "Ahmedabad", "5th",       3, 5),
+    "GOLD":       ContractSpec("GOLD",       1000, 10, 995, "Ahmedabad", "5th",       3, 3),
+    "GOLDM":      ContractSpec("GOLDM",       100, 10, 995, "Ahmedabad", "5th",       3, 3),
     "GOLDTEN":    ContractSpec("GOLDTEN",      10, 10, 999, "Ahmedabad", "month_end", 1, 3),
     "GOLDGUINEA": ContractSpec("GOLDGUINEA",    8,  8, 999, "Ahmedabad", "month_end", 1, 3),
     "GOLDPETAL":  ContractSpec("GOLDPETAL",     1,  1, 999, "Mumbai",    "month_end", 1, 3),

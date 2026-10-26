@@ -18,7 +18,7 @@
 - [ ] Links submitted via the official form
 
 ## Finale (Manali)
-- [ ] Contract specs verified against MCX PDFs (`CONTRACT_SPECS.md` log filled in)
+- [x] Contract specs verified against MCX PDFs (`CONTRACT_SPECS.md` log filled in)
 - [ ] One stretch feature done (carry panel or measured slippage)
 - [ ] Laptop runs the app offline from a local parquet file
 - [x] Answers ready (docs/QA.md): "Where's the edge?", "Why not live data?", "How is this different from other teams?"
