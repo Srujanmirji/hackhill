@@ -111,11 +111,20 @@ def test_simulated_trade_uses_next_observation_and_deducts_model_costs():
     assert trade["net"] == pytest.approx(80 - trade["costs"] - trade["slippage"])
 
 
-def test_terminal_entry_is_omitted_from_completed_trades():
+@pytest.mark.parametrize("direction", [-1, 1])
+@pytest.mark.parametrize("observations", [2, 3])
+def test_terminal_entry_is_closed_and_charged(direction, observations):
     from aulens.backtest import _trades_for_expiry
     panel = pd.DataFrame({"date": pd.date_range("2025-07-01", periods=3),
                           "expiry": pd.Timestamp("2025-07-31"), "spread": [0, 30, 20],
-                          "px10_a": [90, 120, 110], "px10_b": 90, "z": [0, 2, 2],
+                          "px10_a": [90, 120, 110], "px10_b": 90, "z": [0, 2 * direction, 2 * direction],
                           "residual": 1000, "can_hold": True, "liquid": True})
-    # Document the current replay boundary limitation without changing the strategy.
-    assert _trades_for_expiry(panel, 1.5, Params(), 40) == []
+    panel = panel.tail(observations)
+    prm = Params()
+    trade, = _trades_for_expiry(panel, 1.5, prm, 40)
+    assert trade["entry_date"] == trade["exit_date"] == panel["date"].iloc[-1]
+    assert trade["side"] == ("short_spread" if direction > 0 else "long_spread")
+    assert trade["gross"] == trade["gold_move_leg_a"] == 0
+    assert trade["costs"] == pytest.approx(prm.costs.pair_round_trip(110 * 4, 90 * 4))
+    assert trade["slippage"] == 4 * prm.slippage_per_leg * 4
+    assert trade["net"] == pytest.approx(-trade["costs"] - trade["slippage"])

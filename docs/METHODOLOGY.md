@@ -94,10 +94,11 @@ month it is tested on for that threshold selection. The app records observed tra
 dates, trading-date counts and the chosen threshold for every month, including no-trade months.
 
 Each replay is truncated at its test month's last available observation. Existing positions
-are forced closed at the last observation of their expiry slice, but an entry filled on that
-final observation is omitted from completed trades. This terminal-entry omission is a known
-limitation. Only completed trades entered in the test month are retained; positions do not
-carry between replays. This differs from continuous portfolio execution.
+are forced closed at the last observation of their expiry slice. Entries filled on that
+final observation are immediately liquidated there, recording zero gross movement and
+full round-trip modelled fees/slippage. This is simulated boundary accounting, not an
+observed same-settlement execution. Only completed trades entered in the test month are
+retained; positions do not carry between replays. This differs from continuous portfolio execution.
 
 **There is no final untouched holdout.** Development has already inspected the available
 history, and the monthly procedure does not independently validate other model choices.

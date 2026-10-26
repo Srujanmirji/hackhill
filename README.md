@@ -75,23 +75,23 @@ volume, walk-forward `z_entry`.
 
 | Pair | Verdict | Trades | Net P&L | Net Sharpe | 90% CI, mean trade | Break-even slippage per leg | Metal beta |
 |---|---|---|---|---|---|---|---|
-| GOLDTEN vs GOLDGUINEA (control) | **NO EDGE** | 62 | −₹16,883 | −0.37 | −₹1,305 to ₹845 | ₹3.0 /10 g | 0.07 |
-| GOLD vs GOLDM (control) | **NO EDGE** | 12 | −₹5,93,492 | −1.28 | −₹1,14,656 to −₹1,412 | −₹103.6 /10 g | 0.03 |
-| GOLDTEN vs GOLDPETAL | **NO EDGE** | 49 | ₹35,653 | 0.83 | −₹527 to ₹2,044 | ₹65.5 /10 g | 0.14 |
-| GOLDM vs GOLDTEN (stretch) | **NO EDGE** | 32 | −₹1,69,597 | −1.24 | −₹12,236 to ₹404 | −₹112.5 /10 g | 0.25 |
-| SILVERM vs SILVERMIC (silver control) | **NO EDGE** | 15 | −₹2,783 | −0.20 | −₹1,492 to ₹1,489 | ₹10.7 /kg | −0.01 |
-| SILVER vs SILVERM (silver carry) | **NO EDGE** | 20 | −₹3,41,647 | −1.75 | −₹33,491 to −₹5,818 | −₹122.4 /kg | 0.04 |
+| GOLDTEN vs GOLDGUINEA (control) | **NO EDGE** | 62 | −₹16,883 | -0.37 | −₹1,305 to ₹845 | ₹3.0 /10 g | 0.07 |
+| GOLD vs GOLDM (control) | **NO EDGE** | 13 | −₹606,921 | -1.30 | −₹105,614 to −₹1,973 | ₹-96.7 /10 g | 0.03 |
+| GOLDTEN vs GOLDPETAL | **NO EDGE** | 51 | ₹34,404 | 0.79 | −₹549 to ₹2,013 | ₹62.2 /10 g | 0.14 |
+| GOLDM vs GOLDTEN (stretch) | **NO EDGE** | 32 | −₹169,597 | -1.24 | −₹12,236 to ₹404 | ₹-112.5 /10 g | 0.25 |
+| SILVERM vs SILVERMIC (silver control) | **NO EDGE** | 17 | −₹4,961 | -0.35 | −₹1,449 to ₹1,230 | ₹5.4 /kg | -0.00 |
+| SILVER vs SILVERM (silver carry) | **NO EDGE** | 22 | −₹351,514 | -1.80 | −₹30,035 to −₹5,757 | ₹-113.1 /kg | 0.04 |
 
 - **Control pairs:** both gold controls settle on the same price at expiry (GOLDTEN/GUINEA within
   ±₹1 on all 18 expiries, GOLD/GOLDM exactly ₹0 on 9), and SILVERM/SILVERMIC settles at exactly
   ₹0 on all 8 expired contracts. That validates the normalization. But the gap only closes inside the
   tender window, after the backtest must exit, so none of them can be traded.
 - **GOLDTEN vs GOLDPETAL:** net positive, but the profit comes from one regime (22 Sep 2025 –
-  1 Apr 2026), 57% of it from a single trade closed on 30 Jan 2026, and it loses after 13 May
+  1 Apr 2026), 59% of it from a single trade closed on 30 Jan 2026, and it loses after 13 May
   2026, so it fails the every-regime test.
 - **GOLDM vs GOLDTEN and SILVER vs SILVERM:** the carry pairs take their worst losses on
   30 Jan 2026, when the near and far expiries moved by very different amounts. Three GOLDM vs
-  GOLDTEN trades closed that day for 74% of that pair's loss, and one SILVER vs SILVERM trade for 49% of its loss. See [docs/LIMITATIONS.md](docs/LIMITATIONS.md).
+  GOLDTEN trades closed that day for 74% of that pair's loss, and one SILVER vs SILVERM trade for 48% of its loss. See [docs/LIMITATIONS.md](docs/LIMITATIONS.md).
 
 Exact output of `python scripts/run_backtest.py`:
 
@@ -99,75 +99,75 @@ Exact output of `python scripts/run_backtest.py`:
 Data source: MCX
 
 == GOLDTEN vs GOLDGUINEA  [NO EDGE]  4 x GOLDTEN  vs  5 x GOLDGUINEA  (40 g)
-   Does not survive costs, slippage and regime splits with confidence.
+   Total net P&L is not positive after costs and slippage. The 90% confidence interval for the average net trade is not entirely above zero. Net P&L is not positive in 4 tested regimes: From 01 Apr 2025, From 22 Sep 2025, From 01 Apr 2026, From 13 May 2026.
    trades 62  gross ₹20,875  costs ₹17,918  slippage ₹19,840  net ₹-16,883  hit 42%
    break-even slippage ₹3.0/10 g/leg   gold beta 0.067
    net Sharpe -0.37   90% CI of mean trade ₹-1,305 to ₹845
                   count           sum
-regime                               
+regime
 From 01 Apr 2025      4   -343.373494
 From 22 Sep 2025     30 -10825.918032
 From 01 Apr 2026      2  -1932.232955
-From 13 May 2026     26  -3781.245302 
+From 13 May 2026     26  -3781.245302
 
 == GOLD vs GOLDM  [NO EDGE]  1 x GOLD  vs  10 x GOLDM  (1 kg)
-   Does not survive costs, slippage and regime splits with confidence.
-   trades 12  gross ₹-438,556  costs ₹58,936  slippage ₹96,000  net ₹-593,492  hit 17%
-   break-even slippage ₹-103.6/10 g/leg   gold beta 0.030
-   net Sharpe -1.28   90% CI of mean trade ₹-114,656 to ₹-1,412
+   Total net P&L is not positive after costs and slippage. The 90% confidence interval for the average net trade is not entirely above zero. Net P&L is not positive in 4 tested regimes: From 01 Apr 2025, From 22 Sep 2025, From 01 Apr 2026, From 13 May 2026.
+   trades 13  gross ₹-438,556  costs ₹64,365  slippage ₹104,000  net ₹-606,921  hit 15%
+   break-even slippage ₹-96.7/10 g/leg   gold beta 0.028
+   net Sharpe -1.30   90% CI of mean trade ₹-105,614 to ₹-1,973
                   count            sum
-regime                                
+regime
 From 01 Apr 2025      2  -26375.131456
 From 22 Sep 2025      5 -513428.531566
 From 01 Apr 2026      1  -42804.239231
-From 13 May 2026      4  -10884.031706 
+From 13 May 2026      5  -24313.496688
 
 == GOLDTEN vs GOLDPETAL  [NO EDGE]  4 x GOLDTEN  vs  40 x GOLDPETAL  (40 g)
-   Does not survive costs, slippage and regime splits with confidence.
-   trades 49  gross ₹65,556  costs ₹14,223  slippage ₹15,680  net ₹35,653  hit 41%
-   break-even slippage ₹65.5/10 g/leg   gold beta 0.135
-   net Sharpe 0.83   90% CI of mean trade ₹-527 to ₹2,044
+   The 90% confidence interval for the average net trade is not entirely above zero. Net P&L is not positive in 2 tested regimes: From 01 Apr 2026, From 13 May 2026.
+   trades 51  gross ₹65,556  costs ₹14,832  slippage ₹16,320  net ₹34,404  hit 39%
+   break-even slippage ₹62.2/10 g/leg   gold beta 0.135
+   net Sharpe 0.79   90% CI of mean trade ₹-549 to ₹2,013
                   count           sum
-regime                               
+regime
 From 01 Apr 2025      4   2671.647840
 From 22 Sep 2025     27  33195.824266
-From 01 Apr 2026      3    247.194325
-From 13 May 2026     15   -462.137796 
+From 01 Apr 2026      4   -378.441028
+From 13 May 2026     16  -1084.799621
 
 == GOLDM vs GOLDTEN  [NO EDGE]  1 x GOLDM  vs  10 x GOLDTEN  (100 g)
-   Does not survive costs, slippage and regime splits with confidence.
+   Total net P&L is not positive after costs and slippage. The 90% confidence interval for the average net trade is not entirely above zero. Net P&L is not positive in 4 tested regimes: From 01 Apr 2025, From 22 Sep 2025, From 01 Apr 2026, From 13 May 2026.
    trades 32  gross ₹-125,825  costs ₹18,172  slippage ₹25,600  net ₹-169,597  hit 34%
    break-even slippage ₹-112.5/10 g/leg   gold beta 0.249
    net Sharpe -1.24   90% CI of mean trade ₹-12,236 to ₹404
                   count            sum
-regime                                
+regime
 From 01 Apr 2025      5   -2119.383105
 From 22 Sep 2025     18 -151123.302862
 From 01 Apr 2026      2   -6371.217480
-From 13 May 2026      7   -9983.303016 
+From 13 May 2026      7   -9983.303016
 
 == SILVERM vs SILVERMIC  [NO EDGE]  1 x SILVERM  vs  5 x SILVERMIC  (5 kg)
-   Does not survive costs, slippage and regime splits with confidence.
-   trades 15  gross ₹10,520  costs ₹7,303  slippage ₹6,000  net ₹-2,783  hit 13%
-   break-even slippage ₹10.7/kg/leg   silver beta -0.005
-   net Sharpe -0.20   90% CI of mean trade ₹-1,492 to ₹1,489
+   Total net P&L is not positive after costs and slippage. The 90% confidence interval for the average net trade is not entirely above zero. Net P&L is not positive in 3 tested regimes: From 01 Apr 2025, From 22 Sep 2025, From 13 May 2026.
+   trades 17  gross ₹10,520  costs ₹8,681  slippage ₹6,800  net ₹-4,961  hit 12%
+   break-even slippage ₹5.4/kg/leg   silver beta -0.004
+   net Sharpe -0.35   90% CI of mean trade ₹-1,449 to ₹1,230
                   count          sum
-regime                              
+regime
 From 01 Apr 2025      1  -645.024036
-From 22 Sep 2025     11 -1244.239259
-From 13 May 2026      3  -894.206732 
+From 22 Sep 2025     13 -3422.062907
+From 13 May 2026      3  -894.206732
 
 == SILVER vs SILVERM  [NO EDGE]  1 x SILVER  vs  6 x SILVERM  (30 kg)
-   Does not survive costs, slippage and regime splits with confidence.
-   trades 20  gross ₹-252,270  costs ₹41,377  slippage ₹48,000  net ₹-341,647  hit 25%
-   break-even slippage ₹-122.4/kg/leg   silver beta 0.042
-   net Sharpe -1.75   90% CI of mean trade ₹-33,491 to ₹-5,818
+   Total net P&L is not positive after costs and slippage. The 90% confidence interval for the average net trade is not entirely above zero. Net P&L is not positive in 4 tested regimes: From 01 Apr 2025, From 22 Sep 2025, From 01 Apr 2026, From 13 May 2026.
+   trades 22  gross ₹-252,270  costs ₹46,444  slippage ₹52,800  net ₹-351,514  hit 23%
+   break-even slippage ₹-113.1/kg/leg   silver beta 0.043
+   net Sharpe -1.80   90% CI of mean trade ₹-30,035 to ₹-5,757
                   count            sum
-regime                                
+regime
 From 01 Apr 2025      4   -2186.217673
-From 22 Sep 2025     10 -277826.172908
+From 22 Sep 2025     11 -282878.768296
 From 01 Apr 2026      1  -22121.304229
-From 13 May 2026      5  -39513.314862
+From 13 May 2026      6  -44327.309359
 ```
 
 ## Status
@@ -197,8 +197,9 @@ From 13 May 2026      5  -39513.314862
 ## Validation scope
 
 The dashboard exports monthly observed training/test dates and selected entry thresholds.
-Replays close existing positions at each expiry slice's last observation; final-observation
-entries are omitted from completed trades. Positions do not carry between monthly replays. **No final untouched holdout is claimed.** Fills are simulated
+Replays close positions at each expiry slice's last observation. Entries filled on that
+observation are also recorded and immediately liquidated with zero gross P&L and full
+round-trip modelled fees and slippage. Positions do not carry between monthly replays. **No final untouched holdout is claimed.** Fills are simulated
 from next-available settlement observations plus assumed slippage; volume is not depth.
 Net P&L excludes margin/funding costs and measured market impact. Metal beta is a diagnostic,
 not proof of neutrality or alpha. GOLDM averaging remains unmodelled.

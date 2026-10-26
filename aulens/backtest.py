@@ -87,19 +87,21 @@ def _trades_for_expiry(e: pd.DataFrame, z_entry: float, prm: Params, grams: floa
             pos = -1 if r.z > 0 else 1        # spread rich -> short A / long B
             entry = nxt
             entry_date = nxt.date
-        else:
-            exit_now = (abs(r.z) < prm.z_exit) or (not nxt.can_hold) or (i + 1 == len(rows) - 1)
-            if exit_now:
-                gross = pos * (nxt.spread - entry.spread) * grams / 10
-                cost = prm.costs.pair_round_trip(entry.px10_a * grams / 10, entry.px10_b * grams / 10)
-                slip = 4 * prm.slippage_per_leg * grams / 10
-                gold_move = (nxt.px10_a - entry.px10_a) * grams / 10
-                trades.append({"entry_date": entry_date, "exit_date": nxt.date, "expiry": r.expiry,
-                               "side": "long_spread" if pos > 0 else "short_spread",
-                               "gross": gross, "costs": cost, "slippage": slip,
-                               "net": gross - cost - slip, "gold_move_leg_a": gold_move,
-                               "grams": grams})
-                pos = 0
+            # Boundary fills liquidate immediately; every executed entry pays round-trip costs.
+            if i + 1 < len(rows) - 1:
+                continue
+        exit_now = (abs(r.z) < prm.z_exit) or (not nxt.can_hold) or (i + 1 == len(rows) - 1)
+        if exit_now:
+            gross = pos * (nxt.spread - entry.spread) * grams / 10
+            cost = prm.costs.pair_round_trip(entry.px10_a * grams / 10, entry.px10_b * grams / 10)
+            slip = 4 * prm.slippage_per_leg * grams / 10
+            gold_move = (nxt.px10_a - entry.px10_a) * grams / 10
+            trades.append({"entry_date": entry_date, "exit_date": nxt.date, "expiry": r.expiry,
+                           "side": "long_spread" if pos > 0 else "short_spread",
+                           "gross": gross, "costs": cost, "slippage": slip,
+                           "net": gross - cost - slip, "gold_move_leg_a": gold_move,
+                           "grams": grams})
+            pos = 0
     return trades
 
 

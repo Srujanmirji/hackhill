@@ -16,10 +16,11 @@ the next exchange session.
 
 Each replay stops at the test month's last available observation. Existing positions are
 forced closed at the last available observation of their expiry slice if no earlier exit
-occurs. An entry filled on that final observation is not recorded as a completed trade.
-This terminal-entry omission is a known simulation limitation; these disclosures do not
-change it. Only completed trades entered in that month are retained. Positions are not
-carried between monthly replays. An incomplete latest month is tested only through its
+occurs. An entry filled on that final observation is recorded and immediately liquidated
+at the same settlement observation: zero gross movement, but full round-trip modelled
+fees and assumed slippage. This boundary liquidation is simulated, not an observed
+executable round trip. It avoids dropping executed entries or their costs. Only completed
+trades entered in that month are retained. Positions are not carried between monthly replays. An incomplete latest month is tested only through its
 last observed date.
 
 **No final untouched holdout is claimed.** The available history has already been
@@ -37,6 +38,28 @@ dataset range is therefore longer than the test-date range. Default assumptions 
 50-lot minimum signal-day volume, 2% capacity cap, ₹20 slippage per display unit per leg,
 and size multiplier 4 for GOLDTEN/GOLDPETAL, 1 otherwise. This is a dated snapshot, not a
 claim that new data has been held out. The current-run CSV supplies the actual boundaries.
+
+## Final-observation accounting correction (26 Oct 2026)
+
+The previous replay opened some final-observation entries but omitted them from completed
+trades. They are now closed and charged under the same forced-liquidation convention.
+The full six-pair backtest was rerun, including threshold selection. All six verdicts
+remain NO EDGE. Default results for the bundled dataset changed as follows:
+
+| Pair | Trades before → after | Net P&L before → after |
+|---|---|---|
+| GOLDTEN / GOLDGUINEA | 62 → 62 | −₹16,883 → −₹16,883 |
+| GOLD / GOLDM | 12 → 13 | −₹593,492 → −₹606,921 |
+| GOLDTEN / GOLDPETAL | 49 → 51 | ₹35,653 → ₹34,404 |
+| GOLDM / GOLDTEN | 32 → 32 | −₹169,597 → −₹169,597 |
+| SILVERM / SILVERMIC | 15 → 17 | −₹2,783 → −₹4,961 |
+| SILVER / SILVERM | 20 → 22 | −₹341,647 → −₹351,514 |
+
+These before-values are an audit trail, not current findings. Seven additional terminal
+round trips have zero gross movement; aggregate gross P&L for each pair is unchanged on
+this dataset. Fees/slippage and trade-based statistics change. The README contains the
+regenerated current results, confidence intervals, Sharpe and beta. Video/PDF snapshots
+must be revised separately before submission if they quote the old figures.
 
 ## Execution is simulated
 

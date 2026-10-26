@@ -20,7 +20,8 @@ Numbers are from the live app at default settings (data to 23 Oct 2026). Long an
 
 Top scoreboard → scroll to **Check a gap you see** → back up to the scoreboard → **GOLDTEN vs GOLDGUINEA** pill → spread chart → **When contracts are liquid** → top.
 
-Don't touch the sliders during the 2 minutes. The defaults are the numbers on the slides.
+Don't touch the sliders during the 2 minutes. The corrected defaults are in README.md and docs/VALIDATION.md; old slide/video snapshots
+may still quote pre-correction figures. Update those assets before presenting them.
 
 ## Drill: likely judge questions
 
@@ -31,7 +32,7 @@ Answer each in under 20 seconds. **Bold** = the line you must say.
 3. **"How do you know there's no look-ahead?"** Rolling stats are shifted a day, fills are next day, z-thresholds are chosen on earlier months only. **A test adds ₹10 lakh to the last day's spread and checks that no earlier signal changes.**
 4. **"Isn't the P&L just gold going up?"** **Gold beta is 0.07 on the control pair**: the result barely depends on the gold move.
 5. **"Why is GUINEA ₹642 rich if it settles on the same price?"** Coin demand. The gap only closes at final settlement, **inside the delivery window, after any trader must exit.**
-6. **"One pair made ₹35,653. Isn't that an edge?"** **57% came from one trade on 30 Jan 2026, it loses after the May 2026 duty hike, and its confidence interval includes zero.** That's why it's NO EDGE.
+6. **"One pair made ₹34,404. Isn't that an edge?"** **59% came from one trade on 30 Jan 2026, it loses after the May 2026 duty hike, and its confidence interval includes zero.** That's why it's NO EDGE.
 7. **"Is 18 months enough?"** GOLDTEN only listed in April 2025, so it's all there is. **The verdict needs every regime positive and a 90% interval above zero, so short data makes us stricter, not looser.**
 8. **"Who pays for this?"** Retail and prop traders (free monitor, Pro tier), and **brokers embedding the gap check** so clients don't trade fake arbitrage.
 9. **"What did you find that surprised you?"** **Volume peaks about 24 days before expiry, exactly before the window you must exit**. The convergence everyone wants happens when you can't hold.

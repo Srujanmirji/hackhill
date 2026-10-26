@@ -17,13 +17,13 @@ This test does not establish an edge after modelled costs. It is not proof that 
 - **Costs eat what's left.** Control pair: average gross ₹337 per trade against ₹609 of costs and
   slippage per trade. 62 trades, net −₹16,883, net Sharpe −0.37; it breaks even at only ₹3.0 of
   slippage per 10 g per leg.
-- **The one positive pair fails the robustness test.** GOLDTEN vs GOLDPETAL nets ₹35,653, but almost
-  all of it comes from one regime (22 Sep 2025 – 1 Apr 2026), 57% from a single trade closed on
+- **The one positive pair fails the robustness test.** GOLDTEN vs GOLDPETAL nets ₹34,404, but almost
+  all of it comes from one regime (22 Sep 2025 – 1 Apr 2026), 59% from a single trade closed on
   30 Jan 2026, and it loses after the May 2026 duty hike. Its 90% confidence interval for the
-  average trade is −₹527 to ₹2,044: it straddles zero.
+  average trade is −₹549 to ₹2,013: it straddles zero.
 - **Same story in silver.** SILVERM vs SILVERMIC settle at exactly ₹0 on all 8 expiries, yet
-  15 trades net −₹2,783 and break even at ₹10.7 per kg per leg. SILVER vs SILVERM loses
-  ₹3.42 lakh, and its whole 90% interval sits below zero. All six pairs: NO EDGE.
+  17 trades net −₹4,961 and break even at ₹5.4 per kg per leg. SILVER vs SILVERM loses
+  ₹3.52 lakh, and its whole 90% interval sits below zero. All six pairs: NO EDGE.
 
 One line: *"The spread is real; the trade isn't. That's the answer a trader needs before risking money."*
 
@@ -97,8 +97,10 @@ normalization is also confirmed by MCX's own settlement prices: GUINEA × 10/8 e
 
 Only the monthly threshold selection uses strictly earlier months. We have inspected the
 history during development, so we do not claim a final untouched holdout for the whole
-research process. Each replay closes existing positions at its expiry slice's last observation and omits
-entries filled on that final observation, rather than carrying a continuous portfolio. The app's validation table makes the date boundaries visible.
+research process. Each replay closes positions at its expiry slice's last observation,
+including final-date entries charged as zero-gross round trips with full modelled fees/slippage,
+rather than carrying a continuous portfolio. The app's validation table makes the date
+boundaries visible.
 
 ## "Are those actual fills, and are all costs included?"
 
@@ -107,3 +109,12 @@ not order-book depth. Reported P&L deducts configured fees, taxes, brokerage and
 it excludes margin/funding costs and measured market impact. Delivery/storage costs are
 excluded because the model exits before tender. GOLDM averaging remains incomplete.
 See [VALIDATION.md](VALIDATION.md) for the full boundary of the claims.
+
+## "What changed after the boundary fix?"
+
+Seven previously unrecorded terminal entries are now immediately closed and charged at
+the final settlement observation. Their gross P&L is zero, and all fees/slippage are paid.
+GOLD/GOLDM now has 13 trades and −₹606,921; GOLDTEN/GOLDPETAL 51 and ₹34,404;
+SILVERM/SILVERMIC 17 and −₹4,961; SILVER/SILVERM 22 and −₹351,514. The other two pairs
+are unchanged. All six remain NO EDGE. This is simulated replay-end liquidation, not
+proof that entry and exit can execute simultaneously at settlement.

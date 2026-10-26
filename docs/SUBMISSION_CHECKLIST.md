@@ -21,7 +21,7 @@
 
 ## Validation evidence and claim check
 - [ ] Export monthly validation CSV, verdict report and trade log at the submitted assumptions
-- [ ] Show training/test dates and disclose monthly replay-end forced closes
+- [ ] Show training/test dates and disclose monthly replay-end forced closes, including cost-charged final-observation entries
 - [ ] State that no final untouched holdout is claimed
 - [ ] Describe fills as next-available settlement simulations; volume is not depth
 - [ ] Say net of modelled costs; disclose margin/funding, market impact and GOLDM averaging omissions

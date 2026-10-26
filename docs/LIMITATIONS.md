@@ -25,7 +25,7 @@ AuLens is honest about what it cannot see. Show this list when asked "is this re
 10. **Crash days break cross-expiry pairs.** On 30 Jan 2026 GOLDM (Apr 2026) closed 17.5% lower
     while GOLDTEN (Mar 2026) closed 12% lower, moving the GOLDM–GOLDTEN spread by ~₹10,000 per
     10 g in a day. Three trades closed that day for a net −₹1.26 lakh, 74% of the pair's loss;
-    its NO EDGE verdict and 0.25 gold beta are mostly that day. The same day supplies 57% of
+    its NO EDGE verdict and 0.25 gold beta are mostly that day. The same day supplies 59% of
     GOLDTEN vs GOLDPETAL's profit.
 11. **Silver settlement prints can be far apart on thin days.** SILVERM vs SILVERMIC share an
     expiry and DDR and settle at exactly ₹0 on all 8 expired contracts. But on 30 Jan 2026 the
@@ -38,7 +38,8 @@ AuLens is honest about what it cannot see. Show this list when asked "is this re
 13. **No final untouched holdout.** Monthly entry thresholds use earlier months, but the history
     has already been inspected during development. Other research choices are not independently
     validated by that procedure. Monthly replays close existing positions at the last observation of each expiry slice,
-    omit final-observation entries and do not carry positions between months; see [VALIDATION.md](VALIDATION.md).
+    charge final-observation entries as immediate round trips with zero gross movement and
+    full modelled costs/slippage, and do not carry positions between months; see [VALIDATION.md](VALIDATION.md).
 14. **Beta is diagnostic.** A low slope of net trade P&L against leg A's metal move is not proof
     of market neutrality or alpha. Small samples, overlapping trades and outliers matter; no
     beta confidence interval is reported. The trade bootstrap assumes independent trades.
