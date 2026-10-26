@@ -55,6 +55,28 @@ CSS = f"""
   /* slider value labels default to primary gold (3.4:1); use the text-safe gold */
   [data-testid="stSliderThumbValue"], [data-testid="stSliderTickBarMin"], [data-testid="stSliderTickBarMax"] {{ color: {GOLD_TEXT} !important; }}
 
+  .eyebrow {{ font-family: "Barlow Condensed", sans-serif; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+    color: {GOLD_TEXT}; font-size: .9rem; margin: 0 0 .35rem; }}
+
+  /* scoreboard: every pair's verdict at once */
+  .board-h {{ font-size: 1.5rem !important; margin: .5rem 0 .6rem !important; padding: 0 !important; }}
+  .board-wrap {{ overflow-x: auto; margin-bottom: 1.25rem; }}
+  table.board {{ border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }}
+  .board th, .board td {{ padding: .55rem .9rem .55rem 0; border: 0; border-bottom: 1px solid {RULE}; text-align: left;
+    vertical-align: middle; white-space: nowrap; }}
+  .board thead th {{ font-weight: 500; font-size: .8rem; color: {STEEL}; }}
+  .board tr > :first-child {{ padding-left: .7rem; }}
+  .board tbody th {{ font-weight: 600; }}
+  .board .sub {{ display: block; font-weight: 400; font-size: .78rem; color: {STEEL}; }}
+  .board .num {{ text-align: right; }}
+  .board tr.sel > * {{ background: color-mix(in srgb, {GOLD} 9%, white); }}
+  .board tr.sel > :first-child {{ box-shadow: inset 3px 0 0 {GOLD}; }}
+  .pill {{ display: inline-block; padding: .05rem .5rem; border: 1.5px solid var(--mark); border-radius: 4px; color: var(--mark);
+    font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1rem; letter-spacing: .04em; }}
+
+  /* pair picker: 44 px tap targets */
+  [data-testid="stBaseButton-pills"], [data-testid="stBaseButton-pillsActive"] {{ min-height: 44px; padding-left: .9rem; padding-right: .9rem; }}
+
   /* phones: keep the six key numbers three across instead of one per row */
   @media (max-width: 640px) {{
     [data-testid="stColumn"] [data-testid="stHorizontalBlock"] {{ flex-wrap: nowrap !important; gap: .75rem; }}
@@ -62,6 +84,8 @@ CSS = f"""
     [data-testid="stMetricValue"], [data-testid="stMetricValue"] * {{ font-size: 1.55rem !important; }}
     [data-testid="stMetricLabel"] p {{ font-size: .75rem; }}
     h1 {{ font-size: 2.1rem !important; }}
+    .board .opt {{ display: none; }}   /* phones: pair, verdict and net P&L; details are below */
+    .board tbody th {{ white-space: normal; }}
   }}
 </style>
 """
