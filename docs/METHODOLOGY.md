@@ -115,3 +115,24 @@ Also reported:
 - If the control pair's spread does not converge near expiry, normalization is wrong.
 - If results flip sign across regimes, any "edge" is a regime artefact.
 - If break-even slippage is below a realistic bid/ask spread, the edge is not tradable.
+
+## Term structure: roll-down vs curve change
+
+`carry_decomposition()` follows the next GOLDTEN contract's premium over implied spot. With
+ln F = ln S + s·τ (s = annual carry from the two nearest expiries, τ = years to expiry, S implied
+by the front contract), that premium is s·τ, and each day's change splits exactly into
+
+    s₁τ₁ − s₀τ₀ = s₀(τ₁ − τ₀)  +  τ₁(s₁ − s₀)
+                  roll-down       curve change
+
+Roll-down is mechanical: time passes at an unchanged rate and the premium decays toward spot.
+Curve change is the rate itself moving. Both are converted to ₹ per 10 g. Days on which the
+front or next contract changes are skipped, so each change compares the same two contracts.
+
+## Contract lifecycle: when contracts are liquid
+
+`liquidity_profile()` takes every contract whose listing and expiry both fall inside the data,
+counts trading days to expiry from MCX's own rows (so holidays are excluded), and takes the median
+daily volume at each distance from expiry. Only distances covered by at least half of those
+contracts are shown. The dashboard draws it with the exit buffer and delivery window shaded, and
+marks every backtest entry and exit on the contract calendar.

@@ -18,7 +18,8 @@ for _m in [m for m in sys.modules if m == "aulens" or m.startswith("aulens.") or
 from aulens.backtest import Params, check_gap, latest_signals, walk_forward  # noqa: E402
 from aulens.costs import CostModel  # noqa: E402
 from aulens.data.loader import PROCESSED, load_processed  # noqa: E402
-from aulens.normalize import curve_carry  # noqa: E402
+from aulens.lifecycle import liquidity_profile  # noqa: E402
+from aulens.normalize import carry_decomposition, curve_carry  # noqa: E402
 from aulens.specs import (DEFAULT_SLIPPAGE, MCX_FULL_HOLIDAYS, PAIRS, RBI_REPO_RATE, RBI_REPO_SINCE,  # noqa: E402
                           REGIME_BREAKS, SPECS, UNITS, metal)
 from aulens.verdict import verdict  # noqa: E402
@@ -345,6 +346,23 @@ st.caption(f"Annual rate implied by the two nearest GOLDTEN contracts: median {b
            f"({RBI_REPO_RATE:.2%} since {pd.Timestamp(RBI_REPO_SINCE):%-d %b %Y}); earlier repo changes are not drawn. "
            "COMEX carry is not shown; AuLens has no COMEX data yet.")
 
+st.subheader("Roll-down, or did the curve move?")
+dec = carry_decomposition(df, "GOLDTEN")
+mon = dec.resample("ME").sum()
+f6 = go.Figure([go.Bar(x=mon.index, y=mon["rolldown"], name="Roll-down: time passing at the same carry rate", marker_color=STEEL,
+                       hovertemplate="%{x|%b %Y}: ₹%{y:,.0f}<extra>roll-down</extra>"),
+                go.Bar(x=mon.index, y=mon["curve"], name="Curve change: the carry rate itself moved", marker_color=GOLD,
+                       hovertemplate="%{x|%b %Y}: ₹%{y:,.0f}<extra>curve change</extra>")])
+f6.add_hline(y=0, line=dict(color=INK, width=1))
+f6.update_layout(barmode="relative", height=320, yaxis_title="₹ per 10 g, summed by month", xaxis=dict(tickformat="%b %Y"))
+st.plotly_chart(f6, width="stretch", config=PLOTLY_CONFIG)
+roll_share = dec["rolldown"].abs().sum() / (dec["rolldown"].abs().sum() + dec["curve"].abs().sum())
+st.caption(f"The next GOLDTEN contract's premium over spot, split day by day. Roll-down is mechanical: with the carry "
+           f"rate unchanged, the premium shrinks as expiry gets closer. It took {rupees(dec['rolldown'].sum())} per 10 g "
+           f"off the premium over {len(dec)} days, a steady {rupees(dec['rolldown'].median())} on a typical day. Curve changes "
+           f"netted {rupees(dec['curve'].sum())} but swing about ±{rupees(dec['curve'].std())} a day, so they make up "
+           f"{1 - roll_share:.0%} of the day-to-day movement. Days on which a contract rolls off are left out.")
+
 # ---- Quiet alerts
 st.subheader("Quiet alerts")
 rows = []
@@ -421,11 +439,54 @@ f3 = px.timeline(segments, x_start="start", x_end="end", y="contract", color="ph
                              "start": False, "end": False, "contract": False, "phase": False})
 f3.update_yaxes(autorange="reversed", title=None, showgrid=False)
 f3.update_xaxes(showgrid=True, gridcolor="#E3E6E1")
+label = dict(zip(cal["expiry"], cal["expiry"].dt.strftime("%b %Y") + cal["live"].map({True: " (live, est.)", False: ""})))
+if len(trades):
+    f3.add_trace(go.Scatter(x=trades["entry_date"], y=trades["expiry"].map(label), mode="markers", name="Entry",
+                            marker=dict(color=INK, size=8, line=dict(color="white", width=1.2)),
+                            hovertemplate="Entry %{x|%d %b %Y}<extra></extra>"))
+    f3.add_trace(go.Scatter(x=trades["exit_date"], y=trades["expiry"].map(label), mode="markers", name="Exit",
+                            marker=dict(color=VERDIGRIS, size=9, symbol="x-thin", line=dict(color=VERDIGRIS, width=2.2)),
+                            hovertemplate="Exit %{x|%d %b %Y}<extra></extra>"))
 f3.update_layout(height=max(300, 22 * len(cal)), bargap=0.35, legend_title_text="")
 st.plotly_chart(f3, width="stretch", config=PLOTLY_CONFIG)
-st.caption("One bar per contract. Gold is when AuLens may hold the pair; grey is the broker's early-exit "
-           "buffer; red is the delivery window up to expiry. Dates after the last data day skip weekends and "
-           "MCX's published 2026 holidays (2027 is not out yet), so live contracts are estimates.")
+if len(trades):
+    t_cal = trades.merge(cal[["expiry", "first", "tender_start"]], on="expiry", how="left")
+    inside = ((t_cal["entry_date"] >= t_cal["first"]) & (t_cal["exit_date"] < t_cal["tender_start"])).sum()
+    placed = f"{inside} of {len(trades)} trades open after their contract lists and close before its delivery window. "
+else:
+    placed = "No trades for this pair at these settings. "
+st.caption(placed + "One bar per contract: gold is when AuLens may open or hold the pair, grey is the broker's "
+           "early-exit buffer (exits fill here, the day after the decision), red is the delivery window up to expiry. "
+           "Dates after the last data day skip weekends and MCX's published 2026 holidays (2027 is not out yet), "
+           "so live contracts are estimates.")
+
+# ---- C. liquidity over a contract's life
+st.subheader("When contracts are liquid")
+exit_zone = tender + res["params"].exit_buffer_days
+f7 = go.Figure()
+notes = []
+for sym, colour in ((a, INK), (b, GOLD)):
+    prof, sm = liquidity_profile(df, sym, min_vol)
+    if prof.empty:
+        notes.append(f"{sym} has no contract whose whole life is in the data yet.")
+        continue
+    f7.add_trace(go.Scatter(x=prof["days_to_expiry"], y=prof["volume"].clip(lower=1), name=f"{sym}, median lots a day",
+                            line=dict(color=colour, width=2), customdata=prof["contracts"],
+                            hovertemplate="%{x} trading days to expiry: %{y:,.0f} lots (%{customdata} contracts)<extra></extra>"))
+    notes.append(f"{sym}: {sm['contracts']} full contract lives, listed about {sm['listed_days']:.0f} trading days "
+                 f"before expiry, busiest {sm['peak_day']} days before it.")
+f7.add_vrect(x0=0, x1=exit_zone, fillcolor=FAULT, opacity=0.08, line_width=0)
+f7.add_annotation(x=exit_zone, y=0, yref="paper", text="AuLens must be out →", showarrow=False,
+                  font=dict(size=11, color=FAULT), xanchor="right", yanchor="bottom")
+if f7.data:   # a trace, not add_hline: on a log axis shape coordinates are read as log10
+    span = [max(max(t.x) for t in f7.data), 0]
+    f7.add_trace(go.Scatter(x=span, y=[max(min_vol, 1)] * 2, mode="lines", name=f"Volume filter, {min_vol} lots",
+                            line=dict(color=STEEL, dash="dot", width=1), hoverinfo="skip"))
+f7.update_layout(height=340, legend=dict(y=-0.32), xaxis=dict(title="Trading days to expiry", autorange="reversed"),
+                 yaxis=dict(title="Lots a day (log)", type="log"))
+st.plotly_chart(f7, width="stretch", config=PLOTLY_CONFIG)
+st.caption(" ".join(notes) + " Median over contracts whose listing and expiry both fall inside the data; "
+           "the shaded days at the right are the exit buffer and delivery window, when AuLens holds nothing.")
 
 with st.expander("Every trade"):
     st.dataframe(trades, hide_index=True)

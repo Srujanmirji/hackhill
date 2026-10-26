@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 import pytest
 
@@ -37,3 +38,38 @@ def test_apply_ddr_ignores_duplicate_ddr_rows():
     out = apply_ddr(df, ddr)
     assert len(out) == 2 and out["close"].tolist() == [148000.0, 148206.0]
     assert out["bhav_close"].tolist() == [148000.0, 148500.0]
+
+
+def _curve(rate_by_day):
+    """Two fixed GOLDTEN expiries priced off a moving spot with F = S·exp(r·τ)."""
+    import numpy as np
+    days = pd.bdate_range("2026-03-02", periods=len(rate_by_day))
+    exps = [pd.Timestamp("2026-04-30"), pd.Timestamp("2026-05-29")]
+    spot = 140000 * np.exp(np.linspace(0, 0.03, len(days)))
+    return pd.DataFrame([{"date": d, "symbol": "GOLDTEN", "expiry": e,
+                          "close": s * np.exp(r * (e - d).days / 365)}
+                         for d, s, r in zip(days, spot, rate_by_day) for e in exps])
+
+
+def test_carry_decomposition_constant_rate_is_all_rolldown():
+    from aulens.normalize import carry_decomposition
+    dec = carry_decomposition(_curve([0.08] * 15))
+    assert len(dec) == 14
+    assert dec["curve"].abs().max() < 1e-6                        # the curve never moved
+    assert (dec["rolldown"] < 0).all()                            # premium decays toward spot
+    # one weekday = 1 calendar day of decay: ≈ r/365 of the next contract's price
+    assert dec["rolldown"].iloc[0] == pytest.approx(-0.08 / 365 * 140000 * np.exp(0.08 * 88 / 365), rel=0.01)
+
+
+def test_carry_decomposition_adds_up_when_the_rate_moves():
+    from aulens.normalize import carry_decomposition, curve_carry
+    df = _curve([0.06 + 0.002 * i for i in range(10)])
+    dec = carry_decomposition(df)
+    s = curve_carry(df)
+    days = sorted(df["date"].unique())
+    tau = [(pd.Timestamp("2026-05-29") - d).days / 365 for d in days]
+    nxt = df[df["expiry"] == pd.Timestamp("2026-05-29")].set_index("date")["close"]
+    for k in range(1, len(days)):
+        total = (s.iloc[k] * tau[k] - s.iloc[k - 1] * tau[k - 1]) * nxt.iloc[k - 1]
+        assert dec["rolldown"].iloc[k - 1] + dec["curve"].iloc[k - 1] == pytest.approx(total)
+    assert (dec["curve"] > 0).all()

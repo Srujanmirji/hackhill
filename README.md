@@ -188,6 +188,8 @@ From 13 May 2026      5  -39513.314862
 - [x] Silver family: SILVERM vs SILVERMIC control, SILVER vs SILVERM carry pair (₹/kg display)
 - [x] Six-pair scoreboard on the first screen; phone-friendly pair picker and assumptions panel
 - [x] Check a gap: type two quoted prices, see the rulebook-adjusted gap against the cost hurdle
+- [x] Term structure: daily roll-down vs curve-change split of the GOLDTEN premium
+- [x] Contract lifecycle: liquidity by days to expiry, every entry and exit drawn on the contract calendar
 - [ ] GOLDM 3-day-average DDR modelled in the GOLDM vs GOLDTEN expected spread
 - [ ] COMEX carry comparison, measured slippage from live bid/ask
 

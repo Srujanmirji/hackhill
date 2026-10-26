@@ -36,6 +36,29 @@ def curve_carry(df: pd.DataFrame, symbol: str = "GOLDTEN") -> pd.Series:
     return (np.log(g["close"].last() / g["close"].first()) / years).rename("carry")
 
 
+def carry_decomposition(df: pd.DataFrame, symbol: str = "GOLDTEN") -> pd.DataFrame:
+    """Split each day's change in the next contract's premium over implied spot into mechanical
+    roll-down (time passing at an unchanged carry rate) and curve change (the rate itself moving).
+
+    With ln F = ln S + s·τ (s = `curve_carry`, τ = years to expiry, S implied by the front
+    contract), the next contract's log premium is s·τ, and exactly
+        s₁τ₁ − s₀τ₀ = s₀(τ₁ − τ₀) + τ₁(s₁ − s₀)
+                      roll-down    curve change
+    Both are in ₹ per 10 g at 999 (log premium × the next contract's price the day before).
+    A day on which the front or next contract changes (an expiry rolls off) is skipped, so every
+    change compares the same two contracts."""
+    c = df[df.symbol == symbol].sort_values(["date", "expiry"]).groupby("date").head(2)
+    g = c.groupby("date")
+    front, nxt = g["expiry"].first(), g["expiry"].last()
+    s = np.log(g["close"].last() / g["close"].first()) / ((nxt - front).dt.days / 365)
+    tau = (nxt - nxt.index.to_series()).dt.days / 365
+    px = to_rs_per_10g_999(g["close"].last(), symbol).shift(1)
+    same = (front == front.shift(1)) & (nxt == nxt.shift(1))
+    out = pd.DataFrame({"rolldown": s.shift(1) * (tau - tau.shift(1)) * px,
+                        "curve": tau * (s - s.shift(1)) * px})
+    return out[same]
+
+
 def implied_carry(df: pd.DataFrame, symbol: str = "GOLDTEN", window: int = 60) -> pd.Series:
     """`curve_carry` as a trailing median over `window` days, shifted one day so the value on
     day t uses only days before t."""
