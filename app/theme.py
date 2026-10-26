@@ -74,6 +74,18 @@ CSS = f"""
   .pill {{ display: inline-block; padding: .05rem .5rem; border: 1.5px solid var(--mark); border-radius: 4px; color: var(--mark);
     font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1rem; letter-spacing: .04em; }}
 
+  /* check a gap: a short ledger, then the answer */
+  .gap {{ max-width: 46rem; margin: .5rem 0 .25rem; }}
+  .gap-ledger {{ margin: 0; font-variant-numeric: tabular-nums; }}
+  .gap-ledger > div {{ display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;
+    padding: .5rem 0; border-bottom: 1px solid {RULE}; }}
+  .gap-ledger dt {{ font-weight: 500; }}
+  .gap-ledger dt span {{ display: block; font-weight: 400; font-size: .78rem; color: {STEEL}; }}
+  .gap-ledger dd {{ margin: 0; white-space: nowrap; font-family: "Barlow Condensed", sans-serif; font-weight: 600; font-size: 1.35rem; }}
+  .gap-ledger .key dt, .gap-ledger .key dd {{ color: {INK}; font-weight: 700; }}
+  .gap-out {{ margin: 1rem 0 0; padding: .7rem 1rem; border-left: 4px solid var(--mark);
+    background: color-mix(in srgb, var(--mark) 6%, white); color: {INK}; }}
+
   /* pair picker: 44 px tap targets */
   .st-key-pair button {{ min-height: 44px; padding-left: .9rem; padding-right: .9rem; }}
 

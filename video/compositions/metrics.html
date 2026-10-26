@@ -29,9 +29,9 @@
   <div id="root" data-composition-id="metrics" data-width="1920" data-height="1080">
 
     <div id="metrics-cam" class="cam">
-      <div id="metrics-p1" class="plate" style="left:180px; top:150px; width:1560px; height:435px;"><img src="assets/screens/metrics_control.png" alt=""></div>
-      <div id="metrics-m2" class="mark" style="left:203px; top:164px; width:1014px; height:177px;"></div>
-      <div id="metrics-m3" class="mark" style="left:702px; top:338px; width:453px; height:203px;"></div>
+      <div id="metrics-p1" class="plate" style="left:180px; top:150px; width:1560px; height:388px;"><img src="assets/screens/metrics_control.png" alt=""></div>
+      <div id="metrics-m2" class="mark" style="left:203px; top:161px; width:1014px; height:160px;"></div>
+      <div id="metrics-m3" class="mark" style="left:702px; top:317px; width:453px; height:183px;"></div>
       <div id="metrics-tk0" class="tk" style="left:359px;"></div><div id="metrics-tl0" class="tkl" style="left:360px;">₹0</div>
       <div id="metrics-tk1" class="tk" style="left:759px;"></div><div id="metrics-tl1" class="tkl" style="left:760px;">₹1.25</div>
       <div id="metrics-tk2" class="tk" style="left:1159px;"></div><div id="metrics-tl2" class="tkl" style="left:1160px;">₹2.5</div>
@@ -40,7 +40,7 @@
       <div id="metrics-pin" class="pin" style="left:360px;"></div>
       <div id="metrics-cap2" class="cap2">GOLDGUINEA moves in ticks of ₹1 per 8 g = ₹1.25 per 10 g</div>
     </div>
-      <div id="metrics-l4" class="lbl" style="left:1184px; top:560px; font-size:54px;">Break-even <b>₹2.7</b></div>
+      <div id="metrics-l4" class="lbl" style="left:1280px; top:560px; font-size:54px;">Break-even <b>₹3.0</b></div>
   </div>
   <script>
 
@@ -65,7 +65,7 @@
     tl.fromTo("#metrics-m3", { opacity: 0, scale: 1.08 }, { opacity: 1, scale: 1, duration: 0.27, ease: "power3.out" }, 4.173);
     tl.fromTo("#metrics-rul", { scaleX: 0, transformOrigin: "0% 50%" }, { scaleX: 1, duration: 0.5, ease: "power3.out" }, 3.973);
     tl.fromTo([".tk", ".tkl", "#metrics-cap2"], { opacity: 0 }, { opacity: 1, duration: 0.2, stagger: 0.05 }, 4.173);
-    tl.fromTo("#metrics-pin", { opacity: 0, x: 0 }, { opacity: 1, x: 864, duration: 0.9, ease: "power3.out" }, 4.473);
+    tl.fromTo("#metrics-pin", { opacity: 0, x: 0 }, { opacity: 1, x: 960, duration: 0.9, ease: "power3.out" }, 4.473);
     tl.fromTo("#metrics-l4", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.4, ease: "expo.out" }, 5.173);
     tl.fromTo("#metrics-fill", { scaleX: 0, transformOrigin: "0% 50%" }, { scaleX: 1, duration: 0.5, ease: "power2.out" }, 7.073);
     tl.to("#metrics-cam", { opacity: 0, filter: "blur(8px)", duration: 0.18, ease: "power2.in" }, 8.244);

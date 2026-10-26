@@ -17,7 +17,8 @@ import numpy as np
 import pandas as pd
 
 from aulens.costs import CostModel
-from aulens.normalize import gram_matched_lots, pair_panel
+from aulens.specs import MCX_FULL_HOLIDAYS
+from aulens.normalize import gram_matched_lots, pair_panel, to_rs_per_10g_999
 from aulens.specs import REGIME_BREAKS, SPECS
 
 
@@ -57,7 +58,13 @@ def add_signals(p: pd.DataFrame, a: str, b: str, prm: Params) -> pd.DataFrame:
     sd = g.transform(lambda s: s.shift(1).rolling(prm.lookback, min_periods=prm.lookback // 2).std())
     p["z"] = (p["residual"] - mu) / sd
     tender = max(SPECS[a].tender_days, SPECS[b].tender_days) + prm.exit_buffer_days
-    p["days_left"] = p.groupby("expiry")["date"].transform(lambda d: len(d) - 1 - np.arange(len(d)))
+    # trading days still to come before expiry: rows left in the data, plus (for contracts still live
+    # on the last data day) the weekdays after it that are not MCX full-day holidays
+    last = p["date"].max()
+    future = {e: len(pd.bdate_range(last + pd.Timedelta(days=1), e, freq="C", holidays=MCX_FULL_HOLIDAYS)) if e > last else 0
+              for e in p["expiry"].unique()}
+    p["days_left"] = (p.groupby("expiry")["date"].transform(lambda d: len(d) - 1 - np.arange(len(d)))
+                      + p["expiry"].map(future))
     p["can_hold"] = p["days_left"] > tender
     lots_a, lots_b, _ = gram_matched_lots(a, b, prm.lot_scale)
     p["liquid"] = ((p["volume_a"] >= prm.min_volume) & (p["volume_b"] >= prm.min_volume)
@@ -147,3 +154,32 @@ def latest_signals(res: dict) -> pd.DataFrame:
     last["clears"] = (last["can_hold"] & last["liquid"] & (last["z"].abs() > z_entry)
                       & (last["residual"].abs() > last["hurdle"]))
     return last[["date", "expiry", "residual", "hurdle", "z", "clears"]].reset_index(drop=True)
+
+
+PLAUSIBLE_GAP = 0.05   # normalized prices further apart than this are almost surely a typo or the wrong contract
+
+
+def check_gap(res: dict, expiry: pd.Timestamp, price_a: float, price_b: float) -> dict:
+    """Judge two prices a trader sees for one contract of the pair with the backtest's own rules:
+    convert both to ₹ per 10 g at 999, subtract the rules' expected spread (as of the last data day)
+    and compare what is left with the cost + slippage hurdle. z-score and volume need history, so
+    they are not part of a single-quote check."""
+    a, b = res["pair"]
+    prm = res["params"]
+    row = res["panel"][res["panel"]["expiry"] == expiry].iloc[-1]
+    px_a, px_b = to_rs_per_10g_999(price_a, a), to_rs_per_10g_999(price_b, b)
+    spread = px_a - px_b
+    residual = spread - row["expected"]
+    hurdle = prm.costs.breakeven_per_10g(px_a, res["grams"]) + 4 * prm.slippage_per_leg
+    if abs(spread) > PLAUSIBLE_GAP * px_a:
+        status = "implausible"
+    elif pd.isna(row["expected"]):
+        status = "no_estimate"
+    elif not row["can_hold"]:
+        status = "late"
+    elif abs(residual) <= hurdle:
+        status = "inside"
+    else:
+        status = "clears"
+    return {"as_of": row["date"], "quoted_gap": price_a - price_b, "spread": spread, "expected": row["expected"],
+            "residual": residual, "hurdle": hurdle, "status": status}

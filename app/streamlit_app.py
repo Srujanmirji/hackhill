@@ -14,14 +14,14 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 # (seen as an ImportError on a newly added function). Drop it so every run imports the current code.
 for _m in [m for m in sys.modules if m == "aulens" or m.startswith("aulens.") or m == "theme"]:
     del sys.modules[_m]
-from aulens.backtest import Params, latest_signals, walk_forward  # noqa: E402
+from aulens.backtest import Params, check_gap, latest_signals, walk_forward  # noqa: E402
 from aulens.costs import CostModel  # noqa: E402
 from aulens.data.loader import PROCESSED, load_processed  # noqa: E402
 from aulens.normalize import curve_carry  # noqa: E402
 from aulens.specs import (DEFAULT_SLIPPAGE, MCX_FULL_HOLIDAYS, PAIRS, RBI_REPO_RATE, RBI_REPO_SINCE,  # noqa: E402
                           REGIME_BREAKS, SPECS, UNITS, metal)
 from aulens.verdict import verdict  # noqa: E402
-from theme import (CSS, FAULT, GOLD, INK, PLOTLY_CONFIG, STEEL, VERDICT_COLOUR, VERDIGRIS,  # noqa: E402
+from theme import (CSS, FAULT, GOLD, GOLD_TEXT, INK, PLOTLY_CONFIG, STEEL, VERDICT_COLOUR, VERDIGRIS,  # noqa: E402
                    hallmark, rupees)
 
 st.set_page_config(page_title="AuLens", page_icon="🔎", layout="wide")
@@ -242,6 +242,58 @@ fig.update_layout(height=420, yaxis_title=f"₹ per {UNAME} at 999")
 st.plotly_chart(fig, width="stretch", config=PLOTLY_CONFIG)
 st.caption("The dark line is the price gap between the two contracts. The dashed line is where the exchange "
            "rules say it must end up; a trade is only worth taking once the gap leaves the shaded cost band.")
+
+# ---- Check a gap you see
+st.subheader("Check a gap you see")
+last_day = panel["date"].max()
+live = panel[panel["date"] == last_day].sort_values("expiry")
+qa, qb = grams(SPECS[a].quote_grams), grams(SPECS[b].quote_grams)
+st.caption(f"Type the two prices from your trading screen exactly as quoted: {a} per {qa}, {b} per {qb}. "
+           f"They start at the {last_day:%-d %b %Y} settlement prices.")
+
+
+def contract_label(x):
+    rw = live[live["expiry"] == x].iloc[0]
+    if "expiry_a" in rw:   # carry pair: a's month M+1 against b's month M
+        return f"{a} {rw['expiry_a']:%b %Y} / {b} {x:%b %Y}"
+    return f"{x:%b %Y}"
+
+
+g1, g2, g3 = st.columns([1.2, 1, 1])
+holdable = live["can_hold"].tolist()
+exp_g = g1.selectbox("Contract", live["expiry"].tolist(), format_func=contract_label, key=f"gap_exp_{a}_{b}",
+                     index=holdable.index(True) if True in holdable else 0)   # nearest contract still outside the exit window
+row = live[live["expiry"] == exp_g].iloc[0]
+tag = f"{a}_{b}_{pd.Timestamp(exp_g):%Y%m%d}"
+price_a = g2.number_input(f"{a}, ₹ per {qa}", min_value=1.0, value=float(row["close_a"]), step=1.0, format="%.0f", key=f"gap_a_{tag}")
+price_b = g3.number_input(f"{b}, ₹ per {qb}", min_value=1.0, value=float(row["close_b"]), step=1.0, format="%.0f", key=f"gap_b_{tag}")
+g = check_gap(res, exp_g, price_a, price_b)
+
+edge = v["verdict"] == "EDGE"
+OUTCOME = {
+    "implausible": (FAULT, "These prices are more than 5% apart once converted to the same unit. "
+                           "Check the prices and the contract month."),
+    "no_estimate": (GOLD_TEXT, "AuLens has no expected spread for this contract yet: it needs about 20 days of its own history."),
+    "late": (STEEL, "Too close to delivery. Under AuLens' exit rule a position in this contract must already be closed."),
+    "inside": (STEEL, "Inside the cost band. The rulebook and trading costs explain this gap, so there is nothing to trade."),
+    "clears": (VERDIGRIS, "Clears the rulebook and costs, on a pair with a tested edge. Check volume and the z-score before acting.")
+              if edge else
+              (GOLD_TEXT, f"Clears the rulebook and costs today, but this pair's verdict is {v['verdict']}: "
+                          "in the backtest, gaps like this did not pay after costs."),
+}
+colour, message = OUTCOME[g["status"]]
+fmt = lambda x: "–" if pd.isna(x) else rupees(x * U)   # noqa: E731
+lines = [("Raw difference of the two quotes", rupees(g["quoted_gap"]), "different units, so not comparable"),
+         (f"Same gap in ₹ per {UNAME} at 999", fmt(g["spread"]), "after purity and quote-unit conversion"),
+         ("Where the rules say it should be", fmt(g["expected"]), "same city and expiry: ₹0; otherwise basis or carry"),
+         ("Left over", fmt(g["residual"]), "what could be mispricing"),
+         ("Cost and slippage hurdle", f"± {fmt(g['hurdle'])}", f"round-trip costs plus ₹{slip} slippage per leg")]
+st.markdown("<div class='gap'><dl class='gap-ledger'>" + "".join(
+    f"<div{' class=\'key\'' if k == 3 else ''}><dt>{escape(t)}<span>{escape(why)}</span></dt><dd>{val}</dd></div>"
+    for k, (t, val, why) in enumerate(lines)) + "</dl>"
+    f"<p class='gap-out' role='status' style='--mark:{colour}'>{escape(message)}</p></div>", unsafe_allow_html=True)
+st.caption(f"Expected spread and the delivery-window check use data to {last_day:%-d %b %Y}. "
+           "A single quote has no z-score or volume, so those entry rules are not checked here.")
 
 # ---- Sensitivity + regimes
 l, r = st.columns(2, gap="large")

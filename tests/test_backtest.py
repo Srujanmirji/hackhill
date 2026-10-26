@@ -52,3 +52,15 @@ def test_net_sharpe_and_latest_signals():
     res = walk_forward(_df(), "GOLDTEN", "GOLDGUINEA", Params(min_train_months=2))
     sig = latest_signals(res)
     assert (sig["date"] == res["panel"]["date"].max()).all() and sig["clears"].dtype == bool
+
+
+def test_check_gap_normalizes_then_compares_to_the_hurdle():
+    from aulens.backtest import check_gap
+    res = walk_forward(_df(), "GOLDTEN", "GOLDGUINEA", Params(min_train_months=2))
+    p = res["panel"]
+    exp = p[(p["date"] == p["date"].max()) & p["can_hold"]]["expiry"].max()
+    same = check_gap(res, exp, 140000.0, 112000.0)      # GOLDGUINEA quotes per 8 g: same gold, ₹0 spread
+    assert same["quoted_gap"] == 28000 and same["spread"] == pytest.approx(0) and same["status"] == "inside"
+    wide = check_gap(res, exp, 140000.0, 111700.0)      # 111700 per 8 g = 139625 per 10 g: ₹375 apart
+    assert wide["spread"] == pytest.approx(375) and wide["status"] == "clears" and wide["residual"] > wide["hurdle"]
+    assert check_gap(res, exp, 140000.0, 100000.0)["status"] == "implausible"   # 125000 per 10 g: a typo

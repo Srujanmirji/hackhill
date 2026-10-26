@@ -14,8 +14,8 @@ There isn't one after costs, and AuLens can show exactly why.
   ₹1 at the DDR, but in six of them the gap over the last five trading days was *wider* than in
   the first half of the contract's life. A trader has to be out before the delivery window, so
   the snap-back can't be collected.
-- **Costs eat what's left.** Control pair: average gross ₹333 per trade against ₹609 of costs and
-  slippage per trade. 62 trades, net −₹17,140, net Sharpe −0.38; it breaks even at only ₹2.7 of
+- **Costs eat what's left.** Control pair: average gross ₹337 per trade against ₹609 of costs and
+  slippage per trade. 62 trades, net −₹16,883, net Sharpe −0.37; it breaks even at only ₹3.0 of
   slippage per 10 g per leg.
 - **The one positive pair fails the robustness test.** GOLDTEN vs GOLDPETAL nets ₹35,653, but almost
   all of it comes from one regime (22 Sep 2025 – 1 Apr 2026), 57% from a single trade closed on
@@ -23,7 +23,7 @@ There isn't one after costs, and AuLens can show exactly why.
   average trade is −₹527 to ₹2,044: it straddles zero.
 - **Same story in silver.** SILVERM vs SILVERMIC settle at exactly ₹0 on all 8 expiries, yet
   15 trades net −₹2,783 and break even at ₹10.7 per kg per leg. SILVER vs SILVERM loses
-  ₹3.56 lakh, and its whole 90% interval sits below zero. All six pairs: NO EDGE.
+  ₹3.42 lakh, and its whole 90% interval sits below zero. All six pairs: NO EDGE.
 
 One line: *"The spread is real; the trade isn't. That's the answer a trader needs before risking money."*
 
@@ -33,7 +33,7 @@ One line: *"The spread is real; the trade isn't. That's the answer a trader need
   Final-day prices come from MCX's published Due Date Rates, not from thin last trades.
 - Live bid/ask needs a broker API and weeks of capture to measure real slippage. Instead we show
   **break-even slippage**, the slippage at which the strategy stops making money, so anyone can
-  compare it to the spreads they see on their own screen. For the control pair it is ₹2.7 per 10 g
+  compare it to the spreads they see on their own screen. For the control pair it is ₹3.0 per 10 g
   per leg, about two GOLDGUINEA ticks: almost any real fill erases it.
 - Live data is the natural next step, not a missing piece. It would refine the slippage number; it
   cannot rescue a strategy that loses before slippage.
@@ -70,7 +70,7 @@ charges and broker cut-offs. AuLens models what a trader without a vault can do:
 
 **"Is 62 trades enough?"**
 Enough to say NO EDGE with confidence for the control pair: its 90% interval for the average trade
-is −₹1,309 to ₹838. It is not enough to claim an edge, which is why the bar for EDGE is high.
+is −₹1,305 to ₹845. It is not enough to claim an edge, which is why the bar for EDGE is high.
 
 **"What is gold beta?"**
 The slope of trade P&L against the gold price move over the same holding period. Near zero (0.07

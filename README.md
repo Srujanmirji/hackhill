@@ -74,12 +74,12 @@ volume, walk-forward `z_entry`.
 
 | Pair | Verdict | Trades | Net P&L | Net Sharpe | 90% CI, mean trade | Break-even slippage per leg | Metal beta |
 |---|---|---|---|---|---|---|---|
-| GOLDTEN vs GOLDGUINEA (control) | **NO EDGE** | 62 | −₹17,140 | −0.38 | −₹1,309 to ₹838 | ₹2.7 /10 g | 0.07 |
+| GOLDTEN vs GOLDGUINEA (control) | **NO EDGE** | 62 | −₹16,883 | −0.37 | −₹1,305 to ₹845 | ₹3.0 /10 g | 0.07 |
 | GOLD vs GOLDM (control) | **NO EDGE** | 12 | −₹5,93,492 | −1.28 | −₹1,14,656 to −₹1,412 | −₹103.6 /10 g | 0.03 |
 | GOLDTEN vs GOLDPETAL | **NO EDGE** | 49 | ₹35,653 | 0.83 | −₹527 to ₹2,044 | ₹65.5 /10 g | 0.14 |
 | GOLDM vs GOLDTEN (stretch) | **NO EDGE** | 32 | −₹1,69,597 | −1.24 | −₹12,236 to ₹404 | −₹112.5 /10 g | 0.25 |
 | SILVERM vs SILVERMIC (silver control) | **NO EDGE** | 15 | −₹2,783 | −0.20 | −₹1,492 to ₹1,489 | ₹10.7 /kg | −0.01 |
-| SILVER vs SILVERM (silver carry) | **NO EDGE** | 20 | −₹3,55,897 | −1.85 | −₹33,657 to −₹6,579 | −₹128.3 /kg | 0.06 |
+| SILVER vs SILVERM (silver carry) | **NO EDGE** | 20 | −₹3,41,647 | −1.75 | −₹33,491 to −₹5,818 | −₹122.4 /kg | 0.04 |
 
 - **Control pairs:** both gold controls settle on the same price at expiry (GOLDTEN/GUINEA within
   ±₹1 on all 18 expiries, GOLD/GOLDM exactly ₹0 on 9), and SILVERM/SILVERMIC settles at exactly
@@ -90,7 +90,7 @@ volume, walk-forward `z_entry`.
   2026, so it fails the every-regime test.
 - **GOLDM vs GOLDTEN and SILVER vs SILVERM:** the carry pairs take their worst losses on
   30 Jan 2026, when the near and far expiries moved by very different amounts. Three GOLDM vs
-  GOLDTEN trades closed that day for 74% of that pair's loss, and one SILVER vs SILVERM trade for 47% of its loss. See [docs/LIMITATIONS.md](docs/LIMITATIONS.md).
+  GOLDTEN trades closed that day for 74% of that pair's loss, and one SILVER vs SILVERM trade for 49% of its loss. See [docs/LIMITATIONS.md](docs/LIMITATIONS.md).
 
 Exact output of `python scripts/run_backtest.py`:
 
@@ -99,15 +99,15 @@ Data source: MCX
 
 == GOLDTEN vs GOLDGUINEA  [NO EDGE]  4 x GOLDTEN  vs  5 x GOLDGUINEA  (40 g)
    Does not survive costs, slippage and regime splits with confidence.
-   trades 62  gross ₹20,618  costs ₹17,918  slippage ₹19,840  net ₹-17,140  hit 42%
-   break-even slippage ₹2.7/10 g/leg   gold beta 0.070
-   net Sharpe -0.38   90% CI of mean trade ₹-1,309 to ₹838
+   trades 62  gross ₹20,875  costs ₹17,918  slippage ₹19,840  net ₹-16,883  hit 42%
+   break-even slippage ₹3.0/10 g/leg   gold beta 0.067
+   net Sharpe -0.37   90% CI of mean trade ₹-1,305 to ₹845
                   count           sum
 regime                               
 From 01 Apr 2025      4   -343.373494
 From 22 Sep 2025     30 -10825.918032
 From 01 Apr 2026      2  -1932.232955
-From 13 May 2026     26  -4038.245302 
+From 13 May 2026     26  -3781.245302 
 
 == GOLD vs GOLDM  [NO EDGE]  1 x GOLD  vs  10 x GOLDM  (1 kg)
    Does not survive costs, slippage and regime splits with confidence.
@@ -158,15 +158,15 @@ From 13 May 2026      3  -894.206732
 
 == SILVER vs SILVERM  [NO EDGE]  1 x SILVER  vs  6 x SILVERM  (30 kg)
    Does not survive costs, slippage and regime splits with confidence.
-   trades 20  gross ₹-266,520  costs ₹41,377  slippage ₹48,000  net ₹-355,897  hit 20%
-   break-even slippage ₹-128.3/kg/leg   silver beta 0.056
-   net Sharpe -1.85   90% CI of mean trade ₹-33,657 to ₹-6,579
+   trades 20  gross ₹-252,270  costs ₹41,377  slippage ₹48,000  net ₹-341,647  hit 25%
+   break-even slippage ₹-122.4/kg/leg   silver beta 0.042
+   net Sharpe -1.75   90% CI of mean trade ₹-33,491 to ₹-5,818
                   count            sum
 regime                                
 From 01 Apr 2025      4   -2186.217673
 From 22 Sep 2025     10 -277826.172908
 From 01 Apr 2026      1  -22121.304229
-From 13 May 2026      5  -53763.314862
+From 13 May 2026      5  -39513.314862
 ```
 
 ## Status
@@ -186,6 +186,8 @@ From 13 May 2026      5  -53763.314862
 - [x] Contract specs verified against the current MCX PDFs (GOLD/GOLDM tender window corrected to 3 days)
 - [x] GOLD vs GOLDM second control, robustness grid, downloadable report
 - [x] Silver family: SILVERM vs SILVERMIC control, SILVER vs SILVERM carry pair (₹/kg display)
+- [x] Six-pair scoreboard on the first screen; phone-friendly pair picker and assumptions panel
+- [x] Check a gap: type two quoted prices, see the rulebook-adjusted gap against the cost hurdle
 - [ ] GOLDM 3-day-average DDR modelled in the GOLDM vs GOLDTEN expected spread
 - [ ] COMEX carry comparison, measured slippage from live bid/ask
 
