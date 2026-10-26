@@ -16,9 +16,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 # purging on every run races with other sessions' threads and breaks pickling of cached results.
 _HERE = Path(__file__).resolve()
 ENGINE_HASH = hashlib.md5(b"".join(f.read_bytes() for f in sorted([*(_HERE.parents[1] / "aulens").rglob("*.py"),
-                                                                    _HERE.parent / "theme.py"]))).hexdigest()
+                                                                    _HERE.parent / "theme.py", _HERE.parent / "report.py"]))).hexdigest()
 if getattr(sys, "_aulens_engine", None) != ENGINE_HASH:
-    for _m in [m for m in sys.modules if m == "aulens" or m.startswith("aulens.") or m == "theme"]:
+    for _m in [m for m in sys.modules if m == "aulens" or m.startswith("aulens.") or m in {"theme", "report"}]:
         del sys.modules[_m]
     sys._aulens_engine = ENGINE_HASH
 from aulens.backtest import Params, check_gap, latest_signals, walk_forward  # noqa: E402
@@ -29,6 +29,7 @@ from aulens.normalize import carry_decomposition, curve_carry  # noqa: E402
 from aulens.specs import (DEFAULT_SLIPPAGE, MCX_FULL_HOLIDAYS, PAIRS, RBI_REPO_RATE, RBI_REPO_SINCE,  # noqa: E402
                           REGIME_BREAKS, SPECS, UNITS, metal)
 from aulens.verdict import verdict  # noqa: E402
+from report import report  # noqa: E402
 from theme import (CSS, FAULT, GOLD, GOLD_TEXT, INK, PLOTLY_CONFIG, STEEL, VERDICT_COLOUR, VERDIGRIS,  # noqa: E402
                    hallmark, rupees)
 
@@ -51,20 +52,42 @@ def grams(g):
 # Passed to every cached function that reads df: changes when the data or the engine code changes,
 # so Streamlit Cloud never serves results computed by an older backtest after a git pull.
 VER = (PROCESSED.stat().st_mtime if PROCESSED.exists() else 0.0, ENGINE_HASH)
-df = data(VER)
-source = "SYNTHETIC" if (df["source"] == "SYNTHETIC").any() else df["source"].iloc[0]
+st.markdown("<p class='eyebrow'>AuLens · edge validator for MCX gold and silver futures</p>", unsafe_allow_html=True)
+st.title("Is this spread real, and tradable after costs?")
+try:
+    df = data(VER)
+except (OSError, ValueError, TypeError) as exc:
+    st.error("The dataset is missing, unreadable or invalid. Rebuild it, then reload this page.")
+    st.code("python scripts/build_dataset.py --raw data/raw", language="bash")
+    st.caption("For UI development with synthetic data, use: python scripts/build_dataset.py --sample")
+    with st.expander("Dataset error details"):
+        st.text(str(exc))
+    st.stop()
+source = ", ".join(sorted(df["source"].unique()))
 
 KIND = ["gold · control", "gold · control", "gold · Mumbai vs Ahmedabad", "gold · carry across expiries",
         "silver · control", "silver · carry across expiries"]
 
-st.markdown("<p class='eyebrow'>AuLens · edge validator for MCX gold and silver futures</p>", unsafe_allow_html=True)
-st.title("Is this spread real, and tradable after costs?")
-if source == "SYNTHETIC":
+if "SYNTHETIC" in source:
     st.warning("Synthetic data, for UI development only. Numbers below are not findings.")
-st.markdown(f"<p class='lede'>{'Real MCX settlement' if source == 'MCX' else 'Synthetic'} data from "
+st.markdown(f"<p class='lede'>{escape(source)} settlement data from "
             f"{df['date'].min():%-d %b %Y} to {df['date'].max():%-d %b %Y}, {len(df):,} contract-days. Every price is "
             "converted to one unit at 999 purity (gold per 10 g, silver per kg), so the rulebook gaps are gone before we compare.</p>",
             unsafe_allow_html=True)
+last_date = df["date"].max().normalize()
+age_days = (pd.Timestamp.now(tz="Asia/Kolkata").tz_localize(None).normalize() - last_date).days
+age_label = f"{age_days} calendar days ago" if age_days >= 0 else f"{abs(age_days)} calendar days ahead"
+st.caption(f"Latest dataset date: {last_date:%d %b %Y} · {age_label} · "
+           f"{df['date'].nunique():,} trading dates. Historical settlement data; not a live quote feed.")
+if age_days < 0:
+    st.warning("The dataset contains future dates. Check the source dates before using these results.")
+with st.expander("Data coverage by contract"):
+    st.dataframe(df.groupby("symbol").agg(First_date=("date", "min"), Latest_date=("date", "max"),
+                                         Trading_dates=("date", "nunique"), Contract_rows=("date", "size")),
+                 width="stretch")
+    absent = sorted(set(SPECS) - set(df["symbol"]))
+    if absent:
+        st.caption(f"Missing contracts: {', '.join(absent)}. Their pairs may be untestable.")
 board_box = st.container()   # filled once the assumptions below are known
 
 pick = st.pills("Inspect a pair", range(len(PAIRS)), format_func=lambda i: f"{PAIRS[i][0]} vs {PAIRS[i][1]}",
@@ -114,37 +137,6 @@ def robustness(ver, a, b, min_vol, scale):
     return slips, caps, z
 
 
-def report(v, res, a, b, slip, min_vol, scale, cap_pct):
-    """Plain-text summary of the verdict and the assumptions it was made under."""
-    lo, hi = v.get("mean_trade_ci90", (float("nan"), float("nan")))
-    reg = v["by_regime"].to_string() if "by_regime" in v else "no trades"
-    return f"""AuLens verdict report
-Pair: {v['pair']} ({v['lots']})
-Data: MCX settlement data {df['date'].min():%d %b %Y} to {df['date'].max():%d %b %Y}
-Verdict: {v['verdict']}. {v['reason']}
-
-Assumptions
-  Slippage per {UNITS[metal(a)][1]} per leg: Rs {slip}
-  Minimum daily volume, both legs: {min_vol} lots
-  Capacity cap: {cap_pct}% of each leg's daily volume
-  Size multiplier: {scale}
-
-Results
-  Trades (walk-forward): {v['trades']}
-  Gross P&L: Rs {v.get('gross_pnl', 0):,.0f}   Costs: Rs {v.get('costs', 0):,.0f}   Slippage: Rs {v.get('slippage', 0):,.0f}
-  Net P&L: Rs {v.get('net_pnl', 0):,.0f}   Win rate: {v.get('hit_rate', 0):.0%}
-  Net Sharpe: {v.get('net_sharpe', float('nan')):.2f}   {metal(a).title()} beta: {v.get('gold_beta', float('nan')):.3f}
-  Break-even slippage: Rs {v.get('breakeven_slippage_per_leg', float('nan')) * UNITS[metal(a)][0]:.1f} per {UNITS[metal(a)][1]} per leg
-  90% CI of the mean trade: Rs {lo:,.0f} to Rs {hi:,.0f}
-
-By regime
-{reg}
-
-Method: walk-forward z_entry, signals on day t, fills at t+1 settlement, exits before the tender window.
-Not financial advice. https://github.com/Srujanmirji/hackhill
-"""
-
-
 def scoreboard(board, sel):
     """Every pair's verdict in one table, the selected pair marked."""
     edges = sum(bv["verdict"] == "EDGE" for _, bv in board)
@@ -156,7 +148,7 @@ def scoreboard(board, sel):
             f"<tr{' class=\'sel\' aria-current=\'true\'' if i == sel else ''}>"
             f"<th scope='row'>{escape(pa)} vs {escape(pb)}<span class='sub'>{escape(KIND[i])}</span></th>"
             f"<td><span class='pill' style='--mark:{VERDICT_COLOUR[bv['verdict']]}'>{escape(bv['verdict'])}</span></td>"
-            f"<td class='num opt'>{bv['trades']}</td><td class='num'>{rupees(bv.get('net_pnl', 0))}</td>"
+            f"<td class='num opt'>{bv['trades']}</td><td class='num'>{rupees(bv['net_pnl']) if 'net_pnl' in bv else '–'}</td>"
             f"<td class='num opt'>{'–' if pd.isna(be) else rupees(be * u_, 1) + f' /{un_}'}</td></tr>")
     return (f"<h2 class='board-h'>{edges} of {len(board)} pairs show an edge after costs</h2>"
             "<div class='board-wrap'><table class='board'>"
@@ -189,6 +181,10 @@ with board_box:
     st.markdown(scoreboard(board, i_sel), unsafe_allow_html=True)
 res, v = board[i_sel]
 panel, trades = res["panel"], res["trades"]
+if panel.empty:
+    st.info(v["reason"] + " Select another pair or rebuild the dataset from raw MCX data.")
+    st.stop()
+st.caption(f"Selected pair's latest overlapping date: {panel['date'].max():%d %b %Y}.")
 hurdle = CostModel().breakeven_per_10g(panel["px10_a"].iloc[-1], res["grams"])
 
 # ---- Verdict for the selected pair
@@ -334,38 +330,47 @@ with r:
 # ---- Carry vs repo
 st.subheader("What the curve pays to hold gold")
 carry = curve_carry(df, "GOLDTEN")
-f4 = go.Figure()
-f4.add_trace(go.Scatter(x=carry.index, y=carry * 100, name="Daily implied carry", mode="lines",
-                        line=dict(color=STEEL, width=1), opacity=0.45))
-f4.add_trace(go.Scatter(x=carry.index, y=carry.rolling(20, min_periods=5).median() * 100, name="20-day median",
-                        line=dict(color=GOLD, width=2.2)))
-f4.add_hline(y=RBI_REPO_RATE * 100, line=dict(color=VERDIGRIS, dash="dash", width=1.5),
-             annotation_text=f"RBI repo today {RBI_REPO_RATE:.2%}", annotation_position="top left",
-             annotation_font=dict(color=VERDIGRIS, size=11))
-f4.update_layout(height=300, yaxis_title="% a year", yaxis=dict(ticksuffix="%"))
-st.plotly_chart(f4, width="stretch", config=PLOTLY_CONFIG)
-before, after = carry[:"2025-11-30"].median(), carry["2025-12-01":].median()
-st.caption(f"Annual rate implied by the two nearest GOLDTEN contracts: median {before:.1%} through Nov 2025, "
-           f"{after:.1%} from the Dec 2025 rally onward. The dashed line is today's RBI repo rate "
-           f"({RBI_REPO_RATE:.2%} since {pd.Timestamp(RBI_REPO_SINCE):%-d %b %Y}); earlier repo changes are not drawn. "
-           "COMEX carry is not shown; AuLens has no COMEX data yet.")
+if carry.dropna().empty:
+    st.info("Gold carry needs two GOLDTEN expiries on the same date. Load GOLDTEN history to see this chart.")
+else:
+    f4 = go.Figure()
+    f4.add_trace(go.Scatter(x=carry.index, y=carry * 100, name="Daily implied carry", mode="lines",
+                            line=dict(color=STEEL, width=1), opacity=0.45))
+    f4.add_trace(go.Scatter(x=carry.index, y=carry.rolling(20, min_periods=5).median() * 100, name="20-day median",
+                            line=dict(color=GOLD, width=2.2)))
+    f4.add_hline(y=RBI_REPO_RATE * 100, line=dict(color=VERDIGRIS, dash="dash", width=1.5),
+                 annotation_text=f"RBI repo today {RBI_REPO_RATE:.2%}", annotation_position="top left",
+                 annotation_font=dict(color=VERDIGRIS, size=11))
+    f4.update_layout(height=300, yaxis_title="% a year", yaxis=dict(ticksuffix="%"))
+    st.plotly_chart(f4, width="stretch", config=PLOTLY_CONFIG)
+    before, after = carry[:"2025-11-30"].median(), carry["2025-12-01":].median()
+    before_label = f"{before:.1%}" if pd.notna(before) else "unavailable"
+    after_label = f"{after:.1%}" if pd.notna(after) else "unavailable"
+    st.caption(f"Annual rate implied by the two nearest GOLDTEN contracts: median {before_label} through Nov 2025, "
+               f"{after_label} from the Dec 2025 rally onward. The dashed line is today's RBI repo rate "
+               f"({RBI_REPO_RATE:.2%} since {pd.Timestamp(RBI_REPO_SINCE):%-d %b %Y}); earlier repo changes are not drawn. "
+               "COMEX carry is not shown; AuLens has no COMEX data yet.")
 
 st.subheader("Roll-down, or did the curve move?")
-dec = carry_decomposition(df, "GOLDTEN")
-mon = dec.resample("ME").sum()
-f6 = go.Figure([go.Bar(x=mon.index, y=mon["rolldown"], name="Roll-down: time passing at the same carry rate", marker_color=STEEL,
-                       hovertemplate="%{x|%b %Y}: ₹%{y:,.0f}<extra>roll-down</extra>"),
-                go.Bar(x=mon.index, y=mon["curve"], name="Curve change: the carry rate itself moved", marker_color=GOLD,
-                       hovertemplate="%{x|%b %Y}: ₹%{y:,.0f}<extra>curve change</extra>")])
-f6.add_hline(y=0, line=dict(color=INK, width=1))
-f6.update_layout(barmode="relative", height=320, yaxis_title="₹ per 10 g, summed by month", xaxis=dict(tickformat="%b %Y"))
-st.plotly_chart(f6, width="stretch", config=PLOTLY_CONFIG)
-roll_share = dec["rolldown"].abs().sum() / (dec["rolldown"].abs().sum() + dec["curve"].abs().sum())
-st.caption(f"The next GOLDTEN contract's premium over spot, split day by day. Roll-down is mechanical: with the carry "
-           f"rate unchanged, the premium shrinks as expiry gets closer. It took {rupees(dec['rolldown'].sum())} per 10 g "
-           f"off the premium over {len(dec)} days, a steady {rupees(dec['rolldown'].median())} on a typical day. Curve changes "
-           f"netted {rupees(dec['curve'].sum())} but swing about ±{rupees(dec['curve'].std())} a day, so they make up "
-           f"{1 - roll_share:.0%} of the day-to-day movement. Days on which a contract rolls off are left out.")
+dec = carry_decomposition(df, "GOLDTEN").dropna()
+if len(dec) < 2:
+    st.info("Roll-down analysis needs at least two days with the same two GOLDTEN contracts.")
+else:
+    mon = dec.resample("ME").sum()
+    f6 = go.Figure([go.Bar(x=mon.index, y=mon["rolldown"], name="Roll-down: time passing at the same carry rate", marker_color=STEEL,
+                           hovertemplate="%{x|%b %Y}: ₹%{y:,.0f}<extra>roll-down</extra>"),
+                    go.Bar(x=mon.index, y=mon["curve"], name="Curve change: the carry rate itself moved", marker_color=GOLD,
+                           hovertemplate="%{x|%b %Y}: ₹%{y:,.0f}<extra>curve change</extra>")])
+    f6.add_hline(y=0, line=dict(color=INK, width=1))
+    f6.update_layout(barmode="relative", height=320, yaxis_title="₹ per 10 g, summed by month", xaxis=dict(tickformat="%b %Y"))
+    st.plotly_chart(f6, width="stretch", config=PLOTLY_CONFIG)
+    total_movement = dec["rolldown"].abs().sum() + dec["curve"].abs().sum()
+    curve_share = dec["curve"].abs().sum() / total_movement if total_movement else 0
+    st.caption(f"The next GOLDTEN contract's premium over spot, split day by day. Roll-down is mechanical: with the carry "
+               f"rate unchanged, the premium shrinks as expiry gets closer. It took {rupees(dec['rolldown'].sum())} per 10 g "
+               f"off the premium over {len(dec)} days, a steady {rupees(dec['rolldown'].median())} on a typical day. Curve changes "
+               f"netted {rupees(dec['curve'].sum())} but swing about ±{rupees(dec['curve'].std())} a day, so they make up "
+               f"{curve_share:.0%} of the day-to-day movement. Days on which a contract rolls off are left out.")
 
 # ---- Quiet alerts
 st.subheader("Quiet alerts")
@@ -373,6 +378,8 @@ rows = []
 for i, (pa, pb) in enumerate(PAIRS):
     m_, (u_, un_) = metal(pa), UNITS[metal(pa)]
     r_res, r_v = board[i]
+    if r_res["panel"].empty:
+        continue
     sig = latest_signals(r_res)
     ratio = (sig["residual"].abs() / sig["hurdle"]).dropna()   # newest contracts may lack a basis estimate yet
     if ratio.empty:
@@ -383,7 +390,7 @@ for i, (pa, pb) in enumerate(PAIRS):
     rows.append({"Pair": f"{pa} vs {pb}", "Closest contract": top["expiry"].strftime("%b %Y"),
                  "Gap": rupees(top["residual"] * u_) + f" /{un_}", "Hurdle": rupees(top["hurdle"] * u_) + f" /{un_}",
                  "Status": status})
-alerts = pd.DataFrame(rows).set_index("Pair")
+alerts = pd.DataFrame(rows, columns=["Pair", "Closest contract", "Gap", "Hurdle", "Status"]).set_index("Pair")
 if (alerts["Status"] == "Alert").any():
     st.success("A pair with an EDGE verdict clears its cost hurdle today.")
 else:
@@ -414,15 +421,14 @@ if st.button("Run the robustness grid", key="robust") or st.session_state.get("r
     total = len(slips) * len(caps)
     why = ""
     if wins == total and v["verdict"] != "EDGE":
-        why = (" Costs and slippage are not what stops this pair: it is still NO EDGE because it loses in at "
-               "least one regime and its 90% confidence interval includes zero.")
+        why = f" Current verdict: {v['verdict']}. {v['reason']}"
     st.caption(f"{wins} of {total} settings make money. Green makes money, grey loses; "
                f"a real edge would stay green across most of the grid.{why}")
 
 # ---- Take the numbers with you
 st.subheader("Take the numbers with you")
 d1, d2 = st.columns(2)
-d1.download_button("Download verdict report (.txt)", report(v, res, a, b, slip, min_vol, scale, cap_pct),
+d1.download_button("Download verdict report (.txt)", report(v, df, a, slip, min_vol, scale, cap_pct),
                    file_name=f"aulens_{a}_{b}_verdict.txt", mime="text/plain", width="stretch")
 d2.download_button("Download trade log (.csv)", trades.assign(pair=f"{a} vs {b}").to_csv(index=False),
                    file_name=f"aulens_{a}_{b}_trades.csv", mime="text/csv", width="stretch", disabled=trades.empty)

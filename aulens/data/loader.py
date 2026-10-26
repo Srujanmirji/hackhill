@@ -11,6 +11,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
 from aulens.specs import SPECS
@@ -77,4 +78,27 @@ PROCESSED = Path(__file__).resolve().parents[2] / "data" / "processed" / "gold_f
 
 
 def load_processed(path: str | Path = PROCESSED) -> pd.DataFrame:
-    return pd.read_parquet(path)
+    df = pd.read_parquet(path)
+    required = {"date", "symbol", "expiry", "close", "volume", "oi", "source"}
+    missing = required - set(df.columns)
+    if missing:
+        raise ValueError(f"Dataset is missing columns: {', '.join(sorted(missing))}.")
+    if df.empty:
+        raise ValueError("Dataset contains no contract rows.")
+    for col in ("date", "expiry"):
+        df[col] = pd.to_datetime(df[col], errors="raise")
+        if df[col].dt.tz is not None:
+            raise ValueError(f"Dataset {col} must contain local trading dates without a timezone.")
+    for col in ("close", "volume", "oi"):
+        df[col] = pd.to_numeric(df[col], errors="raise")
+        if not np.isfinite(df[col]).all():
+            raise ValueError(f"Dataset has missing or non-finite {col} values.")
+    if df[list(required)].isna().any().any():
+        raise ValueError("Dataset has missing required values.")
+    if not df["symbol"].isin(SPECS).all() or not df["source"].isin(["MCX", "SYNTHETIC"]).all():
+        raise ValueError("Dataset contains unsupported symbols or sources.")
+    if ((df["close"] <= 0) | (df["volume"] < 0) | (df["oi"] < 0) | (df["date"] > df["expiry"])).any():
+        raise ValueError("Dataset contains invalid prices, volumes, open interest or contract dates.")
+    if df.duplicated(["date", "symbol", "expiry"]).any():
+        raise ValueError("Dataset contains duplicate contract dates.")
+    return df

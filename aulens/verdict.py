@@ -41,7 +41,9 @@ def verdict(res: dict, min_trades: int = 10) -> dict:
            "lots": f"{res['lots'][0]} x {res['pair'][0]}  vs  {res['lots'][1]} x {res['pair'][1]}  ({size})",
            "trades": len(t)}
     if len(t) == 0:
-        return {**out, "verdict": "UNTESTABLE", "reason": "No trades cleared the cost hurdle and filters."}
+        reason = ("No overlapping contract dates for this pair. Load data for both legs with matching contract months."
+                  if res["panel"].empty else "No trades cleared the cost hurdle and filters, or there is too little training history.")
+        return {**out, "verdict": "UNTESTABLE", "reason": reason}
 
     net, gross = t["net"].sum(), t["gross"].sum()
     crossings_10g = (4 * t["grams"] / 10).sum()
@@ -65,5 +67,13 @@ def verdict(res: dict, min_trades: int = 10) -> dict:
     elif lo > 0 and (by_regime["sum"] > 0).all():
         out.update(verdict="EDGE", reason="Positive after costs and slippage, in every regime, with the 90% CI above zero.")
     else:
-        out.update(verdict="NO EDGE", reason="Does not survive costs, slippage and regime splits with confidence.")
+        failed = []
+        if net <= 0:
+            failed.append("Total net P&L is not positive after costs and slippage.")
+        if not lo > 0:
+            failed.append("The 90% confidence interval for the average net trade is not entirely above zero.")
+        weak = by_regime.index[by_regime["sum"] <= 0].tolist()
+        if weak:
+            failed.append(f"Net P&L is not positive in {len(weak)} tested {'regime' if len(weak) == 1 else 'regimes'}: {', '.join(weak)}.")
+        out.update(verdict="NO EDGE", reason=" ".join(failed))
     return out

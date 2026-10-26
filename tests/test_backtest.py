@@ -64,3 +64,12 @@ def test_check_gap_normalizes_then_compares_to_the_hurdle():
     wide = check_gap(res, exp, 140000.0, 111700.0)      # 111700 per 8 g = 139625 per 10 g: ₹375 apart
     assert wide["spread"] == pytest.approx(375) and wide["status"] == "clears" and wide["residual"] > wide["hurdle"]
     assert check_gap(res, exp, 140000.0, 100000.0)["status"] == "implausible"   # 125000 per 10 g: a typo
+
+
+def test_missing_pair_returns_untestable_instead_of_crashing():
+    from aulens.verdict import verdict
+    df = _df()
+    df = df[df["symbol"] == "GOLDTEN"]
+    res = walk_forward(df, "GOLDTEN", "GOLDGUINEA")
+    assert res["panel"].empty and res["trades"].empty
+    assert verdict(res)["verdict"] == "UNTESTABLE"

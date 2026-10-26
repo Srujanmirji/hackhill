@@ -113,7 +113,9 @@ def run_trades(p: pd.DataFrame, z_entry: float, prm: Params, grams: float) -> pd
 def walk_forward(df: pd.DataFrame, a: str, b: str, prm: Params | None = None) -> dict:
     prm = prm or Params()
     lots_a, lots_b, grams = gram_matched_lots(a, b, prm.lot_scale)
-    p = add_signals(pair_panel(df, a, b), a, b, prm)
+    p = pair_panel(df, a, b)
+    if not p.empty:
+        p = add_signals(p, a, b, prm)
     months = sorted(p["date"].dt.to_period("M").unique())
     all_trades, chosen = [], []
     for k in range(prm.min_train_months, len(months)):
