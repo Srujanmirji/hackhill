@@ -72,7 +72,7 @@ Follow `docs/DEMO_SCRIPT.md` and `docs/SUBMISSION_CHECKLIST.md`. Record the demo
 | Feature | Why | Effort |
 |---|---|---|
 | GOLDM vs GOLDTEN pair | Biggest, most liquid leg | Add carry adjustment for the expiry gap (5th vs month-end) and the 3-day-average DDR |
-| Carry panel | Implied annual carry vs RBI repo (5.25%) — a genuinely new finding | 1 day |
+| Carry panel | Implied annual carry vs RBI repo (5.50% since 7 Oct 2026) — built | done |
 | Measured slippage | Replace the slippage assumption with real bid/ask from a broker API | 1–2 days + a week of capture |
 | Quiet alerts | Telegram/email only when a verdict is EDGE and the residual clears the hurdle | Half a day |
 | Daily auto-update | GitHub Action that fetches yesterday's Bhavcopy | Half a day |

@@ -13,7 +13,7 @@ from aulens.backtest import Params, latest_signals, walk_forward  # noqa: E402
 from aulens.costs import CostModel  # noqa: E402
 from aulens.data.loader import load_processed  # noqa: E402
 from aulens.normalize import curve_carry  # noqa: E402
-from aulens.specs import MCX_FULL_HOLIDAYS, PAIRS, RBI_REPO_RATE, REGIME_BREAKS, SPECS  # noqa: E402
+from aulens.specs import MCX_FULL_HOLIDAYS, PAIRS, RBI_REPO_RATE, RBI_REPO_SINCE, REGIME_BREAKS, SPECS  # noqa: E402
 from aulens.verdict import verdict  # noqa: E402
 from theme import (CSS, FAULT, GOLD, INK, PLOTLY_CONFIG, STEEL, VERDIGRIS,  # noqa: E402
                    hallmark, rupees)
@@ -184,14 +184,15 @@ f4.add_trace(go.Scatter(x=carry.index, y=carry * 100, name="Daily implied carry"
 f4.add_trace(go.Scatter(x=carry.index, y=carry.rolling(20, min_periods=5).median() * 100, name="20-day median",
                         line=dict(color=GOLD, width=2.2)))
 f4.add_hline(y=RBI_REPO_RATE * 100, line=dict(color=VERDIGRIS, dash="dash", width=1.5),
-             annotation_text=f"RBI repo {RBI_REPO_RATE:.2%}", annotation_position="top left",
+             annotation_text=f"RBI repo today {RBI_REPO_RATE:.2%}", annotation_position="top left",
              annotation_font=dict(color=VERDIGRIS, size=11))
 f4.update_layout(height=300, yaxis_title="% a year", yaxis=dict(ticksuffix="%"))
 st.plotly_chart(f4, width="stretch", config=PLOTLY_CONFIG)
 before, after = carry[:"2025-11-30"].median(), carry["2025-12-01":].median()
-st.caption(f"Annual rate implied by the two nearest GOLDTEN contracts. Through Nov 2025 it ran close to the "
-           f"{RBI_REPO_RATE:.2%} repo rate (median {before:.1%}); from the Dec 2025 rally onward it has stayed well above "
-           f"it (median {after:.1%}). COMEX carry is not shown; AuLens has no COMEX data yet.")
+st.caption(f"Annual rate implied by the two nearest GOLDTEN contracts: median {before:.1%} through Nov 2025, "
+           f"{after:.1%} from the Dec 2025 rally onward. The dashed line is today's RBI repo rate "
+           f"({RBI_REPO_RATE:.2%} since {pd.Timestamp(RBI_REPO_SINCE):%-d %b %Y}); earlier repo changes are not drawn. "
+           "COMEX carry is not shown; AuLens has no COMEX data yet.")
 
 # ---- Quiet alerts
 st.subheader("Quiet alerts")
